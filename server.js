@@ -19,7 +19,20 @@ const MIME_TYPES = {
 };
 
 // Inicialização do Banco de Dados SQLite Nativo
-const db = new DatabaseSync(DB_PATH);
+const os = require('os');
+let db = null;
+try {
+  db = new DatabaseSync(DB_PATH);
+  try { db.exec('PRAGMA journal_mode = WAL;'); } catch(e){}
+} catch(err) {
+  try {
+    const tmpPath = path.join(os.tmpdir(), 'database.sqlite');
+    if(fs.existsSync(DB_PATH) && !fs.existsSync(tmpPath)) { try { fs.copyFileSync(DB_PATH, tmpPath); } catch(e){} }
+    db = new DatabaseSync(tmpPath);
+  } catch(e2) {
+    try { db = new DatabaseSync(':memory:'); } catch(e3){ db = null; }
+  }
+}
 
 // Configuração de modo WAL para máxima concorrência e performance
 db.exec(`
