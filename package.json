@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Sistema Integrado de Gestao de Notas, Rubricas, Diario e Plano de Ensino SENAI",
   "scripts": {
-    "build": "echo 'Static Build OK'",
+    "build": "node -e \"const fs=require('fs'); if(!fs.existsSync('public')) fs.mkdirSync('public'); fs.copyFileSync('index.html', 'public/index.html');\"",
     "dev": "node server/dev-server.js",
     "start": "node server/dev-server.js"
   }
