@@ -1,7 +1,7 @@
 {
   "name": "avaliacao-alunos-senai",
   "version": "2.0.0",
-  "description": "Sistema Integrado SENAI",
+  "description": "Sistema Integrado de Gestao de Notas, Rubricas, Diario e Plano de Ensino SENAI",
   "scripts": {
     "dev": "node dev-server.js",
     "start": "node dev-server.js"
