@@ -1,0 +1,22 @@
+{
+  "name": "avaliacao-alunos-senai",
+  "version": "2.0.0",
+  "description": "Sistema Integrado de Gestao de Notas, Rubricas, Diario e Plano de Ensino SENAI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "senai",
+    "educacao",
+    "rubricas",
+    "gestao-escolar",
+    "sqlite"
+  ],
+  "author": "Heber Roberto Ferreira",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
