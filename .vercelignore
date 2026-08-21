@@ -1,0 +1,6 @@
+server/
+*.sqlite*
+database.sqlite*
+users_data.json
+projetos_data.json
+timesheet_data.json
