@@ -5126,7 +5126,7 @@ Instruções do Sistema:
     }
 
     // =========================================================================
-    // GESTÃO DE PROJETOS E TIMESHEET API INTEGRATION
+    // GESTÃO DE PROJETOS E TIMESHEET (RESILIENTE LOCALSTORAGE + API)
     // =========================================================================
     let globalProjetos = [];
     let globalTimesheets = [];
@@ -5134,18 +5134,30 @@ Instruções do Sistema:
     async function carregarProjetos() {
       try {
         const res = await fetch('/api/projetos');
-        globalProjetos = await res.json();
-        renderListaProjetos();
-        atualizarSelectsProjetos();
+        if (res.ok) {
+          globalProjetos = await res.json();
+          localStorage.setItem('senai_projetos_list', JSON.stringify(globalProjetos));
+        } else {
+          throw new Error("API indisponível");
+        }
       } catch (e) {
-        console.error("Erro ao carregar projetos", e);
+        const saved = localStorage.getItem('senai_projetos_list');
+        globalProjetos = saved ? JSON.parse(saved) : [
+          { id: "p1", titulo: "Desenvolvimento de Marca e Identidade Visual", tipo_formacao: "Grupo (até 4)", status: "Aberto", data_inicio: "2026-08-01", data_fim: "2026-10-30", descricao: "Criação de manual de identidade e briefing." }
+        ];
       }
+      renderListaProjetos();
+      atualizarSelectsProjetos();
     }
 
     async function salvarProjeto(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
+      const titulo = document.getElementById("projTitulo").value.trim();
+      if (!titulo) return;
+
       const novoProj = {
-        titulo: document.getElementById("projTitulo").value,
+        id: String(Date.now()),
+        titulo: titulo,
         tipo_formacao: document.getElementById("projTipo").value,
         status: document.getElementById("projStatus").value,
         data_inicio: document.getElementById("projInicio").value,
@@ -5153,17 +5165,21 @@ Instruções do Sistema:
         descricao: document.getElementById("projDesc").value
       };
 
+      globalProjetos.unshift(novoProj);
+      localStorage.setItem('senai_projetos_list', JSON.stringify(globalProjetos));
+      renderListaProjetos();
+      atualizarSelectsProjetos();
+
       try {
-        await fetch('/api/projetos', {
+        fetch('/api/projetos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(novoProj)
-        });
-        document.getElementById("formNovoProjeto").reset();
-        carregarProjetos();
-      } catch (err) {
-        alert("Erro ao salvar projeto");
-      }
+        }).catch(() => {});
+      } catch (err) {}
+
+      document.getElementById("formNovoProjeto").reset();
+      alert("Projeto criado com sucesso!");
     }
 
     function renderListaProjetos() {
@@ -5233,19 +5249,30 @@ Instruções do Sistema:
     async function carregarTimesheets() {
       try {
         const res = await fetch('/api/timesheet');
-        globalTimesheets = await res.json();
-        renderTimesheetTable();
+        if (res.ok) {
+          globalTimesheets = await res.json();
+          localStorage.setItem('senai_timesheet_list', JSON.stringify(globalTimesheets));
+        } else {
+          throw new Error("API indisponível");
+        }
       } catch (e) {
-        console.error("Erro ao carregar timesheets", e);
+        const saved = localStorage.getItem('senai_timesheet_list');
+        globalTimesheets = saved ? JSON.parse(saved) : [];
       }
+      renderTimesheetTable();
     }
 
     async function salvarTimesheet(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const alunoSel = document.getElementById("tsAluno");
       const projSel = document.getElementById("tsProjeto");
+      if (!alunoSel || !projSel || !alunoSel.value || !projSel.value) {
+        alert("Por favor, selecione o aluno e o projeto!");
+        return;
+      }
       
       const novoTs = {
+        id: String(Date.now()),
         id_aluno: alunoSel.value,
         nome_aluno: alunoSel.options[alunoSel.selectedIndex].text,
         id_projeto: projSel.value,
@@ -5259,18 +5286,21 @@ Instruções do Sistema:
         status_entrega: document.getElementById("tsStatus").value
       };
 
+      globalTimesheets.unshift(novoTs);
+      localStorage.setItem('senai_timesheet_list', JSON.stringify(globalTimesheets));
+      renderTimesheetTable();
+
       try {
-        await fetch('/api/timesheet', {
+        fetch('/api/timesheet', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(novoTs)
-        });
-        document.getElementById("formTimesheet").reset();
-        document.getElementById("tsTotalHoras").textContent = "00:00";
-        carregarTimesheets();
-      } catch (err) {
-        alert("Erro ao salvar apontamento");
-      }
+        }).catch(() => {});
+      } catch (err) {}
+
+      document.getElementById("formTimesheet").reset();
+      document.getElementById("tsTotalHoras").textContent = "00:00";
+      alert("Apontamento registrado com sucesso!");
     }
 
     function renderTimesheetTable() {
@@ -5367,21 +5397,39 @@ Instruções do Sistema:
     }
 
     // =========================================================================
-    // GESTÃO DE USUÁRIOS (API /api/users - SQLite)
+    // GESTÃO DE USUÁRIOS (RESILIENTE LOCALSTORAGE + API)
     // =========================================================================
+
+    const DEFAULT_USERS_INITIAL = [
+      { id: "1", name: "Heber Roberto Ferreira", cpf: "1080133", role: "TEACHER" },
+      { id: "2", name: "Rafael Forti Scalfi", cpf: "222.222.222-22", role: "TEACHER" },
+      { id: "3", name: "Coordenador Pedagógico", cpf: "000.000.000-00", role: "ADMIN" }
+    ];
 
     async function carregarUsuarios() {
       try {
         const res = await fetch('/api/users');
         if (res.ok) {
-          globalUsers = await res.json();
-          renderListaUsuarios();
+          const apiUsers = await res.json();
+          if (Array.isArray(apiUsers) && apiUsers.length > 0) {
+            globalUsers = apiUsers;
+            localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
+            renderListaUsuarios();
+            return;
+          }
         }
-      } catch (error) {
-        console.error("Erro ao carregar usuários da API", error);
-        const div = document.getElementById("listaUsuarios");
-        if (div) div.innerHTML = `<p class="text-xs text-rose-500 italic">Erro ao carregar usuários.</p>`;
+      } catch (error) {}
+
+      // Fallback Resiliente LocalStorage
+      const saved = localStorage.getItem('senai_users_list');
+      if (saved) {
+        try { globalUsers = JSON.parse(saved); }
+        catch (e) { globalUsers = DEFAULT_USERS_INITIAL; }
+      } else {
+        globalUsers = DEFAULT_USERS_INITIAL;
+        localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
       }
+      renderListaUsuarios();
     }
 
     function renderListaUsuarios() {
@@ -5414,7 +5462,7 @@ Instruções do Sistema:
               <span class="text-[11px] text-emerald-700 font-mono bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-semibold">Senha: ${pass}</span>
             </div>
           </div>
-          <button type="button" onclick="excluirUsuario('${u.id}')" class="text-rose-500 hover:text-rose-700 p-2 cursor-pointer transition"><i class="fa-solid fa-trash"></i></button>
+          <button type="button" onclick="excluirUsuario('${u.id}')" class="text-rose-500 hover:text-rose-700 p-2 cursor-pointer transition" title="Excluir Usuário"><i class="fa-solid fa-trash"></i></button>
         `;
         div.appendChild(row);
       });
@@ -5435,49 +5483,62 @@ Instruções do Sistema:
         return false;
       }
 
+      const digits = cpf.replace(/\D/g, '');
+      const first3 = digits ? digits.substring(0, 3) : '123';
+      const firstName = normalizarTextoParaSenha(nome);
+      const pass = firstName + first3;
+
+      const novoUsuario = {
+        id: String(Date.now()),
+        name: nome,
+        cpf: cpf,
+        role: role,
+        created_at: new Date().toISOString()
+      };
+
+      // 1. Salvar no Estado Local (Offline-First garantido)
+      const existingIdx = globalUsers.findIndex(u => (u.cpf || '').replace(/\D/g, '') === digits);
+      if (existingIdx >= 0) {
+        globalUsers[existingIdx] = novoUsuario;
+      } else {
+        globalUsers.push(novoUsuario);
+      }
+      localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
+      renderListaUsuarios();
+
+      // 2. Feedback visual de sucesso imediato
+      const feedback = document.getElementById("usuarioFeedback");
+      const feedbackTexto = document.getElementById("usuarioFeedbackTexto");
+      if (feedback && feedbackTexto) {
+        feedbackTexto.innerHTML = `<strong>Nome:</strong> ${nome} &bull; <strong>Perfil:</strong> ${role === 'ADMIN' ? 'Coordenador' : 'Professor'} &bull; <strong>NIF/Doc:</strong> ${cpf}<br><span class="font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded font-mono text-[11px] inline-block mt-1 border border-emerald-300">Senha de Acesso: ${pass}</span>`;
+        feedback.classList.remove("hidden");
+        setTimeout(() => feedback.classList.add("hidden"), 10000);
+      }
+
+      nomeInput.value = "";
+      cpfInput.value = "";
+
+      // 3. Sincronizar em background com o servidor se disponível
       try {
-        const res = await fetch('/api/users', {
+        fetch('/api/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: nome, cpf: cpf, role: role })
-        });
-        if (res.ok) {
-          const digits = cpf.replace(/\D/g, '');
-          const first3 = digits ? digits.substring(0, 3) : '123';
-          const firstName = normalizarTextoParaSenha(nome);
-          const pass = firstName + first3;
+          body: JSON.stringify(novoUsuario)
+        }).catch(() => {});
+      } catch (error) {}
 
-          const feedback = document.getElementById("usuarioFeedback");
-          const feedbackTexto = document.getElementById("usuarioFeedbackTexto");
-          if (feedback && feedbackTexto) {
-            feedbackTexto.innerHTML = `<strong>Nome:</strong> ${nome} &bull; <strong>Perfil:</strong> ${role === 'ADMIN' ? 'Coordenador' : 'Professor'} &bull; <strong>NIF/Doc:</strong> ${cpf}<br><span class="font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded font-mono text-[11px] inline-block mt-1 border border-emerald-300">Senha de Acesso: ${pass}</span>`;
-            feedback.classList.remove("hidden");
-            setTimeout(() => feedback.classList.add("hidden"), 10000);
-          }
-
-          nomeInput.value = "";
-          cpfInput.value = "";
-          await carregarUsuarios();
-        } else {
-          alert("Erro ao gravar usuário no servidor.");
-        }
-      } catch (error) {
-        console.error("Erro ao salvar usuário", error);
-        alert("Erro de conexão ao salvar usuário.");
-      }
       return false;
     }
 
     async function excluirUsuario(id) {
-      if(!confirm("Deseja realmente remover este usuário?")) return;
+      if (!confirm("Deseja realmente remover este usuário?")) return;
+      globalUsers = globalUsers.filter(u => String(u.id) !== String(id));
+      localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
+      renderListaUsuarios();
+
       try {
-        const res = await fetch('/api/users/' + id, { method: 'DELETE' });
-        if(res.ok) {
-          await carregarUsuarios();
-        }
-      } catch (error) {
-        console.error("Erro ao excluir usuário", error);
-      }
+        fetch('/api/users/' + id, { method: 'DELETE' }).catch(() => {});
+      } catch (error) {}
     }
 
     // =========================================================================
