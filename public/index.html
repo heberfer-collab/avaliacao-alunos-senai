@@ -49,6 +49,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Supabase JS Client v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <!-- Google Identity Services (GIS) & Google Classroom API Scripts -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://apis.google.com/js/api.js" async defer></script>
@@ -2461,6 +2464,21 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     let chartDoughnutInstance = null;
     let studentModalMode = 'individual';
     
+    // =========================================================================
+    // CONFIGURAÇÃO SUPABASE (NUVEM EM TEMPO REAL)
+    // =========================================================================
+    const SUPABASE_URL = 'https://obkxetpqmalquagccloh.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_w0x3i22Z49sIqgwD0o3Ajg_QdsjcEUg';
+    let supabase = null;
+
+    try {
+      if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (e) {
+      console.warn("[SUPABASE] Falha na inicialização do cliente:", e);
+    }
+
     const DEFAULT_USERS_INITIAL = [
       { id: "1", name: "Heber Roberto Ferreira", cpf: "1080133", role: "TEACHER" },
       { id: "2", name: "Rafael Forti Scalfi", cpf: "222.222.222-22", role: "TEACHER" },
@@ -2494,34 +2512,67 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     let globalUsers = getStoredUsersSync();
     let currentUser = { role: null, id: null, name: null };
 
-    function saveStateToStorage() {
-      localStorage.setItem("senai_gestao_app_data", JSON.stringify(appData));
+    let cloudSyncDebounce = null;
+    function syncAppStateToCloud() {
+      if (!supabase) return;
+      if (cloudSyncDebounce) clearTimeout(cloudSyncDebounce);
+      cloudSyncDebounce = setTimeout(async () => {
+        try {
+          await supabase.from('senai_app_state').upsert({
+            key: 'main',
+            value: appData,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'key' });
+        } catch(e) {}
+      }, 1000);
     }
 
-    function loadStateFromStorage() {
-      const stored = localStorage.getItem("senai_gestao_app_data");
-      if (stored) {
+    function saveStateToStorage() {
+      localStorage.setItem("senai_gestao_app_data", JSON.stringify(appData));
+      syncAppStateToCloud();
+    }
+
+    async function loadStateFromStorage() {
+      let loadedFromCloud = false;
+
+      // 1. Tentar sincronizar da Nuvem Supabase
+      if (supabase) {
         try {
-          appData = JSON.parse(stored);
-          // Migração de segurança: garantir CPF em alunos existentes
-          if (appData.students && Array.isArray(appData.students)) {
-            let updated = false;
-            appData.students.forEach((s, idx) => {
-              if (!s.cpf) {
-                const cpfBase = String(s.id || idx + 1).padStart(3, '0');
-                s.cpf = cpfBase + ".000.000-00";
-                updated = true;
-              }
-            });
-            if (updated) saveStateToStorage();
+          const { data, error } = await supabase.from('senai_app_state').select('value').eq('key', 'main').maybeSingle();
+          if (!error && data && data.value && data.value.classes) {
+            appData = data.value;
+            localStorage.setItem("senai_gestao_app_data", JSON.stringify(appData));
+            loadedFromCloud = true;
           }
-        } catch (e) {
-          console.error("Erro ao carregar do localStorage", e);
-        }
-      } else {
-        initSampleEvaluations();
-        saveStateToStorage();
+        } catch (e) {}
       }
+
+      if (!loadedFromCloud) {
+        const stored = localStorage.getItem("senai_gestao_app_data");
+        if (stored) {
+          try {
+            appData = JSON.parse(stored);
+            if (appData.students && Array.isArray(appData.students)) {
+              let updated = false;
+              appData.students.forEach((s, idx) => {
+                if (!s.cpf) {
+                  const cpfBase = String(s.id || idx + 1).padStart(3, '0');
+                  s.cpf = cpfBase + ".000.000-00";
+                  updated = true;
+                }
+              });
+              if (updated) saveStateToStorage();
+            }
+          } catch (e) {
+            console.error("Erro ao carregar do localStorage", e);
+          }
+        } else {
+          initSampleEvaluations();
+          saveStateToStorage();
+        }
+      }
+      populateClassSelector();
+      renderActiveTab();
     }
 
     function initSampleEvaluations() {
@@ -5199,12 +5250,27 @@ Instruções do Sistema:
     }
 
     // =========================================================================
-    // GESTÃO DE PROJETOS E TIMESHEET (RESILIENTE LOCALSTORAGE + API)
+    // GESTÃO DE PROJETOS E TIMESHEET (RESILIENTE LOCALSTORAGE + SUPABASE + API)
     // =========================================================================
     let globalProjetos = [];
     let globalTimesheets = [];
 
     async function carregarProjetos() {
+      // 1. Tentar Nuvem Supabase
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.from('senai_projetos').select('*').order('created_at', { ascending: true });
+          if (!error && Array.isArray(data) && data.length > 0) {
+            globalProjetos = data;
+            localStorage.setItem('senai_projetos_list', JSON.stringify(globalProjetos));
+            renderListaProjetos();
+            atualizarSelectsProjetos();
+            return;
+          }
+        } catch(e) {}
+      }
+
+      // 2. Fallback API local
       try {
         const res = await fetch('/api/projetos');
         if (res.ok) {
@@ -5242,6 +5308,13 @@ Instruções do Sistema:
       localStorage.setItem('senai_projetos_list', JSON.stringify(globalProjetos));
       renderListaProjetos();
       atualizarSelectsProjetos();
+
+      // Envia ao Supabase (Nuvem)
+      if (supabase) {
+        try {
+          await supabase.from('senai_projetos').upsert(novoProj, { onConflict: 'id' });
+        } catch(e) {}
+      }
 
       try {
         fetch('/api/projetos', {
@@ -5320,6 +5393,20 @@ Instruções do Sistema:
     }
 
     async function carregarTimesheets() {
+      // 1. Tentar Nuvem Supabase
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.from('senai_timesheet').select('*').order('data', { ascending: false });
+          if (!error && Array.isArray(data)) {
+            globalTimesheets = data;
+            localStorage.setItem('senai_timesheet_list', JSON.stringify(globalTimesheets));
+            renderTimesheetTable();
+            return;
+          }
+        } catch(e) {}
+      }
+
+      // 2. Fallback API local
       try {
         const res = await fetch('/api/timesheet');
         if (res.ok) {
@@ -5362,6 +5449,13 @@ Instruções do Sistema:
       globalTimesheets.unshift(novoTs);
       localStorage.setItem('senai_timesheet_list', JSON.stringify(globalTimesheets));
       renderTimesheetTable();
+
+      // Envia ao Supabase (Nuvem)
+      if (supabase) {
+        try {
+          await supabase.from('senai_timesheet').upsert(novoTs, { onConflict: 'id' });
+        } catch(e) {}
+      }
 
       try {
         fetch('/api/timesheet', {
@@ -5471,21 +5565,42 @@ Instruções do Sistema:
     }
 
     // =========================================================================
-    // GESTÃO DE USUÁRIOS (RESILIENTE LOCALSTORAGE + API)
+    // GESTÃO DE USUÁRIOS (RESILIENTE LOCALSTORAGE + SUPABASE + API)
     // =========================================================================
 
     async function carregarUsuarios() {
-      // 1. Garante que globalUsers tem os dados locais imediatamente
       if (!globalUsers || globalUsers.length === 0) {
         globalUsers = getStoredUsersSync();
       }
 
+      // 1. Tentar Nuvem Supabase
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.from('senai_users').select('*').order('created_at', { ascending: true });
+          if (!error && Array.isArray(data) && data.length > 0) {
+            const map = new Map();
+            getStoredUsersSync().forEach(u => {
+              const key = (u.cpf || u.nif || '').replace(/\D/g, '') || String(u.id);
+              if (key) map.set(key, u);
+            });
+            data.forEach(u => {
+              const key = (u.cpf || u.nif || '').replace(/\D/g, '') || String(u.id);
+              if (key) map.set(key, u);
+            });
+            globalUsers = Array.from(map.values());
+            localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
+            renderListaUsuarios();
+            return;
+          }
+        } catch(e) {}
+      }
+
+      // 2. Fallback API local
       try {
         const res = await fetch('/api/users');
         if (res.ok) {
           const apiUsers = await res.json();
           if (Array.isArray(apiUsers) && apiUsers.length > 0) {
-            // Mesclagem segura: preserva usuários adicionados localmente no navegador
             const map = new Map();
             globalUsers.forEach(u => {
               const key = (u.cpf || u.nif || '').replace(/\D/g, '') || String(u.id);
@@ -5503,7 +5618,7 @@ Instruções do Sistema:
         }
       } catch (error) {}
 
-      // Fallback Resiliente LocalStorage
+      // 3. Fallback LocalStorage
       globalUsers = getStoredUsersSync();
       localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
       renderListaUsuarios();
@@ -5604,7 +5719,19 @@ Instruções do Sistema:
       nomeInput.value = "";
       cpfInput.value = "";
 
-      // 3. Sincronizar em background com o servidor se disponível
+      // 3. Salvar no Supabase (Nuvem em Tempo Real)
+      if (supabase) {
+        try {
+          await supabase.from('senai_users').upsert({
+            id: novoUsuario.id,
+            name: novoUsuario.name,
+            cpf: novoUsuario.cpf,
+            role: novoUsuario.role
+          }, { onConflict: 'cpf' });
+        } catch(e) {}
+      }
+
+      // 4. Sincronizar em background com o servidor se disponível
       try {
         fetch('/api/users', {
           method: 'POST',
@@ -5622,9 +5749,16 @@ Instruções do Sistema:
       localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
       renderListaUsuarios();
 
+      if (supabase) {
+        try {
+          await supabase.from('senai_users').delete().eq('id', id);
+        } catch(e) {}
+      }
+
       try {
         fetch('/api/users/' + id, { method: 'DELETE' }).catch(() => {});
       } catch (error) {}
+    }
     }
 
     // =========================================================================
@@ -5869,6 +6003,37 @@ Instruções do Sistema:
     }
 
     // =========================================================================
+    // SINCRONIZAÇÃO EM TEMPO REAL (SUPABASE REALTIME)
+    // =========================================================================
+    function initSupabaseRealtime() {
+      if (!supabase) return;
+      try {
+        supabase
+          .channel('senai_realtime_sync')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'senai_users' }, () => {
+            carregarUsuarios();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'senai_projetos' }, () => {
+            carregarProjetos();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'senai_timesheet' }, () => {
+            carregarTimesheets();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'senai_app_state' }, payload => {
+            if (payload.new && payload.new.value && payload.new.key === 'main') {
+              appData = payload.new.value;
+              localStorage.setItem("senai_gestao_app_data", JSON.stringify(appData));
+              populateClassSelector();
+              renderActiveTab();
+            }
+          })
+          .subscribe();
+      } catch (e) {
+        console.warn("[SUPABASE] Realtime listener:", e);
+      }
+    }
+
+    // =========================================================================
     // INICIALIZAÇÃO GERAL DO SISTEMA (DOMContentLoaded)
     // =========================================================================
     document.addEventListener("DOMContentLoaded", () => {
@@ -5880,6 +6045,7 @@ Instruções do Sistema:
       try { carregarTimesheets(); } catch(e) { console.error("carregarTimesheets:", e); }
       try { renderActiveTab(); } catch(e) { console.error("renderActiveTab:", e); }
       try { updateCalculator(); } catch(e) { console.error("updateCalculator:", e); }
+      try { initSupabaseRealtime(); } catch(e) { console.error("initSupabaseRealtime:", e); }
     });
   </script>
 </body>

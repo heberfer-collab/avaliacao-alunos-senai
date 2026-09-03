@@ -6,5 +6,8 @@
     "build": "node -e \"const fs=require('fs'); if(!fs.existsSync('public')) fs.mkdirSync('public'); fs.copyFileSync('index.html', 'public/index.html');\"",
     "dev": "node server/dev-server.js",
     "start": "node server/dev-server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.115.0"
   }
 }
