@@ -2469,11 +2469,11 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     // =========================================================================
     const SUPABASE_URL = 'https://obkxetpqmalquagccloh.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_w0x3i22Z49sIqgwD0o3Ajg_QdsjcEUg';
-    let supabase = null;
+    let supabaseClient = null;
 
     try {
-      if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      if (typeof window !== 'undefined' && window.supabase && typeof window.supabase.createClient === 'function') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
     } catch (e) {
       console.warn("[SUPABASE] Falha na inicialização do cliente:", e);
@@ -2514,11 +2514,11 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
 
     let cloudSyncDebounce = null;
     function syncAppStateToCloud() {
-      if (!supabase) return;
+      if (!supabaseClient) return;
       if (cloudSyncDebounce) clearTimeout(cloudSyncDebounce);
       cloudSyncDebounce = setTimeout(async () => {
         try {
-          await supabase.from('senai_app_state').upsert({
+          await supabaseClient.from('senai_app_state').upsert({
             key: 'main',
             value: appData,
             updated_at: new Date().toISOString()
@@ -2536,9 +2536,9 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       let loadedFromCloud = false;
 
       // 1. Tentar sincronizar da Nuvem Supabase
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          const { data, error } = await supabase.from('senai_app_state').select('value').eq('key', 'main').maybeSingle();
+          const { data, error } = await supabaseClient.from('senai_app_state').select('value').eq('key', 'main').maybeSingle();
           if (!error && data && data.value && data.value.classes) {
             appData = data.value;
             localStorage.setItem("senai_gestao_app_data", JSON.stringify(appData));
@@ -5257,9 +5257,9 @@ Instruções do Sistema:
 
     async function carregarProjetos() {
       // 1. Tentar Nuvem Supabase
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          const { data, error } = await supabase.from('senai_projetos').select('*').order('created_at', { ascending: true });
+          const { data, error } = await supabaseClient.from('senai_projetos').select('*').order('created_at', { ascending: true });
           if (!error && Array.isArray(data) && data.length > 0) {
             globalProjetos = data;
             localStorage.setItem('senai_projetos_list', JSON.stringify(globalProjetos));
@@ -5310,9 +5310,9 @@ Instruções do Sistema:
       atualizarSelectsProjetos();
 
       // Envia ao Supabase (Nuvem)
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          await supabase.from('senai_projetos').upsert(novoProj, { onConflict: 'id' });
+          await supabaseClient.from('senai_projetos').upsert(novoProj, { onConflict: 'id' });
         } catch(e) {}
       }
 
@@ -5394,9 +5394,9 @@ Instruções do Sistema:
 
     async function carregarTimesheets() {
       // 1. Tentar Nuvem Supabase
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          const { data, error } = await supabase.from('senai_timesheet').select('*').order('data', { ascending: false });
+          const { data, error } = await supabaseClient.from('senai_timesheet').select('*').order('data', { ascending: false });
           if (!error && Array.isArray(data)) {
             globalTimesheets = data;
             localStorage.setItem('senai_timesheet_list', JSON.stringify(globalTimesheets));
@@ -5451,9 +5451,9 @@ Instruções do Sistema:
       renderTimesheetTable();
 
       // Envia ao Supabase (Nuvem)
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          await supabase.from('senai_timesheet').upsert(novoTs, { onConflict: 'id' });
+          await supabaseClient.from('senai_timesheet').upsert(novoTs, { onConflict: 'id' });
         } catch(e) {}
       }
 
@@ -5574,9 +5574,9 @@ Instruções do Sistema:
       }
 
       // 1. Tentar Nuvem Supabase
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          const { data, error } = await supabase.from('senai_users').select('*').order('created_at', { ascending: true });
+          const { data, error } = await supabaseClient.from('senai_users').select('*').order('created_at', { ascending: true });
           if (!error && Array.isArray(data) && data.length > 0) {
             const map = new Map();
             getStoredUsersSync().forEach(u => {
@@ -5720,9 +5720,9 @@ Instruções do Sistema:
       cpfInput.value = "";
 
       // 3. Salvar no Supabase (Nuvem em Tempo Real)
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          await supabase.from('senai_users').upsert({
+          await supabaseClient.from('senai_users').upsert({
             id: novoUsuario.id,
             name: novoUsuario.name,
             cpf: novoUsuario.cpf,
@@ -5749,16 +5749,15 @@ Instruções do Sistema:
       localStorage.setItem('senai_users_list', JSON.stringify(globalUsers));
       renderListaUsuarios();
 
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          await supabase.from('senai_users').delete().eq('id', id);
+          await supabaseClient.from('senai_users').delete().eq('id', id);
         } catch(e) {}
       }
 
       try {
         fetch('/api/users/' + id, { method: 'DELETE' }).catch(() => {});
       } catch (error) {}
-    }
     }
 
     // =========================================================================
@@ -6006,9 +6005,9 @@ Instruções do Sistema:
     // SINCRONIZAÇÃO EM TEMPO REAL (SUPABASE REALTIME)
     // =========================================================================
     function initSupabaseRealtime() {
-      if (!supabase) return;
+      if (!supabaseClient) return;
       try {
-        supabase
+        supabaseClient
           .channel('senai_realtime_sync')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'senai_users' }, () => {
             carregarUsuarios();
