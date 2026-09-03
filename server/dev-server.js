@@ -2,9 +2,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
+const os = require('os');
 
-const PORT = 3000;
-const DB_PATH = path.join(__dirname, 'database.sqlite');
+const PORT = process.env.PORT || 3000;
+const ROOT_DIR = path.resolve(__dirname, '..');
+const DB_PATH = path.join(ROOT_DIR, 'database.sqlite');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -18,8 +20,7 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
-// Inicialização do Banco de Dados SQLite Nativo
-const os = require('os');
+// Inicialização do Banco de Dados SQLite Nativo no diretório raiz do projeto
 let db = null;
 try {
   db = new DatabaseSync(DB_PATH);
@@ -27,70 +28,77 @@ try {
 } catch(err) {
   try {
     const tmpPath = path.join(os.tmpdir(), 'database.sqlite');
-    if(fs.existsSync(DB_PATH) && !fs.existsSync(tmpPath)) { try { fs.copyFileSync(DB_PATH, tmpPath); } catch(e){} }
+    if (fs.existsSync(DB_PATH) && !fs.existsSync(tmpPath)) {
+      try { fs.copyFileSync(DB_PATH, tmpPath); } catch(e){}
+    }
     db = new DatabaseSync(tmpPath);
   } catch(e2) {
     try { db = new DatabaseSync(':memory:'); } catch(e3){ db = null; }
   }
 }
 
-// Configuração de modo WAL para máxima concorrência e performance
-db.exec(`
-  PRAGMA journal_mode = WAL;
+// Configuração de tabelas no SQLite
+if (db) {
+  db.exec(`
+    PRAGMA journal_mode = WAL;
 
-  CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    cpf TEXT UNIQUE NOT NULL,
-    role TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      cpf TEXT UNIQUE NOT NULL,
+      role TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
 
-  CREATE TABLE IF NOT EXISTS projetos (
-    id TEXT PRIMARY KEY,
-    titulo TEXT NOT NULL,
-    id_uc TEXT,
-    id_turma TEXT,
-    tipo_formacao TEXT,
-    data_inicio TEXT,
-    data_fim TEXT,
-    descricao TEXT,
-    status TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+    CREATE TABLE IF NOT EXISTS projetos (
+      id TEXT PRIMARY KEY,
+      titulo TEXT NOT NULL,
+      id_uc TEXT,
+      id_turma TEXT,
+      tipo_formacao TEXT,
+      data_inicio TEXT,
+      data_fim TEXT,
+      descricao TEXT,
+      status TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
 
-  CREATE TABLE IF NOT EXISTS timesheet (
-    id TEXT PRIMARY KEY,
-    id_aluno TEXT NOT NULL,
-    nome_aluno TEXT NOT NULL,
-    id_projeto TEXT NOT NULL,
-    nome_projeto TEXT,
-    data TEXT NOT NULL,
-    hora_inicio TEXT,
-    hora_fim TEXT,
-    horas_totais TEXT,
-    descricao_atividade TEXT,
-    link_evidencia TEXT,
-    status_entrega TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+    CREATE TABLE IF NOT EXISTS timesheet (
+      id TEXT PRIMARY KEY,
+      id_aluno TEXT NOT NULL,
+      nome_aluno TEXT NOT NULL,
+      id_projeto TEXT NOT NULL,
+      nome_projeto TEXT,
+      data TEXT NOT NULL,
+      hora_inicio TEXT,
+      hora_fim TEXT,
+      horas_totais TEXT,
+      descricao_atividade TEXT,
+      link_evidencia TEXT,
+      status_entrega TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
 
-  CREATE TABLE IF NOT EXISTS app_state (
-    key TEXT PRIMARY KEY,
-    value TEXT NOT NULL,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+    CREATE TABLE IF NOT EXISTS app_state (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+}
 
-// Rotina de Migração de Dados Legados (.json -> SQLite)
+// Rotina de Migração e Sincronização de Dados
 function migrateLegacyData() {
-  // 1. Migrar Usuários
-  const usersFile = path.join(__dirname, 'users_data.json');
+  if (!db) return;
+
+  // 1. Migrar Usuários a partir de users_data.json
+  const usersFile = path.join(ROOT_DIR, 'users_data.json');
   if (fs.existsSync(usersFile)) {
     try {
       const users = JSON.parse(fs.readFileSync(usersFile, 'utf8'));
       const insertUser = db.prepare(`
-        INSERT OR IGNORE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)
+        INSERT INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)
+        ON CONFLICT(cpf) DO UPDATE SET name = excluded.name, role = excluded.role
       `);
       users.forEach(u => {
         if (u.id && u.name && u.cpf) {
@@ -108,13 +116,18 @@ function migrateLegacyData() {
     const insertUser = db.prepare(`
       INSERT OR IGNORE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)
     `);
-    insertUser.run('1', 'Heber Roberto Ferreira', '111.111.111-11', 'TEACHER');
+    insertUser.run('1', 'Heber Roberto Ferreira', '1080133', 'TEACHER');
     insertUser.run('2', 'Rafael Forti Scalfi', '222.222.222-22', 'TEACHER');
     insertUser.run('3', 'Coordenador Pedagógico', '000.000.000-00', 'ADMIN');
   }
 
-  // 3. Migrar Projetos
-  const projFile = path.join(__dirname, 'projetos_data.json');
+  // 3. Atualizar NIF do professor Heber se estiver com legado 111.111.111-11
+  try {
+    db.exec(`UPDATE users SET cpf = '1080133' WHERE (name LIKE '%Heber%' OR id = '1') AND cpf = '111.111.111-11'`);
+  } catch (e) {}
+
+  // 4. Migrar Projetos a partir de projetos_data.json
+  const projFile = path.join(ROOT_DIR, 'projetos_data.json');
   if (fs.existsSync(projFile)) {
     try {
       const projetos = JSON.parse(fs.readFileSync(projFile, 'utf8'));
@@ -132,8 +145,8 @@ function migrateLegacyData() {
     }
   }
 
-  // 4. Migrar Timesheets
-  const tsFile = path.join(__dirname, 'timesheet_data.json');
+  // 5. Migrar Timesheets a partir de timesheet_data.json
+  const tsFile = path.join(ROOT_DIR, 'timesheet_data.json');
   if (fs.existsSync(tsFile)) {
     try {
       const timesheets = JSON.parse(fs.readFileSync(tsFile, 'utf8'));
@@ -153,6 +166,15 @@ function migrateLegacyData() {
 }
 
 migrateLegacyData();
+
+// Sincroniza arquivos JSON com os dados do SQLite
+function syncJsonFile(filename, rows) {
+  try {
+    fs.writeFileSync(path.join(ROOT_DIR, filename), JSON.stringify(rows, null, 2), 'utf8');
+  } catch (e) {
+    console.error(`Erro ao sincronizar ${filename}:`, e.message);
+  }
+}
 
 // Servidor HTTP
 const server = http.createServer((req, res) => {
@@ -199,6 +221,11 @@ const server = http.createServer((req, res) => {
             ON CONFLICT(cpf) DO UPDATE SET name = excluded.name, role = excluded.role
           `);
           stmt.run(user.id, user.name, user.cpf, user.role || 'TEACHER');
+          
+          // Sincronizar users_data.json
+          const allUsers = db.prepare('SELECT id, name, cpf, role, created_at FROM users ORDER BY created_at ASC').all();
+          syncJsonFile('users_data.json', allUsers);
+
           res.writeHead(201, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(user));
         } catch (e) {
@@ -214,6 +241,10 @@ const server = http.createServer((req, res) => {
       try {
         const stmt = db.prepare('DELETE FROM users WHERE id = ?');
         stmt.run(id);
+        
+        const allUsers = db.prepare('SELECT id, name, cpf, role, created_at FROM users ORDER BY created_at ASC').all();
+        syncJsonFile('users_data.json', allUsers);
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true }));
       } catch (e) {
@@ -249,6 +280,10 @@ const server = http.createServer((req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           `);
           stmt.run(p.id, p.titulo, p.id_uc || '', p.id_turma || '', p.tipo_formacao || 'Individual', p.data_inicio || '', p.data_fim || '', p.descricao || '', p.status || 'Em Andamento');
+          
+          const allProj = db.prepare('SELECT * FROM projetos ORDER BY created_at ASC').all();
+          syncJsonFile('projetos_data.json', allProj);
+
           res.writeHead(201, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(p));
         } catch (e) {
@@ -264,6 +299,10 @@ const server = http.createServer((req, res) => {
       try {
         const stmt = db.prepare('DELETE FROM projetos WHERE id = ?');
         stmt.run(id);
+        
+        const allProj = db.prepare('SELECT * FROM projetos ORDER BY created_at ASC').all();
+        syncJsonFile('projetos_data.json', allProj);
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true }));
       } catch (e) {
@@ -299,6 +338,10 @@ const server = http.createServer((req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `);
           stmt.run(t.id, String(t.id_aluno), t.nome_aluno, String(t.id_projeto), t.nome_projeto || '', t.data, t.hora_inicio || '', t.hora_fim || '', t.horas_totais || '', t.descricao_atividade || '', t.link_evidencia || '', t.status_entrega || 'Concluído');
+          
+          const allTs = db.prepare('SELECT * FROM timesheet ORDER BY data DESC, created_at DESC').all();
+          syncJsonFile('timesheet_data.json', allTs);
+
           res.writeHead(201, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(t));
         } catch (e) {
@@ -349,26 +392,28 @@ const server = http.createServer((req, res) => {
   }
 
   // =========================================================================
-  // ROTEAMENTO FRONTEND (Servindo Arquivos Estáticos)
+  // ROTEAMENTO FRONTEND (Servindo Arquivos Estáticos a partir do ROOT_DIR)
   // =========================================================================
-  let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
+  let safePath = req.url.split('?')[0];
+  if (safePath === '/') safePath = '/index.html';
+  let filePath = path.join(ROOT_DIR, safePath);
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
   fs.readFile(filePath, (err, content) => {
     if (err) {
       if (err.code === 'ENOENT') {
-        fs.readFile(path.join(__dirname, 'index.html'), (err2, fallbackContent) => {
+        fs.readFile(path.join(ROOT_DIR, 'index.html'), (err2, fallbackContent) => {
           if (err2) {
-            res.writeHead(500);
-            res.end('Erro interno do servidor');
+            res.writeHead(500, { 'Content-Type': 'text/plain; charset=UTF-8' });
+            res.end('Erro interno do servidor: index.html não encontrado');
           } else {
             res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
             res.end(fallbackContent);
           }
         });
       } else {
-        res.writeHead(500);
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=UTF-8' });
         res.end(`Erro no servidor: ${err.code}`);
       }
     } else {
