@@ -2469,14 +2469,26 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     ];
 
     function getStoredUsersSync() {
+      const map = new Map();
+      DEFAULT_USERS_INITIAL.forEach(u => {
+        const key = (u.cpf || u.nif || '').replace(/\D/g, '') || String(u.id);
+        if (key) map.set(key, u);
+      });
       try {
         const saved = localStorage.getItem('senai_users_list');
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed)) {
+            parsed.forEach(u => {
+              const key = (u.cpf || u.nif || '').replace(/\D/g, '') || String(u.id);
+              if (key && !map.has(key)) map.set(key, u);
+            });
+          }
         }
       } catch (e) {}
-      return DEFAULT_USERS_INITIAL;
+      const merged = Array.from(map.values());
+      try { localStorage.setItem('senai_users_list', JSON.stringify(merged)); } catch(e){}
+      return merged;
     }
 
     let globalUsers = getStoredUsersSync();
