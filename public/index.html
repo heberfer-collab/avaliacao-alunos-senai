@@ -2463,8 +2463,9 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     
     const DEFAULT_USERS_INITIAL = [
       { id: "1", name: "Heber Roberto Ferreira", cpf: "1080133", role: "TEACHER" },
-      { id: "2", name: "Rafael Forti Scalfi", cpf: "1021529", role: "TEACHER" },
-      { id: "3", name: "Coordenador Pedagógico", cpf: "000.000.000-00", role: "ADMIN" }
+      { id: "2", name: "Rafael Forti Scalfi", cpf: "222.222.222-22", role: "TEACHER" },
+      { id: "3", name: "Prof. Bruno", cpf: "1021529", role: "TEACHER" },
+      { id: "4", name: "Coordenador Pedagógico", cpf: "000.000.000-00", role: "ADMIN" }
     ];
 
     function getStoredUsersSync() {
@@ -5449,6 +5450,7 @@ Instruções do Sistema:
 
     function normalizarTextoParaSenha(texto) {
       return (texto || '')
+        .replace(/^(prof\.|prof|professor|professora|coord\.|coord|coordenador|coordenadora)\s+/i, '')
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim()
@@ -5767,7 +5769,8 @@ Instruções do Sistema:
       const userRoleIcon = document.getElementById('userRoleIcon');
       if (userNameDisplay) {
         const roleLabel = isAdmin ? 'Coord.' : (isStudent ? 'Aluno' : 'Prof.');
-        userNameDisplay.textContent = `${roleLabel} ${currentUser.name || ''}`;
+        const cleanName = (currentUser.name || '').replace(/^(prof\.|prof|professor|professora|coord\.|coord|coordenador|coordenadora)\s+/i, '');
+        userNameDisplay.textContent = `${roleLabel} ${cleanName}`;
       }
       if (userRoleIcon) {
         if (isAdmin) userRoleIcon.innerHTML = '<i class="fa-solid fa-shield-halved text-purple-600"></i>';
