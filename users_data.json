@@ -4,27 +4,20 @@
     "name": "Heber Roberto Ferreira",
     "cpf": "1080133",
     "role": "TEACHER",
-    "created_at": "2026-09-03 16:41:16"
-  },
-  {
-    "id": "2",
-    "name": "Rafael Forti Scalfi",
-    "cpf": "222.222.222-22",
-    "role": "TEACHER",
-    "created_at": "2026-09-03 16:41:16"
+    "created_at": "2026-09-03 18:05:35"
   },
   {
     "id": "3",
     "name": "Prof. Bruno",
     "cpf": "1021529",
     "role": "TEACHER",
-    "created_at": "2026-09-03 18:00:00"
+    "created_at": "2026-09-03 18:05:35"
   },
   {
     "id": "4",
     "name": "Coordenador Pedagógico",
     "cpf": "000.000.000-00",
     "role": "ADMIN",
-    "created_at": "2026-09-03 16:41:16"
+    "created_at": "2026-09-03 18:05:35"
   }
 ]

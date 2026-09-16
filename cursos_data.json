@@ -1,0 +1,82 @@
+[
+  {
+    "id": "cai-mecanico-usinagem",
+    "nome": "Mecânico de Usinagem",
+    "tipo": "CAI",
+    "carga_horaria": 1600,
+    "descricao": "Curso de Aprendizagem Industrial voltado a processos de usinagem convencional e CNC, metrologia e leitura de desenho técnico mecânico.",
+    "ucs_padrao": "[{\"id\":\"cai-mu-01\",\"nome\":\"Processos de Usinagem Convencional (320h)\"},{\"id\":\"cai-mu-02\",\"nome\":\"Tecnologia Mecânica e Ajustagem (280h)\"},{\"id\":\"cai-mu-03\",\"nome\":\"Programação e Operação CNC (400h)\"}]"
+  },
+  {
+    "id": "cai-eletricista-manutencao",
+    "nome": "Eletricista de Manutenção Eletroeletrônica",
+    "tipo": "CAI",
+    "carga_horaria": 1600,
+    "descricao": "Curso de Aprendizagem Industrial voltado a instalações elétricas industriais, comandos elétricos, PLC e instrumentação.",
+    "ucs_padrao": "[{\"id\":\"cai-em-01\",\"nome\":\"Instalações Elétricas Industriais (320h)\"},{\"id\":\"cai-em-02\",\"nome\":\"Comandos Elétricos e Acionamentos (360h)\"},{\"id\":\"cai-em-03\",\"nome\":\"Controladores Lógicos Programáveis - CLP (320h)\"}]"
+  },
+  {
+    "id": "cai-assistente-administrativo",
+    "nome": "Assistente Administrativo",
+    "tipo": "CAI",
+    "carga_horaria": 800,
+    "descricao": "Curso de Aprendizagem Industrial focado em rotinas administrativas industriais, logística básica e processos operacionais.",
+    "ucs_padrao": "[{\"id\":\"cai-adm-01\",\"nome\":\"Rotinas Administrativas e Organização Industrial (200h)\"},{\"id\":\"cai-adm-02\",\"nome\":\"Comunicação e Redação Empresarial (200h)\"}]"
+  },
+  {
+    "id": "tec-desenvolvimento-sistemas",
+    "nome": "Técnico em Desenvolvimento de Sistemas",
+    "tipo": "TECNICO",
+    "carga_horaria": 1200,
+    "descricao": "Habilitação Técnica para desenvolvimento de softwares web, mobile e desktop, banco de dados e engenharia de requisitos.",
+    "ucs_padrao": "[{\"id\":\"tec-ds-01\",\"nome\":\"Lógica de Programação e Algoritmos (100h)\"},{\"id\":\"tec-ds-02\",\"nome\":\"Desenvolvimento de Sistemas Web (200h)\"},{\"id\":\"tec-ds-03\",\"nome\":\"Modelagem e Implementação de Banco de Dados (120h)\"},{\"id\":\"tec-ds-04\",\"nome\":\"Fundamentos de Design Digital (375h)\"}]"
+  },
+  {
+    "id": "tec-mecatronica",
+    "nome": "Técnico em Mecatrônica",
+    "tipo": "TECNICO",
+    "carga_horaria": 1200,
+    "descricao": "Habilitação Técnica integrando mecânica, eletrônica, robótica e controle automatizado de sistemas fabris.",
+    "ucs_padrao": "[{\"id\":\"tec-meca-01\",\"nome\":\"Sistemas Eletropneumáticos e Eletro-hidráulicos (150h)\"},{\"id\":\"tec-meca-02\",\"nome\":\"Automação Industrial e Robótica (250h)\"}]"
+  },
+  {
+    "id": "tec-eletrotecnica",
+    "nome": "Técnico em Eletrotécnica",
+    "tipo": "TECNICO",
+    "carga_horaria": 1200,
+    "descricao": "Habilitação Técnica para projetos elétricos, subestações, geração e distribuição de energia e manutenção industrial.",
+    "ucs_padrao": "[{\"id\":\"tec-elt-01\",\"nome\":\"Projetos Elétricos Prediais e Industriais (200h)\"},{\"id\":\"tec-elt-02\",\"nome\":\"Máquinas Elétricas e Acionamentos (220h)\"}]"
+  },
+  {
+    "id": "fic-eletricista-instalador",
+    "nome": "Eletricista Instalador Residencial",
+    "tipo": "FIC",
+    "carga_horaria": 160,
+    "descricao": "Formação Inicial e Continuada para dimensionamento e execução de instalações elétricas prediais conforme NBR 5410.",
+    "ucs_padrao": "[{\"id\":\"fic-el-01\",\"nome\":\"Práticas de Instalações Elétricas Residenciais (160h)\"}]"
+  },
+  {
+    "id": "fic-torneiro-mecanico",
+    "nome": "Torneiro Mecânico",
+    "tipo": "FIC",
+    "carga_horaria": 240,
+    "descricao": "Formação Inicial e Continuada voltada a usinagem de peças cilíndricas em torno convencional e afiação de ferramentas.",
+    "ucs_padrao": "[{\"id\":\"fic-tm-01\",\"nome\":\"Operação de Torno Mecânico Universal (240h)\"}]"
+  },
+  {
+    "id": "fic-programador-web",
+    "nome": "Programador Web Front-End",
+    "tipo": "FIC",
+    "carga_horaria": 200,
+    "descricao": "Formação Inicial e Continuada para construção de interfaces modernas responsivas com HTML5, CSS3, JavaScript e APIs.",
+    "ucs_padrao": "[{\"id\":\"fic-pw-01\",\"nome\":\"Desenvolvimento Front-End Responsivo (200h)\"}]"
+  },
+  {
+    "id": "fic-soldador-mag",
+    "nome": "Soldador no Processo MIG/MAG",
+    "tipo": "FIC",
+    "carga_horaria": 180,
+    "descricao": "Formação Inicial e Continuada para união de metais ferrosos e não ferrosos com gás inerte e ativo.",
+    "ucs_padrao": "[{\"id\":\"fic-sol-01\",\"nome\":\"Soldagem MIG/MAG em Aço Carbono (180h)\"}]"
+  }
+]

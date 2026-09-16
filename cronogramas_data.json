@@ -1,0 +1,16 @@
+[
+  {
+    "id": "crono-test-2026",
+    "id_turma": "TURMA-TEST-01",
+    "id_uc": "TDS-UC01",
+    "semestre": "1º Semestre / 2026",
+    "docente_titular": "Heber Roberto Ferreira",
+    "dias_semana": "4ª Feiras",
+    "data_inicio": "2026-01-26",
+    "data_fim": "2026-06-23",
+    "qa_total": 60,
+    "matriz_aulas": "{\"2026-01-28\":{\"qa\":5,\"status\":\"previsto\"}}",
+    "niveis_desempenho": "[{\"nivel\":10,\"nota\":100,\"descricao\":\"Excelente\"}]",
+    "updated_at": "2026-09-15 14:53:57"
+  }
+]

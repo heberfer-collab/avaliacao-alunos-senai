@@ -1,0 +1,19 @@
+[
+  {
+    "id": "ent-teste-01",
+    "id_atividade": "ativ-teste-01",
+    "id_turma": "cai-mu-01",
+    "id_aluno": "1",
+    "nome_aluno": "Lucas Silva (Aluno Teste)",
+    "re_aluno": "RE-10801",
+    "data_entrega": "2026-09-15T13:58:44.663Z",
+    "link_evidencia": "https://drive.google.com/exemplo-relatorio-usinagem",
+    "texto_resposta": "Eixo usinado com medição micrométrica anexada.",
+    "autoavaliacao": "{\"crit-1\":\"S\",\"crit-2\":\"S\",\"crit-3\":\"S\",\"parecer_aluno\":\"Consegui realizar toda a usinagem dentro da tolerância sem desvios.\"}",
+    "avaliacao_docente": "{\"crit-1\":\"S\",\"crit-2\":\"S\",\"crit-3\":\"S\",\"feedback\":\"Excelente trabalho técnico, peças em conformidade com o desenho.\",\"data_correcao\":\"2026-09-15T13:58:44.651Z\"}",
+    "nota_final": 100,
+    "criticos_atingidos": 1,
+    "status": "Avaliado",
+    "created_at": "2026-09-15 13:58:44"
+  }
+]
