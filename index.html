@@ -2139,6 +2139,68 @@
             <input type="date" id="ativDataEntrega" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
           </div>
 
+          <!-- ============================================ -->
+          <!-- CONFIGURAÇÃO: QUAL AVALIAÇÃO VOU USAR (MSEP) -->
+          <!-- ============================================ -->
+          <div class="sm:col-span-2 bg-gradient-to-r from-slate-50 via-indigo-50/50 to-slate-50 border border-indigo-200 rounded-xl p-4 space-y-3 shadow-2xs">
+            <div class="flex items-center justify-between border-b border-indigo-100 pb-2">
+              <span class="font-bold text-indigo-950 text-xs flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-check text-indigo-600 text-sm"></i>
+                <span>Configuração Avaliativa: Qual Avaliação Vou Usar Nesta Tarefa?</span>
+              </span>
+              <span class="text-[10px] font-extrabold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full border border-indigo-200 uppercase tracking-wider">
+                MSEP SENAI
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <!-- Tipo de Avaliação -->
+              <div>
+                <label class="block text-slate-700 font-bold mb-1">Tipo de Avaliação (Função):</label>
+                <select id="ativTipoAvaliacao" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs">
+                  <option value="FORMATIVA">🟢 Formativa (Processual & Feedback)</option>
+                  <option value="SOMATIVA">🔵 Somativa (Produto Final & Nota)</option>
+                  <option value="DIAGNOSTICA">🟡 Diagnóstica (Sondagem Inicial)</option>
+                  <option value="RECUPERACAO">🔴 Recuperação Paralela (Recomposição)</option>
+                </select>
+                <p class="text-[10px] text-slate-500 mt-1">Papel pedagógico no percurso formativo.</p>
+              </div>
+
+              <!-- Instrumento Avaliativo -->
+              <div>
+                <label class="block text-slate-700 font-bold mb-1">Instrumento Avaliativo:</label>
+                <select id="ativInstrumentoAvaliacao" onchange="aoMudarInstrumentoAvaliacao(this.value)" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs">
+                  <option value="RUBRICA_MSEP">📋 Rubrica Analítica MSEP (Critérios)</option>
+                  <option value="AUTO_HETERO">🤝 Autoavaliação + Heteroavaliação</option>
+                  <option value="NOTA_DIRETA">🔢 Pontuação Numérica Direta (0 a 100)</option>
+                  <option value="EVIDENCIA_PRATICA">📁 Evidência Prática / Portfólio</option>
+                  <option value="COAVALIACAO">👥 Coavaliação por Pares / Equipe</option>
+                </select>
+                <p class="text-[10px] text-slate-500 mt-1">Como o desempenho será mensurado.</p>
+              </div>
+
+              <!-- Peso na Média -->
+              <div>
+                <label class="block text-slate-700 font-bold mb-1">Peso na Média da UC:</label>
+                <select id="ativPeso" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs">
+                  <option value="1">Peso 1 (Padrão)</option>
+                  <option value="2">Peso 2 (Importante)</option>
+                  <option value="3">Peso 3 (Projeto / Marco Integrador)</option>
+                  <option value="4">Peso 4 (Desafio Avançado)</option>
+                  <option value="5">Peso 5 (Avaliação Somativa Final)</option>
+                </select>
+                <p class="text-[10px] text-slate-500 mt-1">Multiplicador no cálculo geral da UC.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 pt-1 border-t border-indigo-100/60">
+              <input type="checkbox" id="ativExigeCriticos" checked class="w-4 h-4 text-rose-600 rounded border-slate-300">
+              <label for="ativExigeCriticos" class="text-[11px] font-bold text-slate-800 cursor-pointer">
+                Exigir 100% dos Critérios Críticos para Aprovação Direta (Gatilho de Recuperação Paralela Regimental)
+              </label>
+            </div>
+          </div>
+
           <!-- Estratégia de Aprendizagem Desafiadora MSEP -->
           <div>
             <label class="block text-slate-700 font-bold mb-1">Estratégia Desafiadora MSEP (Pág. 114):</label>
@@ -2392,6 +2454,7 @@
           <div>
             <h3 class="font-display font-bold text-base" id="docenteModalAtivTitulo">Avaliação e Correção de Entregas</h3>
             <p class="text-xs text-slate-300" id="docenteModalAlunoInfo">Aluno: ---</p>
+            <div id="docenteModalAtivBadges" class="flex flex-wrap items-center gap-1.5 mt-1"></div>
           </div>
         </div>
         <button onclick="fecharModalCorrecaoDocente()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">
@@ -8338,6 +8401,43 @@ Instruções do Sistema:
       renderPortalAluno();
     }
 
+    function getLabelTipoAvaliacao(tipo) {
+      if (tipo === 'SOMATIVA') return '🔵 Somativa (Produto Final)';
+      if (tipo === 'DIAGNOSTICA') return '🟡 Diagnóstica (Sondagem)';
+      if (tipo === 'RECUPERACAO') return '🔴 Recuperação Paralela';
+      return '🟢 Formativa (Processual)';
+    }
+
+    function getBadgeClassTipoAvaliacao(tipo) {
+      if (tipo === 'SOMATIVA') return 'bg-blue-50 text-blue-800 border-blue-200';
+      if (tipo === 'DIAGNOSTICA') return 'bg-amber-50 text-amber-800 border-amber-200';
+      if (tipo === 'RECUPERACAO') return 'bg-rose-50 text-rose-800 border-rose-300';
+      return 'bg-emerald-50 text-emerald-800 border-emerald-200';
+    }
+
+    function getLabelInstrumentoAvaliacao(inst) {
+      if (inst === 'AUTO_HETERO') return 'Auto + Heteroavaliação';
+      if (inst === 'NOTA_DIRETA') return 'Nota Direta (0-100)';
+      if (inst === 'EVIDENCIA_PRATICA') return 'Evidência Prática';
+      if (inst === 'COAVALIACAO') return 'Coavaliação por Pares';
+      return 'Rubrica Analítica MSEP';
+    }
+
+    function aoMudarInstrumentoAvaliacao(inst) {
+      const chkTemCrit = document.getElementById('ativTemCriterios');
+      if (inst === 'NOTA_DIRETA') {
+        if (chkTemCrit) {
+          chkTemCrit.checked = false;
+          toggleSecaoCriteriosAtividade(false);
+        }
+      } else {
+        if (chkTemCrit) {
+          chkTemCrit.checked = true;
+          toggleSecaoCriteriosAtividade(true);
+        }
+      }
+    }
+
     function renderAtividadesDocente() {
       const container = document.getElementById('listaAtividadesDocente');
       const infoTurma = document.getElementById('infoTurmaAtividades');
@@ -8370,8 +8470,8 @@ Instruções do Sistema:
               <i class="fa-solid fa-list-check"></i>
             </div>
             <h4 class="font-bold text-slate-800 text-sm">Nenhuma atividade pedagógica cadastrada para esta turma</h4>
-            <p class="text-xs text-slate-500 max-w-md mx-auto">Crie atividades vinculando os critérios da matriz da UC com pesos de 0 a 100 e escolha se quer disponibilizar via Registro Escolar (RE) ou Google Classroom.</p>
-            <button onclick="abrirModalCriarAtividade()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-xs transition">
+            <p class="text-xs text-slate-500 max-w-md mx-auto">Crie atividades escolhendo qual avaliação vai usar (Formativa, Somativa, Diagnóstica ou Recuperação) e o instrumento avaliativo (Rubrica MSEP, Auto/Heteroavaliação ou Nota Direta).</p>
+            <button onclick="abrirModalCriarAtividade()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-xs transition cursor-pointer">
               <i class="fa-solid fa-plus-circle"></i> Criar Primeira Atividade
             </button>
           </div>
@@ -8394,9 +8494,26 @@ Instruções do Sistema:
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div>
                 <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                  <!-- Tipo de Avaliação Pedagógica -->
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${getBadgeClassTipoAvaliacao(ativ.tipo_avaliacao)}">
+                    ${getLabelTipoAvaliacao(ativ.tipo_avaliacao)}
+                  </span>
+                  <!-- Instrumento Avaliativo -->
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200" title="Instrumento Avaliativo Utilizado">
+                    <i class="fa-solid fa-scale-balanced text-indigo-600"></i> ${getLabelInstrumentoAvaliacao(ativ.instrumento_avaliacao)}
+                  </span>
+                  <!-- Peso na UC -->
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-900 border border-amber-200" title="Peso desta tarefa no cálculo da média">
+                    Peso: ${ativ.peso || 1}x
+                  </span>
                   <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                     <i class="fa-solid fa-award"></i> Total: ${ativ.pontuacao_total || 100} pts
                   </span>
+                  ${ativ.exige_criticos !== false ? `
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-50 text-rose-700 border border-rose-200" title="Critérios Críticos Obrigatórios para Aprovação Direta">
+                      100% Críticos
+                    </span>
+                  ` : ''}
                   ${ativ.modo_distribuicao === 'RE' || ativ.modo_distribuicao === 'HIBRIDO' ? `
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="Disponível para os alunos via RE">
                       <i class="fa-solid fa-id-card"></i> Acesso por RE
@@ -8515,6 +8632,19 @@ Instruções do Sistema:
           document.getElementById('ativDistClassroom').checked = (ativ.modo_distribuicao === 'CLASSROOM' || ativ.modo_distribuicao === 'HIBRIDO');
           document.getElementById('ativTemCriterios').checked = Boolean(ativ.tem_criterios);
 
+          if (document.getElementById('ativTipoAvaliacao')) {
+            document.getElementById('ativTipoAvaliacao').value = ativ.tipo_avaliacao || 'FORMATIVA';
+          }
+          if (document.getElementById('ativInstrumentoAvaliacao')) {
+            document.getElementById('ativInstrumentoAvaliacao').value = ativ.instrumento_avaliacao || (ativ.tem_criterios ? 'RUBRICA_MSEP' : 'NOTA_DIRETA');
+          }
+          if (document.getElementById('ativPeso')) {
+            document.getElementById('ativPeso').value = String(ativ.peso || 1);
+          }
+          if (document.getElementById('ativExigeCriticos')) {
+            document.getElementById('ativExigeCriticos').checked = (ativ.exige_criticos !== false);
+          }
+
           if (document.getElementById('ativEstrategiaDesafiadora')) {
             document.getElementById('ativEstrategiaDesafiadora').value = ativ.estrategia_desafiadora || 'Situação-Problema';
           }
@@ -8545,6 +8675,19 @@ Instruções do Sistema:
       document.getElementById('ativTitulo').value = '';
       document.getElementById('ativDataEntrega').value = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       document.getElementById('ativDescricao').value = '';
+
+      if (document.getElementById('ativTipoAvaliacao')) {
+        document.getElementById('ativTipoAvaliacao').value = 'FORMATIVA';
+      }
+      if (document.getElementById('ativInstrumentoAvaliacao')) {
+        document.getElementById('ativInstrumentoAvaliacao').value = 'RUBRICA_MSEP';
+      }
+      if (document.getElementById('ativPeso')) {
+        document.getElementById('ativPeso').value = '1';
+      }
+      if (document.getElementById('ativExigeCriticos')) {
+        document.getElementById('ativExigeCriticos').checked = true;
+      }
 
       if (document.getElementById('ativEstrategiaDesafiadora')) {
         document.getElementById('ativEstrategiaDesafiadora').value = 'Situação-Problema';
@@ -8733,6 +8876,11 @@ Instruções do Sistema:
         pontuacaoTotal = parseInt(document.getElementById('ativPontosSemCriterio').value) || 100;
       }
 
+      const tipoAvaliacao = document.getElementById('ativTipoAvaliacao') ? document.getElementById('ativTipoAvaliacao').value : 'FORMATIVA';
+      const instrumentoAvaliacao = document.getElementById('ativInstrumentoAvaliacao') ? document.getElementById('ativInstrumentoAvaliacao').value : 'RUBRICA_MSEP';
+      const peso = document.getElementById('ativPeso') ? (Number(document.getElementById('ativPeso').value) || 1) : 1;
+      const exigeCriticos = document.getElementById('ativExigeCriticos') ? document.getElementById('ativExigeCriticos').checked : true;
+
       const estrategiaDesafiadora = document.getElementById('ativEstrategiaDesafiadora') ? document.getElementById('ativEstrategiaDesafiadora').value : 'Situação-Problema';
       const estrategiaEnsino = document.getElementById('ativEstrategiaEnsino') ? document.getElementById('ativEstrategiaEnsino').value : 'Atividade Prática';
       const contextualizacao = document.getElementById('ativContextualizacao') ? document.getElementById('ativContextualizacao').value.trim() : '';
@@ -8747,6 +8895,10 @@ Instruções do Sistema:
         id_uc: activeClass.uc,
         data_entrega: dataEntrega,
         descricao,
+        tipo_avaliacao: tipoAvaliacao,
+        instrumento_avaliacao: instrumentoAvaliacao,
+        peso: peso,
+        exige_criticos: exigeCriticos,
         estrategia_desafiadora: estrategiaDesafiadora,
         estrategia_ensino: estrategiaEnsino,
         contextualizacao: contextualizacao,
@@ -8890,8 +9042,17 @@ Instruções do Sistema:
               <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div>
                   <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${getBadgeClassTipoAvaliacao(ativ.tipo_avaliacao)}">
+                      ${getLabelTipoAvaliacao(ativ.tipo_avaliacao)}
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                      <i class="fa-solid fa-scale-balanced text-indigo-600"></i> ${getLabelInstrumentoAvaliacao(ativ.instrumento_avaliacao)}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-900 border border-amber-200">
+                      Peso: ${ativ.peso || 1}x
+                    </span>
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                      <i class="fa-solid fa-hourglass-half"></i> Pendente de Realização
+                      <i class="fa-solid fa-hourglass-half"></i> Pendente
                     </span>
                     <span class="text-xs font-bold text-slate-600 flex items-center gap-1">
                       <i class="fa-regular fa-calendar"></i> Prazo: ${ativ.data_entrega || 'A definir'}
@@ -8955,7 +9116,16 @@ Instruções do Sistema:
             <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs space-y-4">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div class="flex items-center gap-2 mb-1">
+                  <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${getBadgeClassTipoAvaliacao(ativ.tipo_avaliacao)}">
+                      ${getLabelTipoAvaliacao(ativ.tipo_avaliacao)}
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                      ${getLabelInstrumentoAvaliacao(ativ.instrumento_avaliacao)}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-900 border border-amber-200">
+                      Peso: ${ativ.peso || 1}x
+                    </span>
                     ${isAvaliado ? `
                       <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
                         <i class="fa-solid fa-clipboard-check"></i> Avaliado pelo Professor
@@ -9227,6 +9397,26 @@ Instruções do Sistema:
 
       document.getElementById('docenteCorrecaoAtivId').value = ativ.id;
       document.getElementById('docenteModalAtivTitulo').textContent = `Correção: ${ativ.titulo}`;
+
+      const badgesElem = document.getElementById('docenteModalAtivBadges');
+      if (badgesElem) {
+        badgesElem.innerHTML = `
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border ${getBadgeClassTipoAvaliacao(ativ.tipo_avaliacao)}">
+            ${getLabelTipoAvaliacao(ativ.tipo_avaliacao)}
+          </span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
+            <i class="fa-solid fa-scale-balanced"></i> ${getLabelInstrumentoAvaliacao(ativ.instrumento_avaliacao)}
+          </span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-900">
+            Peso: ${ativ.peso || 1}x
+          </span>
+          ${ativ.exige_criticos !== false ? `
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-500 text-white">
+              100% Críticos
+            </span>
+          ` : ''}
+        `;
+      }
 
       const students = getActiveStudents();
       const barraAlunos = document.getElementById('barraAlunosCorrecao');

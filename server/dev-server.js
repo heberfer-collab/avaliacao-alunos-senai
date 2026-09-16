@@ -101,6 +101,10 @@ if (db) {
       id_turma TEXT NOT NULL,
       id_uc TEXT,
       descricao TEXT,
+      tipo_avaliacao TEXT DEFAULT 'FORMATIVA',
+      instrumento_avaliacao TEXT DEFAULT 'RUBRICA_MSEP',
+      peso NUMERIC DEFAULT 1,
+      exige_criticos INTEGER DEFAULT 1,
       estrategia_desafiadora TEXT DEFAULT 'Situação-Problema',
       estrategia_ensino TEXT DEFAULT 'Atividade Prática',
       contextualizacao TEXT,
@@ -409,6 +413,10 @@ function migrateLegacyData() {
   try {
     db.exec("ALTER TABLE entregas ADD COLUMN parecer_reflexivo TEXT");
   } catch (e) { }
+  try { db.exec("ALTER TABLE atividades ADD COLUMN tipo_avaliacao TEXT DEFAULT 'FORMATIVA'"); } catch (e) { }
+  try { db.exec("ALTER TABLE atividades ADD COLUMN instrumento_avaliacao TEXT DEFAULT 'RUBRICA_MSEP'"); } catch (e) { }
+  try { db.exec("ALTER TABLE atividades ADD COLUMN peso NUMERIC DEFAULT 1"); } catch (e) { }
+  try { db.exec("ALTER TABLE atividades ADD COLUMN exige_criticos INTEGER DEFAULT 1"); } catch (e) { }
 }
 
 migrateLegacyData();
@@ -719,10 +727,11 @@ const server = http.createServer((req, res) => {
           const stmt = db.prepare(`
             INSERT OR REPLACE INTO atividades (
               id, titulo, id_turma, id_uc, descricao,
+              tipo_avaliacao, instrumento_avaliacao, peso, exige_criticos,
               estrategia_desafiadora, estrategia_ensino, contextualizacao, desafio, resultados_esperados,
               data_entrega, pontuacao_total, tem_criterios, criterios, modo_distribuicao, status
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `);
           stmt.run(
             a.id,
@@ -730,6 +739,10 @@ const server = http.createServer((req, res) => {
             String(a.id_turma || ''),
             String(a.id_uc || ''),
             a.descricao || '',
+            a.tipo_avaliacao || 'FORMATIVA',
+            a.instrumento_avaliacao || 'RUBRICA_MSEP',
+            Number(a.peso) || 1,
+            a.exige_criticos ? 1 : 0,
             a.estrategia_desafiadora || 'Situação-Problema',
             a.estrategia_ensino || 'Atividade Prática',
             a.contextualizacao || '',

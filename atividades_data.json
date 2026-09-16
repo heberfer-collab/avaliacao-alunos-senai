@@ -16,7 +16,11 @@
     "estrategia_ensino": "Atividade Prática",
     "contextualizacao": "Uma linha de envase de bebidas parou devido a falhas no painel de comando. O cliente exige reconfiguração urgente.",
     "desafio": "Reestruturar a fiação do CLP, eliminar curtos-circuitos e programar rotina de parada segura com conformidade à NR-10 e NR-12.",
-    "resultados_esperados": "Painel energizado operando sem alarmes, memorial descritivo e checklist de segurança assinado."
+    "resultados_esperados": "Painel energizado operando sem alarmes, memorial descritivo e checklist de segurança assinado.",
+    "tipo_avaliacao": "FORMATIVA",
+    "instrumento_avaliacao": "RUBRICA_MSEP",
+    "peso": 1,
+    "exige_criticos": 1
   },
   {
     "id": "teste-sa-msep-1789496812233",
@@ -35,7 +39,11 @@
     "estrategia_ensino": "Atividade Prática",
     "contextualizacao": null,
     "desafio": null,
-    "resultados_esperados": null
+    "resultados_esperados": null,
+    "tipo_avaliacao": "FORMATIVA",
+    "instrumento_avaliacao": "RUBRICA_MSEP",
+    "peso": 1,
+    "exige_criticos": 1
   },
   {
     "id": "ativ-teste-01",
@@ -54,6 +62,10 @@
     "estrategia_ensino": "Atividade Prática",
     "contextualizacao": null,
     "desafio": null,
-    "resultados_esperados": null
+    "resultados_esperados": null,
+    "tipo_avaliacao": "FORMATIVA",
+    "instrumento_avaliacao": "RUBRICA_MSEP",
+    "peso": 1,
+    "exige_criticos": 1
   }
 ]
