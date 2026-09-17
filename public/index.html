@@ -2632,11 +2632,11 @@ Desenvolvimento Web (200h)" class="w-full bg-slate-50 border border-slate-300 ro
       <!-- Conteúdo com Scroll -->
       <div class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
         <!-- Descrição da Tarefa e Critério -->
-        <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-2">
+        <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <label class="text-xs font-bold text-slate-700">Título / Descrição da Tarefa:</label>
-            <button onclick="salvarTituloTarefaCustom()" class="text-[11px] text-blue-600 font-bold hover:underline flex items-center gap-1 self-start sm:self-auto">
-              <i class="fa-solid fa-floppy-disk"></i> Salvar Título da Tarefa
+            <button type="button" onclick="salvarDadosTarefaCompleta()" class="text-[11px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition self-start sm:self-auto cursor-pointer shadow-2xs">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Dados da Tarefa
             </button>
           </div>
           <input type="text" id="matTarefaTituloInput" placeholder="Ex: T13 - Briefing e Documentação de Requisitos da Marca" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-200">
@@ -2646,6 +2646,77 @@ Desenvolvimento Web (200h)" class="w-full bg-slate-50 border border-slate-300 ro
             <p id="matTarefaCritTexto" class="text-xs font-medium text-slate-800 mt-0.5 leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200">
               Identifica e documenta requisitos essenciais da marca e do público-alvo
             </p>
+          </div>
+
+          <!-- Contexto e Diretrizes Pedagógicas MSEP -->
+          <div class="pt-2 border-t border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i> Contexto & Desafio da Tarefa (MSEP)
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">Diretriz da Prática Profissional</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="text-[10px] font-bold text-slate-600 block mb-1">Contextualização (Cenário de Trabalho):</label>
+                <textarea id="matTarefaContextoInput" rows="2" placeholder="Ex: Situação real, briefing do cliente ou contexto prático que os alunos irão resolver..." class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-slate-600 block mb-1">Desafio / Instruções Práticas:</label>
+                <textarea id="matTarefaDesafioInput" rows="2" placeholder="Ex: Passos e procedimentos técnicos que os estudantes devem executar..." class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-600 block mb-1">Resultados Esperados / Entregáveis:</label>
+              <input type="text" id="matTarefaResultadosInput" placeholder="Ex: Memorial descritivo em PDF, arquivo do projeto, peça conforme tolerância ou apresentação técnica" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            </div>
+          </div>
+
+          <!-- Documentos em Anexo e Materiais de Apoio -->
+          <div class="pt-2 border-t border-slate-200 space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <span class="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-paperclip text-indigo-600"></i> Documentos em Anexo da Tarefa
+                </span>
+                <p class="text-[10px] text-slate-400">PDFs de apoio, folhas de processo, desenhos técnicos ou links externos.</p>
+              </div>
+
+              <div class="flex items-center gap-1.5 self-start sm:self-auto">
+                <input type="file" id="matTarefaFileInput" class="hidden" multiple onchange="processarUploadAnexoTarefa(event)">
+                <button type="button" onclick="document.getElementById('matTarefaFileInput').click()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition shadow-2xs cursor-pointer">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Anexar Arquivo
+                </button>
+                <button type="button" onclick="toggleFormLinkAnexoTarefa()" class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer">
+                  <i class="fa-solid fa-link"></i> Inserir Link
+                </button>
+              </div>
+            </div>
+
+            <!-- Formulário Retrátil para Inserir Link -->
+            <div id="formLinkAnexoTarefa" class="hidden bg-white border border-indigo-200 rounded-lg p-2.5 space-y-2 shadow-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block mb-0.5">Nome do Documento:</label>
+                  <input type="text" id="matAnexoLinkNome" placeholder="Ex: Desenho Técnico no Drive" class="w-full bg-slate-50 border border-slate-300 rounded px-2 py-1 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block mb-0.5">URL / Link Web:</label>
+                  <input type="url" id="matAnexoLinkUrl" placeholder="https://drive.google.com/..." class="w-full bg-slate-50 border border-slate-300 rounded px-2 py-1 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+              </div>
+              <div class="flex justify-end gap-1.5">
+                <button type="button" onclick="toggleFormLinkAnexoTarefa(false)" class="px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:text-slate-700 cursor-pointer">Cancelar</button>
+                <button type="button" onclick="confirmarAdicionarLinkAnexoTarefa()" class="bg-indigo-600 text-white px-3 py-1 rounded text-[11px] font-bold hover:bg-indigo-700 shadow-xs cursor-pointer">Adicionar Anexo</button>
+              </div>
+            </div>
+
+            <!-- Lista de Anexos da Tarefa -->
+            <div id="matListaAnexosTarefa" class="space-y-1.5 max-h-40 overflow-y-auto">
+              <!-- Renderizado via JS -->
+            </div>
           </div>
         </div>
 
@@ -4568,9 +4639,10 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
             // Coluna da Tarefa (T13, T16...) clicável para ver detalhes e reavaliar
             const tdTarefa = document.createElement("td");
             tdTarefa.className = `border border-black text-center font-black text-xs py-2 px-1 cursor-pointer select-none transition-all hover:scale-105 hover:shadow-md hover:ring-2 hover:ring-black active:scale-95 group relative ${tarefa.bg} ${tarefa.text}`;
+            const temAnexo = Boolean(activeClass.tarefasConfig && activeClass.tarefasConfig[tarefa.id]?.anexos?.length > 0);
             tdTarefa.innerHTML = `
               <div class="flex flex-col items-center justify-center">
-                <span>${tarefa.id}</span>
+                <span class="flex items-center gap-1">${tarefa.id} ${temAnexo ? '<i class="fa-solid fa-paperclip text-[9px] text-amber-300" title="Possui documentos em anexo"></i>' : ''}</span>
                 <span class="text-[8px] opacity-80 group-hover:opacity-100 flex items-center gap-0.5 mt-0.5 font-normal"><i class="fa-solid fa-pen-to-square"></i> Avaliar</span>
               </div>
             `;
@@ -4640,6 +4712,7 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       critTexto: '',
       critCritico: false,
       capText: '',
+      anexos: [],
       tempEvaluations: {}
     };
 
@@ -4683,9 +4756,24 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       if (critTextoEl) critTextoEl.textContent = critTexto;
 
       activeClass.tarefasConfig = activeClass.tarefasConfig || {};
-      const customTitle = activeClass.tarefasConfig[tarefaId]?.titulo || `Tarefa ${tarefaId}: Atividade Prática da UC`;
+      const config = activeClass.tarefasConfig[tarefaId] || {};
+      const customTitle = config.titulo || `Tarefa ${tarefaId}: Atividade Prática da UC`;
+      
       const tituloInput = document.getElementById('matTarefaTituloInput');
       if (tituloInput) tituloInput.value = customTitle;
+
+      const contextoInput = document.getElementById('matTarefaContextoInput');
+      if (contextoInput) contextoInput.value = config.contexto || '';
+
+      const desafioInput = document.getElementById('matTarefaDesafioInput');
+      if (desafioInput) desafioInput.value = config.desafio || '';
+
+      const resultadosInput = document.getElementById('matTarefaResultadosInput');
+      if (resultadosInput) resultadosInput.value = config.resultados || '';
+
+      tarefaModalState.anexos = Array.isArray(config.anexos) ? JSON.parse(JSON.stringify(config.anexos)) : [];
+      renderAnexosModalTarefa();
+      toggleFormLinkAnexoTarefa(false);
 
       renderAlunosModalTarefa();
 
@@ -4698,16 +4786,202 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       if (modalEl) modalEl.classList.add('hidden');
     }
 
-    function salvarTituloTarefaCustom() {
-      const activeClass = getActiveClass();
-      activeClass.tarefasConfig = activeClass.tarefasConfig || {};
-      const input = document.getElementById('matTarefaTituloInput');
-      if (input && tarefaModalState.tarefaId) {
-        activeClass.tarefasConfig[tarefaModalState.tarefaId] = activeClass.tarefasConfig[tarefaModalState.tarefaId] || {};
-        activeClass.tarefasConfig[tarefaModalState.tarefaId].titulo = input.value.trim();
-        saveStateToStorage();
-        alert(`Título da Tarefa ${tarefaModalState.tarefaId} gravado com sucesso!`);
+    function renderAnexosModalTarefa() {
+      const container = document.getElementById('matListaAnexosTarefa');
+      if (!container) return;
+
+      const anexos = tarefaModalState.anexos || [];
+      if (anexos.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 text-center bg-slate-50 border border-dashed border-slate-200 rounded-lg text-slate-400 text-[11px] flex items-center justify-center gap-2">
+            <i class="fa-solid fa-folder-open text-slate-300 text-base"></i>
+            <span>Nenhum documento ou link anexado a esta tarefa ainda.</span>
+          </div>
+        `;
+        return;
       }
+
+      container.innerHTML = anexos.map(anx => {
+        let icone = 'fa-file-lines text-slate-500';
+        const nomeLower = (anx.nome || '').toLowerCase();
+        if (anx.tipo === 'link') icone = 'fa-arrow-up-right-from-square text-indigo-600';
+        else if (nomeLower.endsWith('.pdf')) icone = 'fa-file-pdf text-red-500';
+        else if (nomeLower.endsWith('.doc') || nomeLower.endsWith('.docx')) icone = 'fa-file-word text-blue-600';
+        else if (nomeLower.endsWith('.xls') || nomeLower.endsWith('.xlsx') || nomeLower.endsWith('.csv')) icone = 'fa-file-excel text-emerald-600';
+        else if (nomeLower.endsWith('.png') || nomeLower.endsWith('.jpg') || nomeLower.endsWith('.jpeg')) icone = 'fa-file-image text-purple-600';
+        else if (nomeLower.endsWith('.zip') || nomeLower.endsWith('.rar')) icone = 'fa-file-zipper text-amber-600';
+
+        return `
+          <div class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-lg transition text-xs gap-2">
+            <div class="flex items-center gap-2 truncate flex-1 min-w-0">
+              <i class="fa-solid ${icone} text-base shrink-0"></i>
+              <div class="truncate">
+                <span class="font-bold text-slate-800 truncate block leading-tight" title="${anx.nome}">${anx.nome}</span>
+                <span class="text-[10px] text-slate-400">${anx.tamanho || 'Arquivo'} • ${anx.data_anexo ? new Date(anx.data_anexo).toLocaleDateString('pt-BR') : 'Anexo'}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" onclick="abrirOuBaixarAnexoTarefa('${anx.id}')" class="px-2 py-1 bg-white hover:bg-indigo-50 text-indigo-600 border border-slate-200 rounded text-[11px] font-bold flex items-center gap-1 transition cursor-pointer" title="Visualizar ou Baixar Anexo">
+                <i class="fa-solid ${anx.tipo === 'link' ? 'fa-arrow-up-right-from-square' : 'fa-download'}"></i>
+                <span>${anx.tipo === 'link' ? 'Acessar' : 'Baixar'}</span>
+              </button>
+              <button type="button" onclick="removerAnexoTarefa('${anx.id}')" class="p-1 text-slate-400 hover:text-rose-600 rounded transition cursor-pointer" title="Remover este anexo">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleFormLinkAnexoTarefa(mostrar) {
+      const form = document.getElementById('formLinkAnexoTarefa');
+      if (!form) return;
+      if (typeof mostrar === 'boolean') {
+        if (mostrar) form.classList.remove('hidden');
+        else form.classList.add('hidden');
+      } else {
+        form.classList.toggle('hidden');
+      }
+      if (!form.classList.contains('hidden')) {
+        const inpNome = document.getElementById('matAnexoLinkNome');
+        if (inpNome) inpNome.focus();
+      }
+    }
+
+    function confirmarAdicionarLinkAnexoTarefa() {
+      const nomeInput = document.getElementById('matAnexoLinkNome');
+      const urlInput = document.getElementById('matAnexoLinkUrl');
+      if (!nomeInput || !urlInput) return;
+
+      const nome = nomeInput.value.trim();
+      let url = urlInput.value.trim();
+
+      if (!url) {
+        alert("Por favor, informe o link ou URL do documento.");
+        return;
+      }
+
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+
+      const novoAnexo = {
+        id: `anx-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        nome: nome || 'Documento Web (Link)',
+        url: url,
+        tipo: 'link',
+        tamanho: 'Link Externo',
+        data_anexo: new Date().toISOString()
+      };
+
+      tarefaModalState.anexos = tarefaModalState.anexos || [];
+      tarefaModalState.anexos.push(novoAnexo);
+
+      nomeInput.value = '';
+      urlInput.value = '';
+      toggleFormLinkAnexoTarefa(false);
+      renderAnexosModalTarefa();
+      salvarDadosTarefaCompleta(true);
+    }
+
+    function processarUploadAnexoTarefa(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      tarefaModalState.anexos = tarefaModalState.anexos || [];
+      let carregados = 0;
+
+      Array.from(files).forEach(file => {
+        if (file.size > 15 * 1024 * 1024) {
+          alert(`O arquivo "${file.name}" excede o tamanho máximo de 15MB.`);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          let tamanhoFmt = `${(file.size / 1024).toFixed(1)} KB`;
+          if (file.size > 1024 * 1024) tamanhoFmt = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+
+          const novoAnexo = {
+            id: `anx-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+            nome: file.name,
+            tipo: 'arquivo',
+            mimeType: file.type || 'application/octet-stream',
+            tamanho: tamanhoFmt,
+            dataUrl: e.target.result,
+            data_anexo: new Date().toISOString()
+          };
+
+          tarefaModalState.anexos.push(novoAnexo);
+          carregados++;
+          if (carregados === files.length) {
+            renderAnexosModalTarefa();
+            salvarDadosTarefaCompleta(true);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      event.target.value = '';
+    }
+
+    function removerAnexoTarefa(anexoId) {
+      if (!confirm("Tem certeza que deseja remover este anexo da tarefa?")) return;
+      tarefaModalState.anexos = (tarefaModalState.anexos || []).filter(a => a.id !== anexoId);
+      renderAnexosModalTarefa();
+      salvarDadosTarefaCompleta(true);
+    }
+
+    function abrirOuBaixarAnexoTarefa(anexoId) {
+      const anx = (tarefaModalState.anexos || []).find(a => a.id === anexoId);
+      if (!anx) return;
+
+      if (anx.tipo === 'link' && anx.url) {
+        window.open(anx.url, '_blank');
+        return;
+      }
+
+      if (anx.dataUrl) {
+        const link = document.createElement('a');
+        link.href = anx.dataUrl;
+        link.download = anx.nome || 'anexo-tarefa';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+
+    function salvarDadosTarefaCompleta(silencioso = false) {
+      const activeClass = getActiveClass();
+      const tarefaId = tarefaModalState.tarefaId;
+      if (!tarefaId) return;
+
+      activeClass.tarefasConfig = activeClass.tarefasConfig || {};
+      const config = activeClass.tarefasConfig[tarefaId] || {};
+
+      const inputTitulo = document.getElementById('matTarefaTituloInput');
+      const inputContexto = document.getElementById('matTarefaContextoInput');
+      const inputDesafio = document.getElementById('matTarefaDesafioInput');
+      const inputResultados = document.getElementById('matTarefaResultadosInput');
+
+      config.titulo = inputTitulo ? inputTitulo.value.trim() : (config.titulo || `Tarefa ${tarefaId}`);
+      config.contexto = inputContexto ? inputContexto.value.trim() : (config.contexto || '');
+      config.desafio = inputDesafio ? inputDesafio.value.trim() : (config.desafio || '');
+      config.resultados = inputResultados ? inputResultados.value.trim() : (config.resultados || '');
+      config.anexos = Array.isArray(tarefaModalState.anexos) ? tarefaModalState.anexos : [];
+
+      activeClass.tarefasConfig[tarefaId] = config;
+      saveStateToStorage();
+      renderMatrizOficialItemC();
+
+      if (!silencioso) {
+        alert(`Dados, contexto e documentos da Tarefa ${tarefaId} foram gravados com sucesso!`);
+      }
+    }
+
+    function salvarTituloTarefaCustom() {
+      salvarDadosTarefaCompleta(false);
     }
 
     function aplicarAvaliacaoEmLoteTarefa(novoStatus) {
@@ -4787,6 +5061,8 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     function salvarAvaliacoesTarefaModal() {
       const { ucId, critId, tarefaId, tempEvaluations } = tarefaModalState;
       if (!ucId || !critId || !tarefaId) return;
+
+      salvarDadosTarefaCompleta(true);
 
       Object.keys(tempEvaluations).forEach(studentId => {
         const val = tempEvaluations[studentId];
@@ -5607,9 +5883,10 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
             // Coluna da Tarefa (T13, T16...) clicável para ver detalhes e reavaliar
             const tdTarefa = document.createElement("td");
             tdTarefa.className = `border border-black text-center font-black text-xs py-2 px-1 cursor-pointer select-none transition-all hover:scale-105 hover:shadow-md hover:ring-2 hover:ring-black active:scale-95 group relative ${tarefa.bg} ${tarefa.text}`;
+            const temAnexo = Boolean(activeClass.tarefasConfig && activeClass.tarefasConfig[tarefa.id]?.anexos?.length > 0);
             tdTarefa.innerHTML = `
               <div class="flex flex-col items-center justify-center">
-                <span>${tarefa.id}</span>
+                <span class="flex items-center gap-1">${tarefa.id} ${temAnexo ? '<i class="fa-solid fa-paperclip text-[9px] text-amber-300" title="Possui documentos em anexo"></i>' : ''}</span>
                 <span class="text-[8px] opacity-80 group-hover:opacity-100 flex items-center gap-0.5 mt-0.5 font-normal"><i class="fa-solid fa-pen-to-square"></i> Avaliar</span>
               </div>
             `;
