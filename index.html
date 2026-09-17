@@ -812,6 +812,9 @@
           <button type="button" onclick="togglePainelRelacaoAlunos()" class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 shadow-xs transition">
             <i class="fa-solid fa-list-ol text-emerald-600"></i> Relação Alunos x Número (<span id="qtdAlunosBadge">0</span>)
           </button>
+          <button type="button" onclick="abrirModalGerenciarTarefas()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 shadow-xs transition cursor-pointer">
+            <i class="fa-solid fa-sliders text-amber-300"></i> Gerenciar & Reordenar Tarefas
+          </button>
         </div>
 
         <div class="text-[11px] text-slate-600 flex items-center gap-2 font-medium">
@@ -2601,6 +2604,113 @@ Desenvolvimento Web (200h)" class="w-full bg-slate-50 border border-slate-300 ro
         <button onclick="fecharModalNovoCurso()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs hover:bg-slate-100">Cancelar</button>
         <button onclick="salvarNovoCursoSenai()" class="px-5 py-2 bg-senai-red hover:bg-senai-darkRed text-white font-bold rounded-lg text-xs shadow-sm">Cadastrar Curso</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: GERENCIAR E REORDENAR TAREFAS DA MATRIZ (ITEM C) -->
+  <!-- ========================================== -->
+  <div id="modalGerenciarTarefas" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl my-auto">
+      
+      <!-- Cabeçalho -->
+      <div class="flex items-center justify-between border-b border-slate-200 p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-t-2xl">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600/40 border border-indigo-400/30 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-list-check text-yellow-400"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base">Gerenciar Tarefas da Matriz (Item C)</h3>
+            <p class="text-xs text-slate-300">Adicione, edite, exclua ou arraste para definir a ordem das tarefas</p>
+          </div>
+        </div>
+        <button onclick="fecharModalGerenciarTarefas()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Corpo do Modal -->
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs">
+        
+        <!-- Barra de Ações Rápidas -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="mostrarFormNovaTarefa()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition cursor-pointer">
+              <i class="fa-solid fa-plus-circle"></i> Adicionar Nova Tarefa
+            </button>
+            <button type="button" onclick="restaurarTarefasPadraoSenai()" class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer" title="Restaura as tarefas padrão T13, T16, T17, T18 e T19">
+              <i class="fa-solid fa-rotate-left text-slate-500"></i> Restaurar Padrão SENAI
+            </button>
+          </div>
+          <span class="text-[11px] text-slate-500 font-medium">
+            Total: <strong id="contTarefasTotalBadge" class="text-slate-900">5</strong> tarefas ativas
+          </span>
+        </div>
+
+        <!-- Formulário de Adicionar / Editar Tarefa (Retrátil) -->
+        <div id="formEditorTarefa" class="hidden bg-slate-50 border border-indigo-200 rounded-xl p-4 space-y-3 shadow-xs">
+          <input type="hidden" id="editTarefaIndex">
+          <input type="hidden" id="editTarefaOldId">
+          <div class="flex items-center justify-between">
+            <h4 id="tituloEditorTarefa" class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-plus-circle text-indigo-600"></i> Nova Tarefa Formativa
+            </h4>
+            <button type="button" onclick="fecharFormEditorTarefa()" class="text-slate-400 hover:text-slate-600 cursor-pointer">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="text-[11px] font-bold text-slate-700 block mb-1">Sigla / Código:</label>
+              <input type="text" id="inputTarefaId" placeholder="Ex: T14, SA-01, T20" maxlength="8" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-black uppercase text-slate-900 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-[11px] font-bold text-slate-700 block mb-1">Título / Descrição da Tarefa:</label>
+              <input type="text" id="inputTarefaTitulo" placeholder="Ex: Prática de Bancada ou Briefing de Design" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:ring-2 focus:ring-indigo-400 focus:outline-none font-medium">
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-slate-700 block mb-1.5">Cor da Badge na Matriz:</label>
+            <div class="flex items-center gap-2 flex-wrap" id="paletteCoresTarefa">
+              <!-- Renderizado via JS com opções de cores -->
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+            <button type="button" onclick="fecharFormEditorTarefa()" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs hover:bg-slate-100 cursor-pointer">
+              Cancelar
+            </button>
+            <button type="button" onclick="salvarTarefaFormulario()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs shadow-xs cursor-pointer flex items-center gap-1.5">
+              <i class="fa-solid fa-check"></i> Salvar Tarefa
+            </button>
+          </div>
+        </div>
+
+        <!-- Instruções de Arrastar e Soltar -->
+        <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-2.5 text-[11px] text-indigo-900 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-up-down-left-right text-indigo-500 text-sm"></i>
+            <span><strong>Dica de Reordenação:</strong> Clique e arraste qualquer tarefa para mudar a ordem ou use as setas ⬆️ ⬇️.</span>
+          </div>
+        </div>
+
+        <!-- Lista Interativa de Tarefas com Drag and Drop -->
+        <div id="listaTarefasGerenciador" class="space-y-2">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+      </div>
+
+      <!-- Rodapé -->
+      <div class="border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-between rounded-b-2xl">
+        <span class="text-[11px] text-slate-500">As alterações refletem imediatamente na Matriz Oficial e no Plano de Ensino.</span>
+        <button onclick="fecharModalGerenciarTarefas()" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer">
+          Concluir e Voltar
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -4513,12 +4623,310 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
     // =========================================================================
 
     const TAREFAS_FORMATIVAS_PRESET = [
-      { id: "T13", bg: "bg-red-500", text: "text-white", hex: "#ef4444" },
-      { id: "T16", bg: "bg-yellow-400", text: "text-slate-900", hex: "#facc15" },
-      { id: "T17", bg: "bg-emerald-500", text: "text-white", hex: "#10b981" },
-      { id: "T18", bg: "bg-cyan-500", text: "text-white", hex: "#06b6d4" },
-      { id: "T19", bg: "bg-amber-500", text: "text-white", hex: "#f59e0b" }
+      { id: "T13", bg: "bg-red-500", text: "text-white", hex: "#ef4444", titulo: "Tarefa T13: Atividade Prática" },
+      { id: "T16", bg: "bg-yellow-400", text: "text-slate-900", hex: "#facc15", titulo: "Tarefa T16: Atividade Prática" },
+      { id: "T17", bg: "bg-emerald-500", text: "text-white", hex: "#10b981", titulo: "Tarefa T17: Atividade Prática" },
+      { id: "T18", bg: "bg-cyan-500", text: "text-white", hex: "#06b6d4", titulo: "Tarefa T18: Atividade Prática" },
+      { id: "T19", bg: "bg-amber-500", text: "text-white", hex: "#f59e0b", titulo: "Tarefa T19: Atividade Prática" }
     ];
+
+    const CORES_PALETA_TAREFAS = [
+      { id: 'red', bg: 'bg-red-500', text: 'text-white', hex: '#ef4444', label: 'Vermelho' },
+      { id: 'yellow', bg: 'bg-yellow-400', text: 'text-slate-900', hex: '#facc15', label: 'Amarelo' },
+      { id: 'emerald', bg: 'bg-emerald-500', text: 'text-white', hex: '#10b981', label: 'Verde' },
+      { id: 'cyan', bg: 'bg-cyan-500', text: 'text-white', hex: '#06b6d4', label: 'Ciano' },
+      { id: 'amber', bg: 'bg-amber-500', text: 'text-white', hex: '#f59e0b', label: 'Âmbar' },
+      { id: 'blue', bg: 'bg-blue-600', text: 'text-white', hex: '#2563eb', label: 'Azul' },
+      { id: 'purple', bg: 'bg-purple-600', text: 'text-white', hex: '#9333ea', label: 'Roxo' },
+      { id: 'pink', bg: 'bg-pink-500', text: 'text-white', hex: '#ec4899', label: 'Rosa' },
+      { id: 'orange', bg: 'bg-orange-500', text: 'text-white', hex: '#f97316', label: 'Laranja' },
+      { id: 'slate', bg: 'bg-slate-700', text: 'text-white', hex: '#334155', label: 'Cinza' }
+    ];
+
+    let corSelecionadaEditorTarefa = CORES_PALETA_TAREFAS[0];
+    let arrastoOrigemIndex = null;
+
+    function getTarefasFormativas(activeClass = null) {
+      const cls = activeClass || getActiveClass();
+      if (cls && Array.isArray(cls.tarefasFormativas) && cls.tarefasFormativas.length > 0) {
+        return cls.tarefasFormativas;
+      }
+      return TAREFAS_FORMATIVAS_PRESET;
+    }
+
+    function abrirModalGerenciarTarefas() {
+      const activeClass = getActiveClass();
+      if (!Array.isArray(activeClass.tarefasFormativas) || activeClass.tarefasFormativas.length === 0) {
+        activeClass.tarefasFormativas = JSON.parse(JSON.stringify(TAREFAS_FORMATIVAS_PRESET));
+      }
+      fecharFormEditorTarefa();
+      renderListaTarefasGerenciador();
+      const modal = document.getElementById('modalGerenciarTarefas');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function fecharModalGerenciarTarefas() {
+      const modal = document.getElementById('modalGerenciarTarefas');
+      if (modal) modal.classList.add('hidden');
+      renderMatrizOficialItemC();
+      renderItemCOficialPlano();
+    }
+
+    function renderListaTarefasGerenciador() {
+      const activeClass = getActiveClass();
+      const container = document.getElementById('listaTarefasGerenciador');
+      const badgeTotal = document.getElementById('contTarefasTotalBadge');
+      if (!container) return;
+
+      const tarefas = getTarefasFormativas(activeClass);
+      if (badgeTotal) badgeTotal.textContent = tarefas.length;
+
+      container.innerHTML = tarefas.map((tarefa, idx) => {
+        const config = (activeClass.tarefasConfig && activeClass.tarefasConfig[tarefa.id]) || {};
+        const titulo = config.titulo || tarefa.titulo || `Tarefa ${tarefa.id}: Atividade Prática`;
+        const qtdAnexos = Array.isArray(config.anexos) ? config.anexos.length : 0;
+        const temContexto = Boolean(config.contexto || config.desafio);
+
+        return `
+          <div draggable="true" 
+               ondragstart="iniciarArrastoTarefa(event, ${idx})"
+               ondragover="permitirSoltarTarefa(event)"
+               ondrop="soltarArrastoTarefa(event, ${idx})"
+               class="flex items-center justify-between p-3 bg-white hover:bg-indigo-50/40 border border-slate-200 hover:border-indigo-300 rounded-xl transition shadow-2xs group cursor-grab active:cursor-grabbing">
+            
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              <span class="text-slate-400 hover:text-slate-600 p-1 handle-drag" title="Arraste para reordenar">
+                <i class="fa-solid fa-grip-vertical text-sm"></i>
+              </span>
+
+              <span class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shadow-xs ${tarefa.bg || 'bg-red-500'} ${tarefa.text || 'text-white'} shrink-0">
+                ${tarefa.id}
+              </span>
+
+              <div class="truncate flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-extrabold text-slate-900 text-xs truncate">${tarefa.id}: ${titulo}</span>
+                  ${qtdAnexos > 0 ? `<span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.2 rounded font-bold flex items-center gap-1"><i class="fa-solid fa-paperclip text-[9px]"></i> ${qtdAnexos}</span>` : ''}
+                  ${temContexto ? `<span class="bg-indigo-100 text-indigo-800 text-[10px] px-1.5 py-0.2 rounded font-bold" title="Possui contexto pedagógico MSEP">MSEP</span>` : ''}
+                </div>
+                <span class="text-[10px] text-slate-400">Posição ${idx + 1} na Matriz de Avaliação</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0 ml-2">
+              <button type="button" onclick="moverTarefaOrdem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer" title="Mover para cima">
+                <i class="fa-solid fa-arrow-up text-xs"></i>
+              </button>
+              <button type="button" onclick="moverTarefaOrdem(${idx}, 1)" ${idx === tarefas.length - 1 ? 'disabled' : ''} class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer" title="Mover para baixo">
+                <i class="fa-solid fa-arrow-down text-xs"></i>
+              </button>
+              <button type="button" onclick="editarTarefaModal(${idx})" class="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer" title="Editar Tarefa">
+                <i class="fa-solid fa-pen text-xs"></i>
+              </button>
+              <button type="button" onclick="excluirTarefaMatriz(${idx})" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Excluir Tarefa da Matriz">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function iniciarArrastoTarefa(event, index) {
+      arrastoOrigemIndex = index;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', String(index));
+    }
+
+    function permitirSoltarTarefa(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+    }
+
+    function soltarArrastoTarefa(event, targetIndex) {
+      event.preventDefault();
+      if (arrastoOrigemIndex === null || arrastoOrigemIndex === targetIndex) return;
+
+      const activeClass = getActiveClass();
+      const tarefas = getTarefasFormativas(activeClass);
+      
+      const itemMovido = tarefas.splice(arrastoOrigemIndex, 1)[0];
+      tarefas.splice(targetIndex, 0, itemMovido);
+
+      activeClass.tarefasFormativas = tarefas;
+      arrastoOrigemIndex = null;
+      saveStateToStorage();
+      renderListaTarefasGerenciador();
+      renderMatrizOficialItemC();
+      renderItemCOficialPlano();
+    }
+
+    function moverTarefaOrdem(index, direcao) {
+      const activeClass = getActiveClass();
+      const tarefas = getTarefasFormativas(activeClass);
+      const novoIndex = index + direcao;
+
+      if (novoIndex < 0 || novoIndex >= tarefas.length) return;
+
+      const item = tarefas.splice(index, 1)[0];
+      tarefas.splice(novoIndex, 0, item);
+
+      activeClass.tarefasFormativas = tarefas;
+      saveStateToStorage();
+      renderListaTarefasGerenciador();
+      renderMatrizOficialItemC();
+      renderItemCOficialPlano();
+    }
+
+    function renderPaletaCoresEditor(corAtivaHex) {
+      const container = document.getElementById('paletteCoresTarefa');
+      if (!container) return;
+
+      container.innerHTML = CORES_PALETA_TAREFAS.map(c => {
+        const isSelected = c.hex.toLowerCase() === (corAtivaHex || '').toLowerCase();
+        return `
+          <button type="button" onclick="selecionarCorTarefaEditor('${c.hex}')" 
+                  class="w-7 h-7 rounded-lg ${c.bg} flex items-center justify-center transition hover:scale-110 cursor-pointer ${isSelected ? 'ring-2 ring-slate-900 ring-offset-2 scale-105' : 'opacity-80 hover:opacity-100'}" 
+                  title="${c.label}">
+            ${isSelected ? '<i class="fa-solid fa-check text-xs ' + c.text + '"></i>' : ''}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selecionarCorTarefaEditor(hex) {
+      const cor = CORES_PALETA_TAREFAS.find(c => c.hex.toLowerCase() === hex.toLowerCase()) || CORES_PALETA_TAREFAS[0];
+      corSelecionadaEditorTarefa = cor;
+      renderPaletaCoresEditor(cor.hex);
+    }
+
+    function mostrarFormNovaTarefa() {
+      document.getElementById('editTarefaIndex').value = '';
+      document.getElementById('editTarefaOldId').value = '';
+      document.getElementById('tituloEditorTarefa').innerHTML = '<i class="fa-solid fa-plus-circle text-indigo-600"></i> Adicionar Nova Tarefa à Matriz';
+      
+      const activeClass = getActiveClass();
+      const tarefas = getTarefasFormativas(activeClass);
+      const proximoNum = tarefas.length + 1;
+      document.getElementById('inputTarefaId').value = `T${proximoNum <= 9 ? '0' + proximoNum : proximoNum}`;
+      document.getElementById('inputTarefaTitulo').value = '';
+
+      selecionarCorTarefaEditor(CORES_PALETA_TAREFAS[tarefas.length % CORES_PALETA_TAREFAS.length].hex);
+      document.getElementById('formEditorTarefa').classList.remove('hidden');
+      document.getElementById('inputTarefaId').focus();
+    }
+
+    function editarTarefaModal(index) {
+      const activeClass = getActiveClass();
+      const tarefas = getTarefasFormativas(activeClass);
+      const t = tarefas[index];
+      if (!t) return;
+
+      const config = (activeClass.tarefasConfig && activeClass.tarefasConfig[t.id]) || {};
+
+      document.getElementById('editTarefaIndex').value = index;
+      document.getElementById('editTarefaOldId').value = t.id;
+      document.getElementById('tituloEditorTarefa').innerHTML = `<i class="fa-solid fa-pen text-indigo-600"></i> Editar Tarefa ${t.id}`;
+      document.getElementById('inputTarefaId').value = t.id;
+      document.getElementById('inputTarefaTitulo').value = config.titulo || t.titulo || '';
+
+      selecionarCorTarefaEditor(t.hex || '#ef4444');
+      document.getElementById('formEditorTarefa').classList.remove('hidden');
+      document.getElementById('inputTarefaTitulo').focus();
+    }
+
+    function fecharFormEditorTarefa() {
+      const form = document.getElementById('formEditorTarefa');
+      if (form) form.classList.add('hidden');
+    }
+
+    function salvarTarefaFormulario() {
+      const activeClass = getActiveClass();
+      const tarefas = getTarefasFormativas(activeClass);
+
+      const indexStr = document.getElementById('editTarefaIndex').value;
+      const oldId = document.getElementById('editTarefaOldId').value;
+      const idInput = document.getElementById('inputTarefaId').value.trim().toUpperCase();
+      const tituloInput = document.getElementById('inputTarefaTitulo').value.trim();
+
+      if (!idInput) {
+        alert("Por favor, digite a sigla ou código da tarefa (ex: T14, SA-01).");
+        return;
+      }
+
+      const jaExiste = tarefas.some((t, idx) => t.id === idInput && String(idx) !== String(indexStr));
+      if (jaExiste) {
+        alert(`Já existe uma tarefa com o código "${idInput}". Escolha um código diferente.`);
+        return;
+      }
+
+      const cor = corSelecionadaEditorTarefa || CORES_PALETA_TAREFAS[0];
+      const novaTarefaObj = {
+        id: idInput,
+        bg: cor.bg,
+        text: cor.text,
+        hex: cor.hex,
+        titulo: tituloInput || `Tarefa ${idInput}: Atividade Prática`
+      };
+
+      activeClass.tarefasConfig = activeClass.tarefasConfig || {};
+
+      if (indexStr !== '') {
+        const idx = parseInt(indexStr);
+        tarefas[idx] = novaTarefaObj;
+        if (oldId && oldId !== idInput && activeClass.tarefasConfig[oldId]) {
+          activeClass.tarefasConfig[idInput] = activeClass.tarefasConfig[oldId];
+          delete activeClass.tarefasConfig[oldId];
+        }
+      } else {
+        tarefas.push(novaTarefaObj);
+      }
+
+      activeClass.tarefasConfig[idInput] = activeClass.tarefasConfig[idInput] || {};
+      activeClass.tarefasConfig[idInput].titulo = tituloInput || novaTarefaObj.titulo;
+
+      activeClass.tarefasFormativas = tarefas;
+      saveStateToStorage();
+      fecharFormEditorTarefa();
+      renderListaTarefasGerenciador();
+      renderMatrizOficialItemC();
+      renderItemCOficialPlano();
+    }
+
+    function excluirTarefaMatriz(index) {
+      const activeClass = getActiveClass();
+      const tarefas = getTarefasFormativas(activeClass);
+
+      if (tarefas.length <= 1) {
+        alert("A matriz de avaliação precisa ter pelo menos 1 tarefa formativa cadastrada.");
+        return;
+      }
+
+      const t = tarefas[index];
+      if (!confirm(`Tem certeza que deseja remover a tarefa "${t.id}" da matriz desta turma?`)) {
+        return;
+      }
+
+      tarefas.splice(index, 1);
+      activeClass.tarefasFormativas = tarefas;
+
+      saveStateToStorage();
+      renderListaTarefasGerenciador();
+      renderMatrizOficialItemC();
+      renderItemCOficialPlano();
+    }
+
+    function restaurarTarefasPadraoSenai() {
+      if (!confirm("Deseja restaurar as tarefas formativas para a sequência padrão SENAI (T13, T16, T17, T18 e T19)?")) {
+        return;
+      }
+      const activeClass = getActiveClass();
+      activeClass.tarefasFormativas = JSON.parse(JSON.stringify(TAREFAS_FORMATIVAS_PRESET));
+      saveStateToStorage();
+      renderListaTarefasGerenciador();
+      renderMatrizOficialItemC();
+      renderItemCOficialPlano();
+    }
 
     // Controle de modo de exibição dos alunos na matriz ('nomes' ou 'compacto')
     let modoVisualizacaoAlunosMatriz = 'nomes';
@@ -4616,21 +5024,21 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
           const capText = capacidades[critIndex % capacidades.length] || `Capacidade Técnica & Organizativa ${(critIndex + 1)}`;
           critIndex++;
 
-          // Cria linhas para as tarefas T13, T16, T17, T18, T19
-          TAREFAS_FORMATIVAS_PRESET.forEach((tarefa, tIdx) => {
+          const tarefas = getTarefasFormativas(activeClass);
+          tarefas.forEach((tarefa, tIdx) => {
             const tr = document.createElement("tr");
             tr.className = "border-b border-black hover:bg-slate-50";
 
             // Se for a primeira tarefa do critério, mescla as colunas de Fundamento e Critério
             if (tIdx === 0) {
               const tdFund = document.createElement("td");
-              tdFund.rowSpan = TAREFAS_FORMATIVAS_PRESET.length;
+              tdFund.rowSpan = tarefas.length;
               tdFund.className = "border border-black p-2 text-xs align-middle leading-snug bg-white";
               tdFund.innerHTML = `${capText} <span class="text-slate-400 font-mono text-[10px]">(${critIndex})</span>`;
               tr.appendChild(tdFund);
 
               const tdCrit = document.createElement("td");
-              tdCrit.rowSpan = TAREFAS_FORMATIVAS_PRESET.length;
+              tdCrit.rowSpan = tarefas.length;
               tdCrit.className = "border border-black p-2 text-xs align-middle leading-snug bg-white font-medium";
               tdCrit.innerHTML = `${crit.texto} ${crit.critico ? '<span class="text-red-600 font-bold block text-[10px]">[CRÍTICO]</span>' : ''}`;
               tr.appendChild(tdCrit);
@@ -4734,7 +5142,8 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       });
 
       const badge = document.getElementById('matTarefaBadge');
-      const tarefaObj = TAREFAS_FORMATIVAS_PRESET.find(t => t.id === tarefaId) || { bg: 'bg-red-600', text: 'text-white' };
+      const tarefas = getTarefasFormativas(activeClass);
+      const tarefaObj = tarefas.find(t => t.id === tarefaId) || { bg: 'bg-red-600', text: 'text-white' };
       if (badge) {
         badge.className = `w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg shadow-sm ${tarefaObj.bg} ${tarefaObj.text}`;
         badge.textContent = tarefaId;
@@ -5862,19 +6271,20 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
           const capText = capacidades[critIndex % capacidades.length] || `Capacidade Técnica & Organizativa ${(critIndex + 1)}`;
           critIndex++;
 
-          TAREFAS_FORMATIVAS_PRESET.forEach((tarefa, tIdx) => {
+          const tarefas = getTarefasFormativas(activeClass);
+          tarefas.forEach((tarefa, tIdx) => {
             const tr = document.createElement("tr");
             tr.className = "border-b border-black hover:bg-slate-50";
 
             if (tIdx === 0) {
               const tdFund = document.createElement("td");
-              tdFund.rowSpan = TAREFAS_FORMATIVAS_PRESET.length;
+              tdFund.rowSpan = tarefas.length;
               tdFund.className = "border border-black p-2.5 text-xs align-middle leading-snug bg-white font-medium";
               tdFund.innerHTML = `${capText} <span class="text-slate-400 font-mono text-[10px]">(${critIndex})</span>`;
               tr.appendChild(tdFund);
 
               const tdCrit = document.createElement("td");
-              tdCrit.rowSpan = TAREFAS_FORMATIVAS_PRESET.length;
+              tdCrit.rowSpan = tarefas.length;
               tdCrit.className = "border border-black p-2.5 text-xs align-middle leading-snug bg-white font-semibold text-slate-900";
               tdCrit.innerHTML = `${crit.texto} ${crit.critico ? '<span class="text-red-600 font-bold block text-[10px] mt-1">[CRÍTICO - Obrigatório]</span>' : ''}`;
               tr.appendChild(tdCrit);
