@@ -1,0 +1,35 @@
+version: '3.8'
+
+# =============================================================================
+# DOCKER COMPOSE - SISTEMA INTEGRADO DE AVALIAÇÃO SENAI
+# Integrado ao Ecossistema HRF (utiliza o mysql-db já existente)
+# =============================================================================
+
+services:
+  # Aplicação Node.js (Servidor + Frontend SPA)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: senai_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_TYPE: mysql
+      # Conecta no container mysql-db já existente na VPS via porta 3307
+      DB_HOST: ${DB_HOST:-172.17.0.1}
+      DB_PORT: ${DB_PORT:-3307}
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-avaliacao_senai}
+      APP_NAME: "Sistema Integrado de Avaliação SENAI"
+    ports:
+      # Porta 3004 no Host (portas 3000, 3001, 3002 e 3003 já ocupadas no ecossistema)
+      - "${APP_PORT:-3004}:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1); })"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

@@ -4,10 +4,13 @@
   "description": "Sistema Integrado de Gestao de Notas, Rubricas, Diario e Plano de Ensino SENAI",
   "scripts": {
     "build": "node -e \"const fs=require('fs'); if(!fs.existsSync('public')) fs.mkdirSync('public'); fs.copyFileSync('index.html', 'public/index.html');\"",
-    "dev": "node server/dev-server.js",
-    "start": "node server/dev-server.js"
+    "dev": "node server/server.js",
+    "start": "node server/server.js",
+    "migrate:mysql": "node scripts/migrate-to-mysql.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.115.0"
+    "@supabase/supabase-js": "^2.115.0",
+    "dotenv": "^17.3.1",
+    "mysql2": "^3.17.2"
   }
 }

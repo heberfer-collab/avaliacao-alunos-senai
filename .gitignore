@@ -6,3 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 .tempmediaStorage/
 .system_generated/
+*.sqlite-shm
+*.sqlite-wal
+.env
