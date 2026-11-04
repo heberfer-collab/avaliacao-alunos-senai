@@ -146,6 +146,10 @@ async function ensureInitialSeed() {
       await db.execute('REPLACE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)', ['1', 'Heber Roberto Ferreira', '1080133', 'TEACHER']);
       await db.execute('REPLACE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)', ['2', 'Rafael Forti Scalfi', '222.222.222-22', 'TEACHER']);
       await db.execute('REPLACE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)', ['3', 'Coordenador Pedagógico', '000.000.000-00', 'ADMIN']);
+      await db.execute('REPLACE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)', ['4', 'Secretaria / Gestão Escolar', 'gestao', 'GESTAO']);
+    } else {
+      // Garante que o usuário padrão da Gestão Escolar exista para testes e operação
+      await db.execute('INSERT IGNORE INTO users (id, name, cpf, role) VALUES (?, ?, ?, ?)', ['4', 'Secretaria / Gestão Escolar', 'gestao', 'GESTAO']).catch(() => {});
     }
 
     const cursosCount = await db.query('SELECT COUNT(*) as total FROM cursos');
@@ -903,6 +907,135 @@ const server = http.createServer(async (req, res) => {
       } catch (e) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Erro ao configurar Webhook MIGAE', details: e.message }));
+      }
+      return;
+    }
+
+    // --- COPILOTO IA HÍBRIDO (MOTOR PEDAGÓGICO MSEP + INTEGRAÇÃO GEMINI / OPENAI / NVIDIA NIM) ---
+    if (urlPath === '/api/ai/config') {
+      if (req.method === 'GET') {
+        try {
+          let config = { provider: 'native', model: 'msep-specialist-v2', hasApiKey: false };
+          const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
+          if (rows.length > 0 && rows[0].value) {
+            const parsed = JSON.parse(rows[0].value);
+            config = {
+              provider: parsed.provider || 'native',
+              model: parsed.model || 'gemini-2.5-flash',
+              hasApiKey: Boolean(parsed.apiKey && parsed.apiKey.length > 5)
+            };
+          } else if (process.env.GEMINI_API_KEY) {
+            config = { provider: 'gemini', model: 'gemini-2.5-flash', hasApiKey: true };
+          }
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(config));
+        } catch (e) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ provider: 'native', model: 'msep-specialist-v2', hasApiKey: false }));
+        }
+        return;
+      }
+
+      if (req.method === 'POST') {
+        try {
+          const body = await getJsonBody();
+          const toSave = {
+            provider: body.provider || 'native',
+            model: body.model || 'gemini-2.5-flash',
+            apiKey: body.apiKey || ''
+          };
+          await db.execute(
+            'REPLACE INTO app_state (`key`, value) VALUES (?, ?)',
+            ['ai_copilot_config', JSON.stringify(toSave)]
+          );
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            provider: toSave.provider,
+            model: toSave.model,
+            hasApiKey: Boolean(toSave.apiKey && toSave.apiKey.length > 5)
+          }));
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Erro ao salvar configuração de IA', details: e.message }));
+        }
+        return;
+      }
+    }
+
+    if (urlPath === '/api/ai/copilot' && req.method === 'POST') {
+      try {
+        const body = await getJsonBody();
+        const acao = body.acao || 'chat_livre';
+        const contexto = body.contexto || {};
+        const promptUsuario = body.prompt || '';
+
+        let aiConfig = { provider: 'native', apiKey: process.env.GEMINI_API_KEY || '', model: 'gemini-2.5-flash' };
+        try {
+          const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
+          if (rows.length > 0 && rows[0].value) {
+            const parsed = JSON.parse(rows[0].value);
+            if (parsed.provider) aiConfig = parsed;
+          }
+        } catch (_) {}
+
+        // Se houver chave configurada e provedor externo ativo, tenta consultar o LLM externo primeiro
+        let respostaExterna = null;
+        if (aiConfig.provider !== 'native' && aiConfig.apiKey && aiConfig.apiKey.length > 5) {
+          try {
+            const sysPrompt = `Você é o Copiloto Pedagógico Oficial da Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), de forma estruturada, prática e fiel aos padrões do Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos/Desejáveis e Níveis de Desempenho (1 a 6).`;
+            const fullPrompt = `${sysPrompt}\n\nAção solicitada: ${acao}\nContexto da Turma/UC: ${JSON.stringify(contexto)}\nSolicitação: ${promptUsuario}`;
+
+            if (aiConfig.provider === 'gemini') {
+              const mod = aiConfig.model || 'gemini-2.5-flash';
+              const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${aiConfig.apiKey}`;
+              const gRes = await fetch(gUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: fullPrompt }] }] })
+              });
+              if (gRes.ok) {
+                const gData = await gRes.json();
+                respostaExterna = gData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+              }
+            } else if (aiConfig.provider === 'openai' || aiConfig.provider === 'nvidia') {
+              const endpoint = aiConfig.provider === 'nvidia'
+                ? 'https://integrate.api.nvidia.com/v1/chat/completions'
+                : 'https://api.openai.com/v1/chat/completions';
+              const oRes = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${aiConfig.apiKey}`
+                },
+                body: JSON.stringify({
+                  model: aiConfig.model || (aiConfig.provider === 'nvidia' ? 'meta/llama-3.1-70b-instruct' : 'gpt-4o-mini'),
+                  messages: [
+                    { role: 'system', content: sysPrompt },
+                    { role: 'user', content: fullPrompt }
+                  ],
+                  temperature: 0.4
+                })
+              });
+              if (oRes.ok) {
+                const oData = await oRes.json();
+                respostaExterna = oData?.choices?.[0]?.message?.content || null;
+              }
+            }
+          } catch (extErr) {
+            console.warn('[COPILOTO IA] Fallback para Motor Especialista Nativo:', extErr.message);
+          }
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          engine: respostaExterna ? `${aiConfig.provider.toUpperCase()} (${aiConfig.model})` : 'Motor Especialista MSEP Nativo (SENAI)',
+          respostaExterna
+        }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Erro no Copiloto IA', details: e.message }));
       }
       return;
     }

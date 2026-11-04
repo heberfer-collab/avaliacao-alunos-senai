@@ -488,17 +488,22 @@
           </button>
         </div>
 
-        <!-- Botões de Acesso Rápido com 1 Clique -->
+        <!-- Botões de Acesso Rápido com 1 Clique (4 Perfis do Fluxo SENAI) -->
         <div class="pt-3 border-t border-slate-200/80 space-y-2">
-          <p class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider text-center">Ou acesse com 1 clique:</p>
-          <button type="button" onclick="loginRapido('admin')" class="w-full bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold py-2.5 px-3 rounded-lg transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
-            <i class="fa-solid fa-shield-halved"></i> Entrar como Administrador
-          </button>
+          <p class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider text-center">Ou acesse com 1 clique (Fluxo de 4 Perfis):</p>
           <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="loginRapido('1080133')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold py-2 px-2 rounded-lg transition flex items-center justify-center gap-1.5 border border-slate-200 cursor-pointer">
+            <button type="button" onclick="loginRapido('admin')" class="bg-purple-700 hover:bg-purple-800 text-white text-[11px] font-bold py-2.5 px-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer" title="Cadastra a Gestão Escolar e supervisiona o sistema">
+              <i class="fa-solid fa-shield-halved"></i> Coordenador
+            </button>
+            <button type="button" onclick="loginRapido('gestao')" class="bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold py-2.5 px-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer" title="Cria Turmas, matricula Alunos e aloca Professores">
+              <i class="fa-solid fa-building-user"></i> Gestão Escolar
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="loginRapido('1080133')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold py-2 px-2 rounded-lg transition flex items-center justify-center gap-1.5 border border-slate-200 cursor-pointer" title="Cria Plano de Ensino, Cronograma, Atividades e Avalia">
               <i class="fa-solid fa-chalkboard-user text-senai-red"></i> Prof. Heber
             </button>
-            <button type="button" onclick="loginRapido('1')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold py-2 px-2 rounded-lg transition flex items-center justify-center gap-1.5 border border-slate-200 cursor-pointer">
+            <button type="button" onclick="loginRapido('1')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold py-2 px-2 rounded-lg transition flex items-center justify-center gap-1.5 border border-slate-200 cursor-pointer" title="Resolve atividades com Tutor IA, autoavalia e consulta desempenho">
               <i class="fa-solid fa-user-graduate text-blue-600"></i> Aluno Demo
             </button>
           </div>
@@ -1064,22 +1069,31 @@
         </div>
         
         <div class="flex items-center gap-2 flex-wrap">
-          <button onclick="openImportPDFModal()" class="bg-purple-600 hover:bg-purple-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm">
+          <button type="button" onclick="abrirModalSeletorPlanoCurso()" class="bg-indigo-600 hover:bg-indigo-700 text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Selecionar Capacidades Técnicas, Sociais e Conhecimentos direto do Plano de Curso">
+            <i class="fa-solid fa-book-open-reader"></i> 1. Puxar do Plano de Curso
+          </button>
+          <button type="button" onclick="abrirModalNovaSituacaoAprendizagemRapida()" class="bg-amber-600 hover:bg-amber-700 text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Adicionar uma ou várias Situações de Aprendizagem (Formativa ou Somativa)">
+            <i class="fa-solid fa-layer-group"></i> 2. + Situação de Aprendizagem
+          </button>
+          <button type="button" onclick="abrirCopilotoIA('plano_ensino')" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-xs text-white px-3.5 py-2 rounded-lg font-extrabold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Usar Copiloto IA para formular Plano de Ensino, SAs, Critérios e Cronograma">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Copiloto IA: Formular Plano
+          </button>
+          <button onclick="openImportPDFModal()" class="bg-purple-600 hover:bg-purple-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
             <i class="fa-solid fa-file-pdf"></i> Importar PDF
           </button>
-          <button onclick="openFullPlanoEditorModal()" class="bg-blue-600 hover:bg-blue-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm">
+          <button onclick="openFullPlanoEditorModal()" class="bg-blue-600 hover:bg-blue-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
             <i class="fa-solid fa-file-pen"></i> Editar Plano
           </button>
-          <button onclick="openCreateNewPlanoModal()" class="bg-emerald-600 hover:bg-emerald-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm">
+          <button onclick="openCreateNewPlanoModal()" class="bg-emerald-600 hover:bg-emerald-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
             <i class="fa-solid fa-plus-circle"></i> Nova Turma
           </button>
-          <button type="button" onclick="alternarModoVisualizacaoAlunos()" id="btnAlternarModoAlunosPlano" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 text-xs px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 shadow-2xs transition" title="Alternar entre nomes verticais e números 1 a 32 (ideal para caber todos os alunos em folha A4)">
+          <button type="button" onclick="alternarModoVisualizacaoAlunos()" id="btnAlternarModoAlunosPlano" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 text-xs px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 shadow-2xs transition cursor-pointer" title="Alternar entre nomes verticais e números 1 a 32 (ideal para caber todos os alunos em folha A4)">
             <i class="fa-solid fa-users text-indigo-600"></i> <span id="lblModoAlunosPlano">Alunos: Nomes / Números</span>
           </button>
-          <button onclick="imprimirDocumentoPlano('portrait')" class="bg-senai-red hover:bg-senai-darkRed text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm" title="Imprimir em A4 Retrato (Compacto e Diagramado)">
+          <button onclick="imprimirDocumentoPlano('portrait')" class="bg-senai-red hover:bg-senai-darkRed text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Imprimir em A4 Retrato (Compacto e Diagramado)">
             <i class="fa-solid fa-print"></i> Imprimir Retrato (A4)
           </button>
-          <button onclick="imprimirDocumentoPlano('landscape')" class="bg-slate-800 hover:bg-black text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm" title="Imprimir em A4 Paisagem (Amplo para Matriz com todos os Alunos)">
+          <button onclick="imprimirDocumentoPlano('landscape')" class="bg-slate-800 hover:bg-black text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Imprimir em A4 Paisagem (Amplo para Matriz com todos os Alunos)">
             <i class="fa-solid fa-print fa-rotate-90"></i> Imprimir Paisagem (A4)
           </button>
         </div>
@@ -1199,11 +1213,29 @@
             </div>
           </div>
 
+          <!-- Seletor de Situação de Aprendizagem e Modalidade Avaliativa (Formativa / Somativa) -->
+          <div class="no-print bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-bold text-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-layer-group text-senai-red"></i> Tabela de Avaliação por Situação de Aprendizagem:
+              </span>
+              <select id="selectFiltroSAItemC" onchange="filtrarTabelaItemCPorSA(this.value)" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senai-red cursor-pointer">
+                <option value="TODAS">Todas as Situações de Aprendizagem (Consolidado da UC)</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-slate-600 font-semibold">Modalidade da Tabela:</span>
+              <span id="badgeModalidadeSAItemC" class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                Formativa & Somativa
+              </span>
+            </div>
+          </div>
+
           <div class="overflow-x-auto">
             <table class="w-full border-collapse border border-black text-xs text-black" id="pe-tabela-item-c">
               <thead>
                 <tr class="bg-slate-200">
-                  <th class="border border-black p-2 text-left w-1/4 font-bold">Fundamentos técnicos e científicos e capacidades sociais, organizativas e metodológicas</th>
+                  <th class="border border-black p-2 text-left w-1/4 font-bold">Capacidades técnicas, sociais, organizativas e metodológicas</th>
                   <th class="border border-black p-2 text-left w-1/3 font-bold">Critérios de Avaliação</th>
                   <th class="border border-black p-1 text-center w-12 font-bold">Tarefas</th>
                   <th class="border border-black p-1 text-center font-bold" id="pe-item-c-alunos-header">NOME DOS ALUNOS</th>
@@ -1419,6 +1451,12 @@
           <button type="button" onclick="abrirModalEstruturaMatriz()" class="bg-slate-900 hover:bg-black text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 shadow-xs transition cursor-pointer" title="Configurar Capacidades, Critérios e Vínculo de Tarefas (MSEP)">
             <i class="fa-solid fa-diagram-project text-amber-400"></i> Estrutura & Vínculo de Tarefas (MSEP)
           </button>
+          <div class="flex items-center gap-1.5 bg-white border border-slate-300 rounded-lg px-2.5 py-1">
+            <i class="fa-solid fa-layer-group text-senai-red text-xs"></i>
+            <select id="selectFiltroSAMatriz" onchange="filtrarTabelaItemCPorSA(this.value)" class="text-xs font-bold text-slate-800 bg-transparent focus:outline-none cursor-pointer">
+              <option value="TODAS">Situação de Aprendizagem: Todas</option>
+            </select>
+          </div>
         </div>
 
         <div class="text-[11px] text-slate-600 flex items-center gap-2 font-medium">
@@ -1685,17 +1723,56 @@
       <div class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-4">
           <div>
-            <h2 class="font-display font-bold text-slate-900 text-xl">Gestão de Turmas & Cadastro de Alunos</h2>
-            <p class="text-xs text-slate-500">Cadastre novas turmas/unidades curriculares, importe ementas via PDF SENAI ou gerencie os alunos matriculados.</p>
+            <div class="flex items-center gap-2 text-amber-600 font-extrabold text-[11px] uppercase tracking-wider mb-0.5">
+              <i class="fa-solid fa-building-user"></i> Fluxo Oficial da Gestão Escolar SENAI
+            </div>
+            <h2 class="font-display font-bold text-slate-900 text-xl">Central da Gestão: Turmas, Professores & Alunos</h2>
+            <p class="text-xs text-slate-500">Crie turmas vinculadas ao Plano de Curso, aloque os professores responsáveis pela UC e matricule os alunos.</p>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button onclick="openCreateNewPlanoModal()" class="bg-emerald-600 hover:bg-emerald-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm">
-              <i class="fa-solid fa-plus-circle"></i> Cadastrar Nova Turma
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openCreateNewPlanoModal()" class="bg-emerald-600 hover:bg-emerald-700 text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+              <i class="fa-solid fa-plus-circle"></i> 1. Criar Nova Turma / UC
             </button>
-            <button onclick="openImportPDFModal()" class="bg-purple-600 hover:bg-purple-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm">
+            <button onclick="switchTab('admin')" class="bg-blue-600 hover:bg-blue-700 text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+              <i class="fa-solid fa-chalkboard-user"></i> 2. Cadastrar Professores
+            </button>
+            <button onclick="toggleAddStudentModal()" class="bg-senai-red hover:bg-senai-darkRed text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+              <i class="fa-solid fa-user-plus"></i> 3. Matricular Alunos
+            </button>
+            <button onclick="openImportPDFModal()" class="bg-purple-600 hover:bg-purple-700 text-xs text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
               <i class="fa-solid fa-file-pdf"></i> Importar PDF SENAI
             </button>
+          </div>
+        </div>
+
+        <!-- Card Rápido: Alocação de Docentes e Dados Regimentais da Turma Ativa (Pessoal da Gestão) -->
+        <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/70 pb-2">
+            <span class="font-bold text-amber-950 text-xs flex items-center gap-2">
+              <i class="fa-solid fa-id-card-clip text-amber-600"></i>
+              <span>Alocação Rápida de Professores e Carga Horária da Turma Ativa</span>
+            </span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-200 text-amber-900">Secretaria / Gestão</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Escola SENAI:</label>
+              <input type="text" id="gestaoQuickEscola" placeholder="SENAI Euclides Facchini CFP-8.50" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Docente(s) Alocado(s) na UC:</label>
+              <input type="text" id="gestaoQuickDocentes" placeholder="Ex: Prof. Heber Roberto Ferreira" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Módulo do Plano de Curso:</label>
+              <input type="text" id="gestaoQuickModulo" placeholder="Ex: Básico / Específico I" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div class="flex items-end">
+              <button type="button" onclick="salvarAlocacaoRapidaGestao()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded-lg transition shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-check"></i> Atualizar Vínculo da Turma
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1874,6 +1951,38 @@
           </div>
           <div class="text-slate-500 text-[11px]">
             <span>Aulas Registradas: <strong id="diario-total-aulas-badge" class="text-slate-900 font-mono">10 Aulas</strong></span>
+          </div>
+        </div>
+
+        <!-- INTEGRAÇÃO AUTOMÁTICA: CRONOGRAMA (DIA/MÊS/ANO) -> DIÁRIO DE CHAMADA -->
+        <div id="diarioBannerProgramaDoDia" class="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-white rounded-xl p-4 border border-indigo-500/40 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+                <i class="fa-solid fa-link mr-1"></i> Reconhecimento Automático do Plano de Ensino & Cronograma
+              </span>
+              <span id="diarioProgramaDataAtivaBadge" class="bg-white/10 text-indigo-200 px-2.5 py-0.5 rounded text-[11px] font-mono font-bold">
+                Data Selecionada: Hoje
+              </span>
+            </div>
+            <div class="text-sm font-bold text-white flex flex-wrap items-center gap-2">
+              <span>Unidade Curricular em Aula:</span>
+              <span id="diarioProgramaUC" class="text-amber-300 underline decoration-amber-400/50">---</span>
+              <span class="text-slate-500">•</span>
+              <span>Situação de Aprendizagem:</span>
+              <span id="diarioProgramaSA" class="text-emerald-300">SA-01</span>
+            </div>
+            <p id="diarioProgramaAssunto" class="text-xs text-slate-300">
+              <strong>Conhecimentos & Capacidades Programados para esta Data:</strong> Selecione ou clique em qualquer coluna de data (Dia/Mês/Ano) abaixo para ver o que está previsto no Cronograma do Plano de Ensino.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+            <select id="diarioSelectDataCronograma" onchange="selecionarDataProgramadaDiario(this.value)" class="bg-slate-800 border border-slate-600 text-white rounded-lg px-3 py-2 text-xs font-bold focus:outline-none">
+              <option value="">📅 Ver Datas do Cronograma...</option>
+            </select>
+            <button type="button" onclick="criarAtividadeDoDiaPeloDiario()" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Criar Atividade Prática desta Aula (0-100)
+            </button>
           </div>
         </div>
       </div>
@@ -2266,10 +2375,11 @@
                 <input type="text" id="usrCpf" required placeholder="Ex: NIF 12345 ou 307.425.088-70" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
               </div>
               <div>
-                <label class="text-xs font-semibold text-slate-700">Perfil de Acesso</label>
-                <select id="usrRole" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
-                  <option value="TEACHER">Professor</option>
-                  <option value="ADMIN">Coordenador (Admin)</option>
+                <label class="text-xs font-semibold text-slate-700">Perfil de Acesso (Hierarquia Institucional)</label>
+                <select id="usrRole" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition font-semibold">
+                  <option value="GESTAO">🏢 Pessoal da Gestão / Secretaria Escolar (Cria Turmas, Alunos e Aloca Docentes)</option>
+                  <option value="TEACHER">👨‍🏫 Professor / Docente (Plano de Ensino, Cronograma, Diário e Avaliações)</option>
+                  <option value="ADMIN">🛡️ Coordenador Pedagógico / Admin (Cadastra Gestão e Supervisiona)</option>
                 </select>
               </div>
             </div>
@@ -2409,8 +2519,11 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs text-slate-500 font-bold" id="cronoStatusTotalAulas">Total: 0 aulas</span>
+            <button type="button" onclick="abrirCopilotoIA('cronograma')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+              <i class="fa-solid fa-robot text-amber-300"></i> Copiloto IA: Gerar Cronograma (Dia/Mês/Ano)
+            </button>
             <button onclick="adicionarLinhaAssuntoCronograma()" class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-lg font-bold text-xs flex items-center gap-1 transition cursor-pointer">
               <i class="fa-solid fa-plus text-senai-red"></i> Novo Assunto
             </button>
@@ -2610,8 +2723,11 @@
           <p class="text-xs text-slate-300 mt-1">Crie atividades com critérios técnicos e socioemocionais ponderados, publique no Classroom ou RE e valide autoavaliações.</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
+          <button onclick="abrirCopilotoIA('criar_atividade')" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition shadow-md cursor-pointer border border-purple-400/30">
+            <i class="fa-solid fa-robot text-amber-300"></i> Copiloto IA: Criar Atividade Prática (0-100)
+          </button>
           <button onclick="abrirModalCriarAtividade()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition shadow-md cursor-pointer">
-            <i class="fa-solid fa-plus-circle"></i> Nova Atividade
+            <i class="fa-solid fa-plus-circle"></i> Nova Atividade Manual
           </button>
           <button onclick="sincronizarTodasAtividadesClassroom()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition shadow-md cursor-pointer" title="Subir e sincronizar atividades com Google Classroom">
             <i class="fa-brands fa-google"></i> Sincronizar Classroom
@@ -2697,18 +2813,21 @@
         <!-- Preenchido via JS -->
       </div>
 
-      <!-- Sub-abas do Aluno: Para Realizar vs Já Realizadas vs Matriz de Critérios -->
+      <!-- Sub-abas do Aluno: Para Realizar vs Já Realizadas vs Matriz de Critérios vs Desempenho Completo & Tutor IA -->
       <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
         <button onclick="alternarSubTabAluno('criterios')" id="subtab-aluno-criterios" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow-xs flex items-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-list-check"></i> Meus Critérios & Notas (Atingiu / Não Atingiu)
+          <i class="fa-solid fa-list-check"></i> Meus Critérios & Situações de Aprendizagem (Atingiu / Não Atingiu)
         </button>
         <button onclick="alternarSubTabAluno('pendentes')" id="subtab-aluno-pendentes" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-hourglass-half"></i> Atividades para Entregar
+          <i class="fa-solid fa-hourglass-half"></i> Atividades do Dia a Dia (0 a 100)
           <span id="badgeQtdPendentesAluno" class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full text-[10px] font-extrabold">0</span>
         </button>
         <button onclick="alternarSubTabAluno('concluidas')" id="subtab-aluno-concluidas" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-circle-check text-emerald-600"></i> Entregas Avaliadas
+          <i class="fa-solid fa-circle-check text-emerald-600"></i> Entregas Avaliadas & Notas (0-100)
           <span id="badgeQtdConcluidasAluno" class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full text-[10px] font-extrabold">0</span>
+        </button>
+        <button onclick="alternarSubTabAluno('desempenho')" id="subtab-aluno-desempenho" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-chart-line text-indigo-600"></i> Meu Desempenho Completo, Frequência & Tutor Copiloto IA
         </button>
       </div>
 
@@ -2729,6 +2848,13 @@
       <!-- Seção 2: Atividades Já Realizadas / Avaliadas -->
       <div id="secaoAlunoConcluidas" class="space-y-4 hidden">
         <div id="listaAlunoAtividadesConcluidas" class="space-y-4">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+      </div>
+
+      <!-- Seção 3: Desempenho Completo do Aluno (Notas 0-100 Acumuladas, Nível MSEP, Frequência no Diário, Cronograma de Aulas e Plano de Estudos com Copiloto IA) -->
+      <div id="secaoAlunoDesempenho" class="space-y-4 hidden">
+        <div id="containerAlunoDesempenhoCompleto" class="space-y-4">
           <!-- Renderizado dinamicamente via JS -->
         </div>
       </div>
@@ -3045,10 +3171,37 @@
       <div class="p-6 overflow-y-auto space-y-5 flex-grow text-xs">
         <input type="hidden" id="ativEditId">
 
+        <!-- BARRA DO COPILOTO IA PARA CRIAÇÃO DE ATIVIDADE PRÁTICA DO DIA A DIA (0 A 100) -->
+        <div class="bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-900 text-white rounded-xl p-3.5 border border-purple-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-robot text-amber-300"></i> Copiloto Pedagógico IA — Criador de Situações Práticas do Dia a Dia
+            </span>
+            <p class="text-[11px] text-slate-200 mt-0.5">
+              Gere automaticamente o contexto industrial, o desafio prático, o produto esperado e distribua 100 pontos nos critérios da Situação de Aprendizagem.
+            </p>
+          </div>
+          <button type="button" onclick="gerarCamposAtividadeComCopilotoIA()" class="bg-purple-600 hover:bg-purple-500 text-white font-extrabold px-3.5 py-2 rounded-lg text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer whitespace-nowrap flex-shrink-0">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar com Copiloto IA
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="sm:col-span-2">
-            <label class="block text-slate-700 font-bold mb-1">Título da Atividade / Situação de Aprendizagem:</label>
-            <input type="text" id="ativTitulo" placeholder="ex: SA-01 - Desenvolvimento do Protótipo Funcional" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <label class="block text-slate-700 font-bold mb-1">Título da Atividade Prática do Dia a Dia (0 a 100 pts):</label>
+            <input type="text" id="ativTitulo" placeholder="ex: Atividade Prática 01 - Resolução de Situação Real e Acúmulo de Conhecimento" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+
+          <div class="sm:col-span-2 bg-amber-50/80 border border-amber-300 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <label class="block text-amber-950 font-extrabold text-xs">
+                <i class="fa-solid fa-sitemap text-senai-red mr-1"></i> Vincular à Situação de Aprendizagem (Atualiza a Tabela automaticamente ao corrigir!):
+              </label>
+              <p class="text-[10px] text-amber-800">Quando o aluno atingir a pontuação nos critérios desta atividade, a Tabela da Situação de Aprendizagem será atualizada automaticamente.</p>
+            </div>
+            <select id="ativSAId" onchange="aoMudarSAVinculadaAtividade(this.value)" class="bg-white border border-amber-400 text-slate-900 font-extrabold rounded-lg px-3 py-2 text-xs min-w-[230px]">
+              <option value="TODAS">Todas as Situações de Aprendizagem</option>
+            </select>
           </div>
 
           <div>
@@ -3322,7 +3475,25 @@
           </div>
           <div>
             <label class="block text-slate-600 mb-1 font-semibold">Texto complementar ou resumo da solução:</label>
-            <textarea id="alunoTextoResposta" rows="2" placeholder="Descreva brevemente o que você desenvolveu e os principais destaques..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+            <textarea id="alunoTextoResposta" rows="3" placeholder="Descreva sua resolução técnica passo a passo para esta situação prática..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+          </div>
+
+          <!-- TUTOR COPILOTO IA PARA O ALUNO (SOCRÁTICO + PRÉ-VALIDAÇÃO DE CRITÉRIOS) -->
+          <div class="bg-gradient-to-r from-indigo-950 via-purple-950 to-slate-900 text-white rounded-xl p-4 border border-purple-500/40 space-y-2.5 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-extrabold text-purple-200 flex items-center gap-1.5">
+                <i class="fa-solid fa-robot text-amber-300 text-sm"></i> Tutor Copiloto IA do Estudante (Apoio na Resolução)
+              </span>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="pedirDicaTutorAlunoIA()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5 transition cursor-pointer">
+                  <i class="fa-solid fa-lightbulb text-amber-300"></i> Pedir Dica Passo a Passo
+                </button>
+                <button type="button" onclick="validarRespostaAlunoComIA()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5 transition cursor-pointer">
+                  <i class="fa-solid fa-magnifying-glass-check"></i> Revisar Minha Solução nos Critérios
+                </button>
+              </div>
+            </div>
+            <div id="alunoTutorIARespostaBox" class="hidden bg-white/10 border border-white/15 rounded-lg p-3 text-[11px] text-slate-100 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto"></div>
           </div>
         </div>
 
@@ -3418,6 +3589,21 @@
 
         <!-- Comparativo: Autoavaliação vs Avaliação do Docente -->
         <div class="space-y-3">
+          <!-- BARRA DO COPILOTO IA DE PRÉ-CORREÇÃO DOCENTE -->
+          <div class="bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-900 text-white rounded-xl p-3.5 border border-purple-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span class="text-[11px] font-extrabold text-purple-200 flex items-center gap-1.5">
+                <i class="fa-solid fa-robot text-amber-300"></i> Copiloto IA de Apoio à Correção Docente & Atualização da Situação de Aprendizagem
+              </span>
+              <p class="text-[10px] text-slate-300 mt-0.5">
+                Analisa a entrega e a autoavaliação do estudante, sugere os critérios atingidos, calcula a nota (0 a 100), redige o feedback formativo e atualiza automaticamente a Tabela da Situação de Aprendizagem (`[S]` / `[R]`).
+              </p>
+            </div>
+            <button type="button" onclick="preCorrigirEntregaComCopilotoIA()" class="bg-purple-600 hover:bg-purple-500 text-white font-extrabold px-3.5 py-2 rounded-lg text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer whitespace-nowrap flex-shrink-0">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Pré-Corrigir com Copiloto IA
+            </button>
+          </div>
+
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
               <i class="fa-solid fa-code-compare text-senai-red"></i> Critérios de Desempenho (Autoavaliação vs Avaliação Docente):
@@ -3475,6 +3661,331 @@
             <span>Salvar Avaliação & Gravar Nota</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BOTÃO FLUTUANTE GLOBAL: COPILOTO IA SENAI MSEP -->
+  <!-- ========================================== -->
+  <div class="no-print fixed bottom-5 right-5 z-40 flex items-center gap-2">
+    <button type="button" onclick="abrirCopilotoIA('plano_ensino')" class="bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 hover:from-purple-600 hover:to-indigo-600 text-white font-display font-extrabold px-4 py-3 rounded-2xl shadow-2xl border border-purple-400/50 flex items-center gap-2.5 text-xs transition transform hover:scale-105 cursor-pointer">
+      <span class="w-7 h-7 rounded-xl bg-white/15 flex items-center justify-center text-amber-300 text-base">
+        <i class="fa-solid fa-robot"></i>
+      </span>
+      <div class="text-left leading-tight">
+        <span class="block text-[10px] text-purple-200 uppercase tracking-wider">Assistente Inteligente</span>
+        <span class="text-xs font-extrabold text-white">Copiloto IA SENAI</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 1: SELETOR DO PLANO DE CURSO -> PLANO DE ENSINO -->
+  <!-- ========================================== -->
+  <div id="modalSeletorPlanoCurso" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-white/10 p-2.5 rounded-xl">
+            <i class="fa-solid fa-book-open-reader text-amber-300 text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-base">Importar e Selecionar do Plano de Curso Oficial SENAI</h3>
+            <p class="text-xs text-blue-200">Selecione as Capacidades Técnicas, Capacidades Sociais/Organizativas/Metodológicas e Conhecimentos para o Plano de Ensino.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalSeletorPlanoCurso()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5 flex-grow text-xs">
+        <!-- Dados de Cabeçalho do Plano de Ensino -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+          <div class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-building-columns text-senai-red"></i> 1. Dados Oficiais do Cabeçalho do Plano de Ensino
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Escola:</label>
+              <input type="text" id="spcEscola" value="SENAI - Serviço Nacional de Aprendizagem Industrial" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nome dos Docentes:</label>
+              <input type="text" id="spcDocentes" placeholder="Prof. Heber Roberto Ferreira" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Curso:</label>
+              <input type="text" id="spcCurso" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Módulo:</label>
+              <input type="text" id="spcModulo" placeholder="Módulo Específico I" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Unidade Curricular:</label>
+              <input type="text" id="spcUC" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-semibold text-slate-800">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">CH da UC:</label>
+                <input type="text" id="spcCHUC" value="100h" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">CH Prevista Plano:</label>
+                <input type="text" id="spcCHPlano" value="100h" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seleção de Capacidades e Conhecimentos -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="border border-blue-200 bg-blue-50/40 rounded-xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between border-b border-blue-200 pb-2">
+              <span class="font-extrabold text-blue-950 text-xs">🔧 Capacidades Técnicas / Básicas</span>
+              <button type="button" onclick="marcarTodosCheckboxesPlanoCurso('spcListaCapTecnicas', true)" class="text-[10px] font-bold text-blue-700 underline cursor-pointer">Marcar Todas</button>
+            </div>
+            <div id="spcListaCapTecnicas" class="space-y-1.5 max-h-60 overflow-y-auto pr-1"></div>
+          </div>
+
+          <div class="border border-emerald-200 bg-emerald-50/40 rounded-xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between border-b border-emerald-200 pb-2">
+              <span class="font-extrabold text-emerald-950 text-xs">🤝 Capacidades Sociais, Org. e Metod.</span>
+              <button type="button" onclick="marcarTodosCheckboxesPlanoCurso('spcListaCapSociais', true)" class="text-[10px] font-bold text-emerald-700 underline cursor-pointer">Marcar Todas</button>
+            </div>
+            <div id="spcListaCapSociais" class="space-y-1.5 max-h-60 overflow-y-auto pr-1"></div>
+          </div>
+
+          <div class="border border-amber-200 bg-amber-50/40 rounded-xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+              <span class="font-extrabold text-amber-950 text-xs">📚 Conhecimentos do Plano de Curso</span>
+              <button type="button" onclick="marcarTodosCheckboxesPlanoCurso('spcListaConhecimentos', true)" class="text-[10px] font-bold text-amber-700 underline cursor-pointer">Marcar Todos</button>
+            </div>
+            <div id="spcListaConhecimentos" class="space-y-1.5 max-h-60 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 border-t border-slate-200 px-6 py-3.5 flex items-center justify-between">
+        <button type="button" onclick="fecharModalSeletorPlanoCurso()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="aplicarSelecaoPlanoCursoNoPlanoEnsino()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-lg text-xs shadow-sm flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-check-double"></i> Aplicar Seleção ao Plano de Ensino & Gerar Matriz
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 2: CRIAR NOVA SITUAÇÃO DE APRENDIZAGEM (SA 01, SA 02...) -->
+  <!-- ========================================== -->
+  <div id="modalNovaSARapida" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-white/10 p-2 rounded-xl">
+            <i class="fa-solid fa-layer-group text-emerald-300 text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-base">Adicionar Situação de Aprendizagem ao Plano de Ensino</h3>
+            <p class="text-xs text-emerald-200">O Plano de Ensino pode ter uma ou várias Situações de Aprendizagem (Formativa ou Somativa), cada uma com sua Tabela de Avaliação.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalNovaSARapida()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-4 text-xs">
+        <div class="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-xl p-3">
+          <div>
+            <span class="font-extrabold text-purple-950 block">🤖 Quer que o Copiloto IA estruture esta Situação de Aprendizagem?</span>
+            <span class="text-[11px] text-purple-700">Preenche automaticamente Título, Estratégia, Desafio e Critérios Críticos/Desejáveis.</span>
+          </div>
+          <button type="button" onclick="sugerirNovaSAComCopilotoIA()" class="bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Sugerir com IA
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-slate-700 mb-1">Nome / Identificação da Situação de Aprendizagem:</label>
+            <input type="text" id="nsaNome" placeholder="Ex: SA 02 - Automação e Controle de Processos Industriais" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Modalidade da Avaliação:</label>
+            <select id="nsaModalidade" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 font-bold text-slate-800">
+              <option value="FORMATIVA">🟢 Avaliação Formativa (Processual)</option>
+              <option value="SOMATIVA">🔵 Avaliação Somativa (Certificadora)</option>
+              <option value="FORMATIVA_SOMATIVA">🟣 Formativa + Somativa Conjugadas</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Estratégia de Aprendizagem Desafiadora:</label>
+            <select id="nsaEstrategia" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 font-bold text-slate-800">
+              <option value="Situação-Problema">Situação-Problema</option>
+              <option value="Projeto Integrador">Projeto / Projeto Integrador</option>
+              <option value="Estudo de Caso">Estudo de Caso</option>
+              <option value="Pesquisa Aplicada">Pesquisa Aplicada</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Carga Horária Prevista para esta SA:</label>
+            <input type="text" id="nsaCH" value="30h" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Unidade Curricular:</label>
+            <input type="text" id="nsaUC" readonly class="w-full bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 font-semibold text-slate-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Descrição / Contextualização e Desafio da Situação de Aprendizagem:</label>
+          <textarea id="nsaDescricao" rows="2" placeholder="Descreva a situação desafiadora que os alunos resolverão nesta SA..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-slate-800"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Critérios de Avaliação vinculados às Capacidades (1 por linha — formato: <code>CT1 | Critério | CRITICO</code> ou <code>CS1 | Critério | DESEJAVEL</code>):</label>
+          <textarea id="nsaCriteriosTexto" rows="4" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 font-mono text-xs text-slate-800" placeholder="CT1 | Implementa os requisitos técnicos conforme normas e padrões | CRITICO&#10;CT2 | Valida o funcionamento prático solucionando falhas operacionais | CRITICO&#10;CS1 | Demonstra organização, trabalho em equipe e cumprimento de prazos | DESEJAVEL"></textarea>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 border-t border-slate-200 px-6 py-3.5 flex items-center justify-between">
+        <button type="button" onclick="fecharModalNovaSARapida()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="salvarNovaSituacaoAprendizagemRapida()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-lg text-xs shadow-sm flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-plus-circle"></i> Criar Situação de Aprendizagem & Gerar Tabela
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 3: CENTRAL DO COPILOTO IA HÍBRIDO SENAI (DOCENTE & ALUNO) -->
+  <!-- ========================================== -->
+  <div id="modalCopilotoIA" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-purple-500/20 border border-purple-400/40 p-2.5 rounded-xl">
+            <i class="fa-solid fa-robot text-amber-300 text-xl"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-display font-extrabold text-base">Copiloto IA Pedagógico SENAI (Motor Híbrido MSEP)</h3>
+              <span id="badgeMotorCopilotoAtivo" class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full text-[10px] font-extrabold">
+                Motor MSEP Nativo Ativo
+              </span>
+            </div>
+            <p class="text-xs text-purple-200">Apoio inteligente em tudo: Plano de Ensino, Situações de Aprendizagem, Cronograma (Dia/Mês/Ano), Atividades Práticas (0-100), Correção e Tutor do Aluno.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharCopilotoIA()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-4 flex-grow text-xs">
+        <!-- Seletor de Modo de Ação do Copiloto -->
+        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+          <button type="button" onclick="selecionarModoCopilotoIA('plano_ensino')" id="btnModoIA-plano_ensino" class="px-3 py-2 rounded-xl font-extrabold text-xs bg-purple-600 text-white cursor-pointer flex items-center gap-1.5">
+            <i class="fa-solid fa-file-signature"></i> 1. Formular Plano de Ensino & SAs
+          </button>
+          <button type="button" onclick="selecionarModoCopilotoIA('cronograma')" id="btnModoIA-cronograma" class="px-3 py-2 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-days"></i> 2. Gerar Cronograma (Dia/Mês/Ano)
+          </button>
+          <button type="button" onclick="selecionarModoCopilotoIA('criar_atividade')" id="btnModoIA-criar_atividade" class="px-3 py-2 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer flex items-center gap-1.5">
+            <i class="fa-solid fa-list-check"></i> 3. Criar Atividade do Dia (0 a 100)
+          </button>
+          <button type="button" onclick="selecionarModoCopilotoIA('tutor_aluno')" id="btnModoIA-tutor_aluno" class="px-3 py-2 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer flex items-center gap-1.5">
+            <i class="fa-solid fa-user-graduate"></i> 4. Tutor IA do Aluno & Plano de Estudos
+          </button>
+          <button type="button" onclick="toggleConfigApiCopilotoIA()" class="ml-auto px-3 py-2 rounded-xl font-bold text-xs bg-slate-800 text-amber-300 hover:bg-slate-900 cursor-pointer flex items-center gap-1.5">
+            <i class="fa-solid fa-key"></i> Configurar API LLM (Opcional)
+          </button>
+        </div>
+
+        <!-- Painel Opcional de Configuração de Chave API (Gemini / OpenAI / NVIDIA NIM) -->
+        <div id="painelConfigApiCopiloto" class="hidden bg-slate-900 text-white rounded-xl p-4 space-y-3 border border-slate-700">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-amber-300 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-Sliders"></i> Configuração do Provedor LLM Externo (Salvo no MySQL da VPS)
+            </span>
+            <span class="text-[10px] text-slate-400">Se deixado em branco, usa o Motor Especialista MSEP Nativo gratuito</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Provedor:</label>
+              <select id="iaConfigProvider" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white font-bold text-xs">
+                <option value="native">Motor Especialista MSEP Nativo (Sem Chave)</option>
+                <option value="gemini">Google Gemini API</option>
+                <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
+                <option value="nvidia">NVIDIA NIM API</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Modelo (opcional):</label>
+              <input type="text" id="iaConfigModel" placeholder="gemini-2.5-flash ou gpt-4o-mini" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Chave de API (API Key):</label>
+              <input type="password" id="iaConfigApiKey" placeholder="Cole sua API Key aqui..." class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button type="button" onclick="salvarConfigApiCopilotoIA()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs cursor-pointer">
+              Salvar Configuração de IA no Servidor
+            </button>
+          </div>
+        </div>
+
+        <!-- Contexto Atual Detectado pelo Copiloto -->
+        <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3.5 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-extrabold text-indigo-950 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-bullseye text-senai-red"></i> Contexto Pedagógico Detectado Automaticamente:
+            </span>
+            <span id="iaContextoTurmaUC" class="font-mono font-bold text-[11px] bg-white px-2.5 py-0.5 rounded border border-indigo-200 text-indigo-900">
+              Turma / UC Ativa
+            </span>
+          </div>
+          <label class="block font-bold text-slate-700 text-[11px]">Instrução ou Tema Específico para o Copiloto IA (opcional):</label>
+          <input type="text" id="iaPromptCustomizado" placeholder="Ex: Focar em manutenção preventiva industrial com uso de sensores IoT e trabalho em equipe..." class="w-full bg-white border border-indigo-300 rounded-lg px-3 py-2 text-slate-800 font-medium">
+        </div>
+
+        <!-- Botão de Disparo da Geração -->
+        <div class="flex items-center justify-between">
+          <span id="iaDescricaoModoAtivo" class="text-[11px] text-slate-600 font-semibold">
+            O Copiloto irá gerar a estrutura completa e permitir aplicar com 1 clique no sistema.
+          </span>
+          <button type="button" id="btnExecutarCopilotoIA" onclick="executarAcaoCopilotoIA()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs shadow-md flex items-center gap-2 cursor-pointer">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar Agora com Copiloto IA
+          </button>
+        </div>
+
+        <!-- Resultado Gerado pelo Copiloto IA -->
+        <div id="iaResultadoContainer" class="hidden space-y-3 border-t border-slate-200 pt-4">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-emerald-800 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-check text-emerald-600"></i> Sugestão Gerada pelo Copiloto IA:
+            </span>
+            <button type="button" id="btnAplicarResultadoIA" onclick="aplicarResultadoGeradoCopilotoIA()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-bolt"></i> Aplicar Automaticamente no Sistema
+            </button>
+          </div>
+          <div id="iaResultadoPreview" class="bg-slate-900 text-slate-100 rounded-xl p-4 font-sans text-xs whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto border border-slate-700"></div>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 border-t border-slate-200 px-6 py-3 flex items-center justify-between">
+        <span class="text-[11px] text-slate-500">Alinhado à Metodologia SENAI de Educação Profissional (MSEP) e à Governança MIGAE.</span>
+        <button type="button" onclick="fecharCopilotoIA()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs cursor-pointer">
+          Fechar
+        </button>
       </div>
     </div>
   </div>
@@ -7005,7 +7516,12 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       tbody.innerHTML = "";
 
       const capacidades = activeClass.capacidadesTecnicas || ["Identificar ferramentas, máquinas e acessórios utilizados no projeto"];
-      const projetos = activeClass.projetos || [];
+      if (typeof atualizarSeletoresSituacaoAprendizagemUI === 'function') {
+        atualizarSeletoresSituacaoAprendizagemUI();
+      }
+      const todosProjetos = activeClass.projetos || [];
+      const filtroSA = (typeof filtroSituacaoAprendizagemAtiva !== 'undefined' && filtroSituacaoAprendizagemAtiva) ? filtroSituacaoAprendizagemAtiva : 'TODAS';
+      const projetos = (filtroSA === 'TODAS') ? todosProjetos : todosProjetos.filter(p => String(p.id) === String(filtroSA));
 
       let critIndex = 0;
 
@@ -8289,7 +8805,12 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
         "Identificar as diversas operações de usinagem realizadas nas máquinas convencionais",
         "Planejar a sequência de usinagem e processos de controle dimensional"
       ];
-      const projetos = activeClass.projetos || [];
+      if (typeof atualizarSeletoresSituacaoAprendizagemUI === 'function') {
+        atualizarSeletoresSituacaoAprendizagemUI();
+      }
+      const todosProjetos = activeClass.projetos || [];
+      const filtroSA = (typeof filtroSituacaoAprendizagemAtiva !== 'undefined' && filtroSituacaoAprendizagemAtiva) ? filtroSituacaoAprendizagemAtiva : 'TODAS';
+      const projetos = (filtroSA === 'TODAS') ? todosProjetos : todosProjetos.filter(p => String(p.id) === String(filtroSA));
 
       let critIndex = 0;
 
@@ -9331,6 +9852,10 @@ Instruções do Sistema:
 
         tbody.appendChild(tr);
       });
+
+      if (typeof renderBannerProgramaDoDiaNoDiario === 'function') {
+        renderBannerProgramaDoDiaNoDiario();
+      }
     }
 
     function getDiarioStatusClasses(val) {
@@ -10449,8 +10974,10 @@ Instruções do Sistema:
         const pass = firstName + first3;
         const row = document.createElement("div");
         row.className = "flex items-center justify-between bg-slate-50 border border-slate-200 p-3.5 rounded-xl";
-        const roleLabel = u.role === 'ADMIN' ? 'Coordenador' : 'Professor';
-        const roleClass = u.role === 'ADMIN' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-blue-100 text-blue-800 border-blue-200';
+        const roleLabel = u.role === 'ADMIN' ? 'Coordenador' : (u.role === 'GESTAO' ? 'Gestão Escolar' : 'Professor');
+        const roleClass = u.role === 'ADMIN'
+          ? 'bg-purple-100 text-purple-800 border-purple-200'
+          : (u.role === 'GESTAO' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-blue-100 text-blue-800 border-blue-200');
         row.innerHTML = `
           <div>
             <div class="flex items-center gap-2">
@@ -10516,7 +11043,8 @@ Instruções do Sistema:
       const feedback = document.getElementById("usuarioFeedback");
       const feedbackTexto = document.getElementById("usuarioFeedbackTexto");
       if (feedback && feedbackTexto) {
-        feedbackTexto.innerHTML = `<strong>Nome:</strong> ${nome} &bull; <strong>Perfil:</strong> ${role === 'ADMIN' ? 'Coordenador' : 'Professor'} &bull; <strong>NIF/Doc:</strong> ${cpf}<br><span class="font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded font-mono text-[11px] inline-block mt-1 border border-emerald-300">Senha de Acesso: ${pass}</span>`;
+        const perfilNome = role === 'ADMIN' ? 'Coordenador' : (role === 'GESTAO' ? 'Pessoal da Gestão / Secretaria' : 'Professor');
+        feedbackTexto.innerHTML = `<strong>Nome:</strong> ${nome} &bull; <strong>Perfil:</strong> ${perfilNome} &bull; <strong>NIF/Doc:</strong> ${cpf}<br><span class="font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded font-mono text-[11px] inline-block mt-1 border border-emerald-300">Senha de Acesso: ${pass}</span>`;
         feedback.classList.remove("hidden");
         setTimeout(() => feedback.classList.add("hidden"), 10000);
       }
@@ -10603,14 +11131,23 @@ Instruções do Sistema:
       const normInput = normalizarTextoBusca(input);
       const numInput = input.replace(/\D/g, '');
 
-      // 1. Master Admin
-      if (normInput === 'admin' || normInput === 'administrador') {
+      // 1. Master Admin & Gestão Escolar
+      if (normInput === 'admin' || normInput === 'administrador' || normInput === 'coordenador') {
         return {
           role: 'ADMIN',
           id: 'admin',
-          name: 'Administrador Master',
+          name: 'Coordenador Pedagógico',
           cpf: '000000',
           userKey: 'ADMIN_admin'
+        };
+      }
+      if (normInput === 'gestao' || normInput === 'secretaria' || normInput === 'gestao escolar') {
+        return {
+          role: 'GESTAO',
+          id: '4',
+          name: 'Secretaria / Gestão Escolar',
+          cpf: 'gestao',
+          userKey: 'USER_4'
         };
       }
 
@@ -10819,6 +11356,9 @@ Instruções do Sistema:
       if (tipo === 'admin') {
         targetKey = 'ADMIN_admin';
         targetLoginText = 'admin';
+      } else if (tipo === 'gestao') {
+        targetKey = 'USER_4';
+        targetLoginText = 'gestao';
       } else if (tipo === '1080133') {
         targetKey = 'USER_1';
         targetLoginText = '1080133';
@@ -10845,7 +11385,9 @@ Instruções do Sistema:
       }
 
       if (tipo === 'admin') {
-        currentUser = { role: 'ADMIN', id: 'admin', name: 'Administrador Master' };
+        currentUser = { role: 'ADMIN', id: 'admin', name: 'Coordenador Pedagógico' };
+      } else if (tipo === 'gestao') {
+        currentUser = { role: 'GESTAO', id: '4', name: 'Secretaria / Gestão Escolar' };
       } else if (tipo === '1080133') {
         currentUser = { role: 'TEACHER', id: '1', name: 'Heber Roberto Ferreira' };
       } else if (tipo === '1021529') {
@@ -10910,17 +11452,19 @@ Instruções do Sistema:
       try {
         const isStudent = currentUser.role === 'STUDENT';
         const isAdmin = currentUser.role === 'ADMIN';
+        const isGestao = currentUser.role === 'GESTAO';
 
         // Atualizar badge do usuário logado no topo
         const userNameDisplay = document.getElementById('userNameDisplay');
         const userRoleIcon = document.getElementById('userRoleIcon');
         if (userNameDisplay) {
-          const roleLabel = isAdmin ? 'Coord.' : (isStudent ? 'Aluno' : 'Prof.');
+          const roleLabel = isAdmin ? 'Coord.' : (isGestao ? 'Gestão:' : (isStudent ? 'Aluno:' : 'Prof.'));
           const cleanName = (currentUser.name || '').replace(/^(prof\.|prof|professor|professora|coord\.|coord|coordenador|coordenadora)\s+/i, '');
           userNameDisplay.textContent = `${roleLabel} ${cleanName}`;
         }
         if (userRoleIcon) {
           if (isAdmin) userRoleIcon.innerHTML = '<i class="fa-solid fa-shield-halved text-purple-600"></i>';
+          else if (isGestao) userRoleIcon.innerHTML = '<i class="fa-solid fa-building-user text-amber-600"></i>';
           else if (isStudent) userRoleIcon.innerHTML = '<i class="fa-solid fa-user-graduate text-blue-600"></i>';
           else userRoleIcon.innerHTML = '<i class="fa-solid fa-chalkboard-user text-senai-red"></i>';
         }
@@ -10952,6 +11496,9 @@ Instruções do Sistema:
           switchModule('projetos');
         } else if (isAdmin) {
           switchModule('admin');
+        } else if (isGestao) {
+          switchModule('aulas');
+          switchTab('gestao');
         } else {
           switchModule('planejamento');
         }
@@ -11939,9 +12486,11 @@ Instruções do Sistema:
       const btnCrit = document.getElementById('subtab-aluno-criterios');
       const btnPend = document.getElementById('subtab-aluno-pendentes');
       const btnConc = document.getElementById('subtab-aluno-concluidas');
+      const btnDesemp = document.getElementById('subtab-aluno-desempenho');
       const secCrit = document.getElementById('secaoAlunoCriterios');
       const secPend = document.getElementById('secaoAlunoPendentes');
       const secConc = document.getElementById('secaoAlunoConcluidas');
+      const secDesemp = document.getElementById('secaoAlunoDesempenho');
 
       const activeClass = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow-xs flex items-center gap-2 cursor-pointer';
       const inactiveClass = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center gap-2 cursor-pointer';
@@ -11949,12 +12498,17 @@ Instruções do Sistema:
       if (btnCrit) btnCrit.className = aba === 'criterios' ? activeClass : inactiveClass;
       if (btnPend) btnPend.className = aba === 'pendentes' ? activeClass : inactiveClass;
       if (btnConc) btnConc.className = aba === 'concluidas' ? activeClass : inactiveClass;
+      if (btnDesemp) btnDesemp.className = aba === 'desempenho' ? activeClass : inactiveClass;
 
       if (secCrit) secCrit.classList.toggle('hidden', aba !== 'criterios');
       if (secPend) secPend.classList.toggle('hidden', aba !== 'pendentes');
       if (secConc) secConc.classList.toggle('hidden', aba !== 'concluidas');
+      if (secDesemp) secDesemp.classList.toggle('hidden', aba !== 'desempenho');
 
       renderPortalAluno();
+      if (aba === 'desempenho' && typeof renderSecaoDesempenhoCompletoAluno === 'function') {
+        renderSecaoDesempenhoCompletoAluno();
+      }
     }
 
     function renderPortalAluno() {
@@ -12738,6 +13292,23 @@ Instruções do Sistema:
       if (idx !== -1) appData.entregas[idx] = entregaAtualizada;
       else appData.entregas.unshift(entregaAtualizada);
 
+      // INTEGRAÇÃO AUTOMÁTICA: ATIVIDADE PRÁTICA (0-100) -> ATUALIZA TABELAS DA SITUAÇÃO DE APRENDIZAGEM ([S] / [R])
+      if (!appData.evaluations) appData.evaluations = {};
+      const activeCls = getActiveClass();
+      const criteriosAtiv = Array.isArray(atividadeSendoCorrigida.criterios) ? atividadeSendoCorrigida.criterios : [];
+      criteriosAtiv.forEach(c => {
+        const atingiuCrit = avaliacaoDocenteMemoria[c.id] === 'S';
+        const conceitoMsep = atingiuCrit ? 'S' : 'R';
+        const generalKey = `${appData.activeClassId}_${alunoSendoCorrigido.id}_${c.id}`;
+        appData.evaluations[generalKey] = conceitoMsep;
+        if (typeof getTarefasDoCriterio === 'function' && activeCls) {
+          const tarefasCrit = getTarefasDoCriterio(c.id, activeCls) || [];
+          tarefasCrit.forEach(t => {
+            appData.evaluations[`${appData.activeClassId}_${alunoSendoCorrigido.id}_${c.id}_${t.id}`] = conceitoMsep;
+          });
+        }
+      });
+
       try {
         await fetch('/api/entregas', {
           method: 'POST',
@@ -12751,6 +13322,9 @@ Instruções do Sistema:
       saveStateToStorage();
       renderAtividadesDocente();
       renderPortalAluno();
+      if (typeof renderMatrizOficialItemC === 'function') renderMatrizOficialItemC();
+      if (typeof renderItemCOficialPlano === 'function') renderItemCOficialPlano();
+      if (typeof renderDashboard === 'function') renderDashboard();
 
       // Atualiza o botão do aluno na barra de navegação
       const btn = document.getElementById(`btn_aluno_corrigir_${alunoSendoCorrigido.id}`);
@@ -14429,6 +15003,780 @@ Instruções do Sistema:
     }
 
     // =========================================================================
+    // FLUXO INTEGRADO SENAI (GESTÃO -> PLANO DE CURSO -> PLANO DE ENSINO -> CRONOGRAMA -> DIÁRIO -> ATIVIDADES 0-100 + COPILOTO IA)
+    // =========================================================================
+    let filtroSituacaoAprendizagemAtiva = 'TODAS';
+    let modoCopilotoIAAtual = 'plano_ensino';
+    let ultimoResultadoGeradoIA = null;
+
+    // 1. GESTÃO ESCOLAR: Alocação Rápida de Escola, Docentes e Módulo na Turma
+    function carregarCamposAlocacaoRapidaGestao() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const elEscola = document.getElementById('gestaoQuickEscola');
+      const elDoc = document.getElementById('gestaoQuickDocentes');
+      const elMod = document.getElementById('gestaoQuickModulo');
+      if (elEscola) elEscola.value = cls.escola || 'SENAI - Serviço Nacional de Aprendizagem Industrial';
+      if (elDoc) elDoc.value = cls.docentes || `${cls.docenteTitular || 'Prof. Heber Roberto Ferreira'}`;
+      if (elMod) elMod.value = `${cls.modulo || 'Módulo Específico'} — CH: ${cls.chUC || '100h'}`;
+    }
+
+    function salvarAlocacaoRapidaGestao() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const escola = (document.getElementById('gestaoQuickEscola')?.value || '').trim();
+      const docentes = (document.getElementById('gestaoQuickDocentes')?.value || '').trim();
+      const moduloRaw = (document.getElementById('gestaoQuickModulo')?.value || '').trim();
+
+      if (escola) cls.escola = escola;
+      if (docentes) {
+        cls.docentes = docentes;
+        cls.docenteTitular = docentes.split('/')[0].trim();
+      }
+      if (moduloRaw) {
+        const parts = moduloRaw.split('—');
+        cls.modulo = parts[0].trim();
+        if (parts[1]) {
+          const chMatch = parts[1].replace(/CH:/i, '').trim();
+          if (chMatch) {
+            cls.chUC = chMatch;
+            cls.chPlano = chMatch;
+          }
+        }
+      }
+
+      saveStateToStorage();
+      renderActiveTab();
+      alert(`✅ Alocação institucional da turma "${cls.uc}" salva pela Gestão Escolar!\n\n• Escola: ${cls.escola}\n• Docente(s): ${cls.docentes}\n• Módulo/CH: ${cls.modulo} (${cls.chUC})`);
+    }
+
+    // 2. PLANO DE CURSO -> PLANO DE ENSINO (SELETOR DE CAPACIDADES TÉCNICAS, SOCIAIS E CONHECIMENTOS)
+    function abrirModalSeletorPlanoCurso() {
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      document.getElementById('spcEscola').value = cls.escola || 'SENAI - Serviço Nacional de Aprendizagem Industrial';
+      document.getElementById('spcDocentes').value = cls.docentes || cls.docenteTitular || currentUser.name || 'Prof. Heber Roberto Ferreira';
+      document.getElementById('spcCurso').value = cls.curso || 'Curso Técnico SENAI';
+      document.getElementById('spcModulo').value = cls.modulo || 'Módulo Específico I';
+      document.getElementById('spcUC').value = cls.uc || 'Unidade Curricular';
+      document.getElementById('spcCHUC').value = cls.chUC || '100h';
+      document.getElementById('spcCHPlano').value = cls.chPlano || cls.chUC || '100h';
+
+      const capTecBase = (cls.capacidadesTecnicas && cls.capacidadesTecnicas.length > 0) ? cls.capacidadesTecnicas : [
+        `Identificar fundamentos técnicos, normas e requisitos operacionais de ${cls.uc}`,
+        `Planejar e estruturar etapas de desenvolvimento prático em ${cls.uc}`,
+        `Executar procedimentos operacionais aplicando instrumentos, softwares e boas práticas`,
+        `Realizar testes funcionais, diagnóstico de falhas e validação de qualidade técnica`
+      ];
+
+      const capSocBase = (cls.capacidadesSociais && cls.capacidadesSociais.length > 0) ? cls.capacidadesSociais : [
+        `Trabalhar em equipe demonstrando comunicação assertiva e colaboração`,
+        `Demonstrar organização, responsabilidade com prazos e zelo pela segurança e ambiente`,
+        `Demonstrar autonomia intelectual e proatividade na resolução de situações-problema`
+      ];
+
+      const conhecBase = (cls.conhecimentos && cls.conhecimentos.length > 0)
+        ? cls.conhecimentos.map(c => typeof c === 'string' ? c : `${c.titulo}${(c.subs && c.subs.length) ? ': ' + c.subs.join(', ') : ''}`)
+        : [
+          `1. Fundamentos, conceitos e normas técnicas aplicados a ${cls.uc}`,
+          `2. Ferramentas, instrumentos, recursos tecnológicos e configuração de ambiente`,
+          `3. Processos de execução prática, montagem, codificação ou operação técnica`,
+          `4. Controle de qualidade, testes, segurança e documentação técnica`
+        ];
+
+      const renderCheckboxes = (containerId, items, prefix) => {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        el.innerHTML = items.map((txt, idx) => `
+          <label class="flex items-start gap-2 p-2 bg-white rounded-lg border border-slate-200 hover:border-blue-400 cursor-pointer">
+            <input type="checkbox" name="${prefix}" value="${txt.replace(/"/g, '&quot;')}" checked class="mt-0.5 w-4 h-4 accent-blue-600 rounded">
+            <span class="text-[11px] font-medium text-slate-800 leading-snug">${txt}</span>
+          </label>
+        `).join('');
+      };
+
+      renderCheckboxes('spcListaCapTecnicas', capTecBase, 'chk_spc_tec');
+      renderCheckboxes('spcListaCapSociais', capSocBase, 'chk_spc_soc');
+      renderCheckboxes('spcListaConhecimentos', conhecBase, 'chk_spc_conh');
+
+      document.getElementById('modalSeletorPlanoCurso').classList.remove('hidden');
+    }
+
+    function fecharModalSeletorPlanoCurso() {
+      document.getElementById('modalSeletorPlanoCurso')?.classList.add('hidden');
+    }
+
+    function marcarTodosCheckboxesPlanoCurso(containerId, checked) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('input[type="checkbox"]').forEach(chk => { chk.checked = checked; });
+    }
+
+    function aplicarSelecaoPlanoCursoNoPlanoEnsino() {
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      cls.escola = document.getElementById('spcEscola').value.trim() || cls.escola;
+      cls.docentes = document.getElementById('spcDocentes').value.trim() || cls.docentes;
+      cls.docenteTitular = cls.docentes.split('/')[0].trim();
+      cls.curso = document.getElementById('spcCurso').value.trim() || cls.curso;
+      cls.modulo = document.getElementById('spcModulo').value.trim() || cls.modulo;
+      cls.uc = document.getElementById('spcUC').value.trim() || cls.uc;
+      cls.chUC = document.getElementById('spcCHUC').value.trim() || cls.chUC;
+      cls.chPlano = document.getElementById('spcCHPlano').value.trim() || cls.chPlano;
+
+      const tecSelecionadas = Array.from(document.querySelectorAll('input[name="chk_spc_tec"]:checked')).map(i => i.value);
+      const socSelecionadas = Array.from(document.querySelectorAll('input[name="chk_spc_soc"]:checked')).map(i => i.value);
+      const conhSelecionados = Array.from(document.querySelectorAll('input[name="chk_spc_conh"]:checked')).map(i => i.value);
+
+      if (tecSelecionadas.length > 0) cls.capacidadesTecnicas = tecSelecionadas;
+      if (socSelecionadas.length > 0) cls.capacidadesSociais = socSelecionadas;
+      if (conhSelecionados.length > 0) {
+        cls.conhecimentos = conhSelecionados.map((c, idx) => {
+          const parts = c.split(':');
+          return {
+            titulo: parts[0].trim(),
+            subs: parts[1] ? parts[1].split(',').map(s => s.trim()) : ['Aplicação prática em Situação de Aprendizagem']
+          };
+        });
+      }
+
+      saveStateToStorage();
+      populateClassSelector();
+      renderActiveTab();
+      fecharModalSeletorPlanoCurso();
+      alert(`✅ Dados importados do Plano de Curso para o Plano de Ensino!\n\n• Escola: ${cls.escola}\n• Docentes: ${cls.docentes}\n• Curso / Módulo / UC: ${cls.curso} (${cls.modulo} - ${cls.uc})\n• ${cls.capacidadesTecnicas.length} Capacidades Técnicas, ${cls.capacidadesSociais.length} Capacidades Sociais e ${cls.conhecimentos.length} Conhecimentos selecionados.`);
+    }
+
+    // 3. MÚLTIPLAS SITUAÇÕES DE APRENDIZAGEM (SA 01, SA 02...) E TABELAS RELACIONADAS
+    function atualizarSeletoresSituacaoAprendizagemUI() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const projetos = cls.projetos || [];
+
+      const selects = [
+        document.getElementById('selectFiltroSAItemC'),
+        document.getElementById('selectFiltroSAMatriz'),
+        document.getElementById('ativSAId')
+      ];
+
+      selects.forEach(sel => {
+        if (!sel) return;
+        const currentVal = sel.value || filtroSituacaoAprendizagemAtiva || 'TODAS';
+        let html = `<option value="TODAS">Todas as Situações de Aprendizagem (${projetos.length} SAs Consolidadas)</option>`;
+        projetos.forEach((p, idx) => {
+          const mod = p.modalidade || (idx === projetos.length - 1 && projetos.length > 1 ? 'SOMATIVA' : 'FORMATIVA');
+          const qtdCrit = (p.criterios || []).length;
+          html += `<option value="${p.id}">SA ${String(idx + 1).padStart(2, '0')} (${mod}): ${p.nome} [${qtdCrit} critérios]</option>`;
+        });
+        sel.innerHTML = html;
+        if (Array.from(sel.options).some(o => o.value === currentVal)) {
+          sel.value = currentVal;
+        }
+      });
+
+      const badgeMod = document.getElementById('badgeModalidadeSAMatriz');
+      const selectMod = document.getElementById('selectModalidadeSAItemC');
+      if (filtroSituacaoAprendizagemAtiva !== 'TODAS') {
+        const saAtiva = projetos.find(p => String(p.id) === String(filtroSituacaoAprendizagemAtiva));
+        if (saAtiva) {
+          const mod = saAtiva.modalidade || 'FORMATIVA';
+          if (selectMod) selectMod.value = mod;
+          if (badgeMod) badgeMod.textContent = `Avaliação ${mod}`;
+        }
+      } else {
+        if (badgeMod) badgeMod.textContent = `Formativa / Somativa`;
+      }
+    }
+
+    function filtrarTabelaItemCPorSA(saId) {
+      filtroSituacaoAprendizagemAtiva = saId || 'TODAS';
+      const s1 = document.getElementById('selectFiltroSAItemC');
+      const s2 = document.getElementById('selectFiltroSAMatriz');
+      if (s1 && s1.value !== filtroSituacaoAprendizagemAtiva) s1.value = filtroSituacaoAprendizagemAtiva;
+      if (s2 && s2.value !== filtroSituacaoAprendizagemAtiva) s2.value = filtroSituacaoAprendizagemAtiva;
+
+      renderItemCOficialPlano();
+      renderMatrizOficialItemC();
+    }
+
+    function atualizarModalidadeSAAtiva(novaModalidade) {
+      const cls = getActiveClass();
+      if (!cls || !cls.projetos) return;
+      if (filtroSituacaoAprendizagemAtiva === 'TODAS') {
+        cls.projetos.forEach(p => { p.modalidade = novaModalidade; });
+      } else {
+        const sa = cls.projetos.find(p => String(p.id) === String(filtroSituacaoAprendizagemAtiva));
+        if (sa) sa.modalidade = novaModalidade;
+      }
+      saveStateToStorage();
+      atualizarSeletoresSituacaoAprendizagemUI();
+      renderItemCOficialPlano();
+      renderMatrizOficialItemC();
+    }
+
+    function abrirModalNovaSituacaoAprendizagemRapida() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const nextNum = ((cls.projetos || []).length) + 1;
+      document.getElementById('nsaNome').value = `SA 0${nextNum} - Situação de Aprendizagem Prática (${cls.uc})`;
+      document.getElementById('nsaUC').value = cls.uc || '';
+      document.getElementById('nsaCH').value = '30h';
+      document.getElementById('nsaDescricao').value = `Desenvolvimento prático integrando capacidades técnicas, sociais, organizativas e metodológicas de ${cls.uc}.`;
+      document.getElementById('nsaCriteriosTexto').value = [
+        `CT1 | Aplica os procedimentos técnicos e operacionais de ${cls.uc} conforme especificações | CRITICO`,
+        `CT2 | Soluciona a situação-problema validando o funcionamento e qualidade da entrega | CRITICO`,
+        `CS1 | Demonstra organização, trabalho colaborativo e cumprimento dos prazos estabelecidos | DESEJAVEL`
+      ].join('\n');
+      document.getElementById('modalNovaSARapida').classList.remove('hidden');
+    }
+
+    function fecharModalNovaSARapida() {
+      document.getElementById('modalNovaSARapida')?.classList.add('hidden');
+    }
+
+    async function sugerirNovaSAComCopilotoIA() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const nextNum = ((cls.projetos || []).length) + 1;
+      document.getElementById('nsaNome').value = `SA 0${nextNum} - Desafio Tecnológico Aplicado em ${cls.uc}`;
+      document.getElementById('nsaDescricao').value = `Os estudantes atuarão na resolução de uma demanda real do setor produtivo envolvendo ${cls.uc}, planejando, executando e validando a entrega técnica com documentação e autoavaliação.`;
+      const capTec = (cls.capacidadesTecnicas && cls.capacidadesTecnicas[0]) ? cls.capacidadesTecnicas[0] : `Executar operações técnicas de ${cls.uc}`;
+      const capSoc = (cls.capacidadesSociais && cls.capacidadesSociais[0]) ? cls.capacidadesSociais[0] : `Demonstrar organização e trabalho em equipe`;
+      document.getElementById('nsaCriteriosTexto').value = [
+        `CT1 | Executa com precisão técnica: ${capTec.substring(0, 75)} | CRITICO`,
+        `CT2 | Testa, corrige falhas e entrega o produto funcional dentro das normas técnicas | CRITICO`,
+        `CS1 | Evidencia postura profissional: ${capSoc.substring(0, 75)} | DESEJAVEL`,
+        `CS2 | Documenta o processo técnico com clareza e rigor metodológico | DESEJAVEL`
+      ].join('\n');
+    }
+
+    function salvarNovaSituacaoAprendizagemRapida() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      if (!cls.projetos) cls.projetos = [];
+
+      const nome = document.getElementById('nsaNome').value.trim();
+      const modalidade = document.getElementById('nsaModalidade').value;
+      const estrategia = document.getElementById('nsaEstrategia').value;
+      const ch = document.getElementById('nsaCH').value.trim();
+      const descricao = document.getElementById('nsaDescricao').value.trim();
+      const linhasCrit = (document.getElementById('nsaCriteriosTexto').value || '').split('\n').map(l => l.trim()).filter(Boolean);
+
+      if (!nome) {
+        alert('Informe o nome da Situação de Aprendizagem.');
+        return;
+      }
+
+      const nextIdx = cls.projetos.length + 1;
+      const saId = `P${nextIdx}`;
+      const criterios = linhasCrit.map((linha, idx) => {
+        const parts = linha.split('|').map(p => p.trim());
+        const texto = parts.length >= 2 ? parts[1] : parts[0];
+        const tipoStr = (parts[2] || 'CRITICO').toUpperCase();
+        const isCritico = !tipoStr.includes('DESEJ');
+        return {
+          id: `${saId}_C${idx + 1}`,
+          texto: texto,
+          critico: isCritico,
+          capIdx: idx % Math.max(1, (cls.capacidadesTecnicas || []).length)
+        };
+      });
+
+      const novaSA = {
+        id: saId,
+        nome: nome,
+        tipo: estrategia,
+        modalidade: modalidade,
+        cargaHoraria: ch,
+        descricao: descricao,
+        criterios: criterios.length > 0 ? criterios : [
+          { id: `${saId}_C1`, texto: `Resolveu os requisitos críticos da ${nome}`, critico: true },
+          { id: `${saId}_C2`, texto: `Apresentou acabamento técnico e organização na ${nome}`, critico: false }
+        ]
+      };
+
+      cls.projetos.push(novaSA);
+      filtroSituacaoAprendizagemAtiva = saId;
+      saveStateToStorage();
+      atualizarSeletoresSituacaoAprendizagemUI();
+      renderActiveTab();
+      fecharModalNovaSARapida();
+      alert(`✅ Situação de Aprendizagem "${nome}" (${modalidade}) criada com sucesso!\n\nA Tabela de Avaliação das Capacidades (Critérios x Nome dos Alunos) já está vinculada e pronta.`);
+    }
+
+    // 4. INTEGRAÇÃO AUTOMÁTICA: CRONOGRAMA (DIA/MÊS/ANO) -> DIÁRIO DE CHAMADA
+    function renderBannerProgramaDoDiaNoDiario(dataFocoOpcional) {
+      const activeClass = getActiveClass();
+      if (!activeClass) return;
+
+      const elUC = document.getElementById('diarioProgramaUC');
+      const elSA = document.getElementById('diarioProgramaSA');
+      const elAssunto = document.getElementById('diarioProgramaAssunto');
+      const elBadgeData = document.getElementById('diarioProgramaDataAtivaBadge');
+      const selectData = document.getElementById('diarioSelectDataCronograma');
+
+      if (elUC) elUC.textContent = `${activeClass.uc || 'Unidade Curricular'} (${activeClass.curso || 'SENAI'})`;
+
+      // Busca cronograma salvo para a turma ou usa DEFAULT_DIARIO_DATES
+      let crono = cronoDadosTurma;
+      if (!crono || crono.id_turma !== appData.activeClassId) {
+        try {
+          const cached = localStorage.getItem(`senai_cronograma_${appData.activeClassId}`);
+          if (cached) crono = JSON.parse(cached);
+        } catch (e) {}
+      }
+
+      const datasDisponiveis = [];
+      if (crono && crono.matriz_aulas && Array.isArray(crono.matriz_aulas.dias) && crono.matriz_aulas.dias.length > 0) {
+        crono.matriz_aulas.dias.forEach(d => {
+          datasDisponiveis.push({
+            iso: d.dataISO,
+            label: `${String(d.diaNum).padStart(2, '0')}/${d.mesNome.substring(0, 3)} (${d.qa} aulas)`
+          });
+        });
+      } else if (typeof DEFAULT_DIARIO_DATES !== 'undefined') {
+        DEFAULT_DIARIO_DATES.forEach(d => {
+          datasDisponiveis.push({
+            iso: d.key,
+            label: `${d.dateStr || d.key} — ${d.day} (${d.period}ª aula)`
+          });
+        });
+      }
+
+      if (selectData && datasDisponiveis.length > 0) {
+        const atual = dataFocoOpcional || selectData.value || datasDisponiveis[0].iso;
+        selectData.innerHTML = datasDisponiveis.map(d => `<option value="${d.iso}">${d.label}</option>`).join('');
+        if (datasDisponiveis.some(d => d.iso === atual)) selectData.value = atual;
+      }
+
+      const dataAtiva = dataFocoOpcional || (selectData ? selectData.value : '') || (datasDisponiveis[0] ? datasDisponiveis[0].iso : 'Hoje');
+      if (elBadgeData) elBadgeData.textContent = `Aula do Dia: ${formatarDataBr(dataAtiva)}`;
+
+      // Descobre qual assunto/SA está previsto no Cronograma para esta data
+      let assuntosDoDia = [];
+      if (crono && crono.matriz_aulas && Array.isArray(crono.matriz_aulas.assuntos)) {
+        crono.matriz_aulas.assuntos.forEach(ass => {
+          if (ass.celulas && ass.celulas[dataAtiva] && ass.celulas[dataAtiva] !== 'LIMPAR') {
+            assuntosDoDia.push(`${ass.nome} [${ass.celulas[dataAtiva]}]`);
+          }
+        });
+      }
+
+      const saPrincipal = (activeClass.projetos && activeClass.projetos[0]) ? activeClass.projetos[0].nome : 'SA 01 - Situação de Aprendizagem da UC';
+      if (elSA) elSA.textContent = saPrincipal;
+
+      if (elAssunto) {
+        if (assuntosDoDia.length > 0) {
+          elAssunto.innerHTML = `<strong>Conteúdo / Situação Programada no Cronograma para ${formatarDataBr(dataAtiva)}:</strong> <span class="text-emerald-300 font-bold">${assuntosDoDia.join(' • ')}</span>`;
+        } else {
+          const conhPadrao = (activeClass.conhecimentos || []).slice(0, 2).map(c => c.titulo || c).join(' • ') || `Desenvolvimento prático das capacidades técnicas de ${activeClass.uc}`;
+          elAssunto.innerHTML = `<strong>Programa do Plano de Ensino em Andamento:</strong> <span class="text-amber-200">${conhPadrao}</span>`;
+        }
+      }
+    }
+
+    function selecionarDataProgramadaDiario(dataIso) {
+      renderBannerProgramaDoDiaNoDiario(dataIso);
+    }
+
+    function criarAtividadeDoDiaPeloDiario() {
+      const activeClass = getActiveClass();
+      const selectData = document.getElementById('diarioSelectDataCronograma');
+      const dataAula = selectData ? selectData.value : new Date().toISOString().slice(0, 10);
+      abrirModalCriarAtividade();
+      const titEl = document.getElementById('ativTitulo');
+      if (titEl) {
+        titEl.value = `Atividade Prática da Aula (${formatarDataBr(dataAula)}) — ${activeClass.uc}`;
+      }
+      gerarCamposAtividadeComCopilotoIA();
+    }
+
+    // 5. VINCULAÇÃO DE SITUAÇÃO DE APRENDIZAGEM NA CRIAÇÃO DE ATIVIDADE PRÁTICA (0 A 100)
+    function aoMudarSAVinculadaAtividade(saId) {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const container = document.getElementById('containerListaCriteriosAtiv');
+      if (!container) return;
+
+      const projetos = (saId && saId !== 'TODAS')
+        ? (cls.projetos || []).filter(p => String(p.id) === String(saId))
+        : (cls.projetos || []);
+
+      const todosCrit = [];
+      projetos.forEach(p => {
+        (p.criterios || []).forEach(c => {
+          todosCrit.push({ ...c, projNome: p.nome });
+        });
+      });
+
+      if (todosCrit.length === 0) return;
+      const ptsPadrao = Math.floor(100 / todosCrit.length);
+      const resto = 100 - (ptsPadrao * todosCrit.length);
+
+      container.innerHTML = todosCrit.map((c, idx) => {
+        const pts = idx === 0 ? (ptsPadrao + resto) : ptsPadrao;
+        return `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            <label class="flex items-start gap-2 cursor-pointer flex-grow">
+              <input type="checkbox" class="chk-criterio-ativ mt-0.5 w-4 h-4 text-indigo-600 rounded border-slate-300"
+                     data-id="${c.id}" data-texto="${c.texto.replace(/"/g, '&quot;')}" checked onchange="recalcularSomaPontosAtividade()">
+              <div>
+                <span class="font-bold text-slate-800 block text-xs">${c.id} — ${c.texto}</span>
+                <span class="text-[10px] text-slate-500">${c.projNome || 'Situação de Aprendizagem'}</span>
+              </div>
+            </label>
+            <div class="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
+              <select class="sel-tipo-criterio-ativ bg-white border border-slate-300 rounded px-2 py-1 text-[10px] font-bold ${c.critico ? 'text-rose-700' : 'text-blue-700'}">
+                <option value="critico" ${c.critico ? 'selected' : ''}>Crítico (Obrigatório)</option>
+                <option value="desejavel" ${!c.critico ? 'selected' : ''}>Desejável</option>
+              </select>
+              <div class="flex items-center gap-1">
+                <input type="number" class="inp-valor-criterio-ativ w-16 bg-white border border-slate-300 rounded px-2 py-1 text-xs font-extrabold text-center text-slate-900"
+                       value="${pts}" min="0" max="100" oninput="recalcularSomaPontosAtividade()">
+                <span class="text-[10px] font-bold text-slate-500">pts</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof recalcularSomaPontosAtividade === 'function') recalcularSomaPontosAtividade();
+    }
+
+    // 6. COPILOTO IA HÍBRIDO SENAI (CENTRAL + BOTÕES CONTEXTUAIS)
+    async function chamarBackendCopilotoIA(action, contextPayload, promptCustom = '') {
+      try {
+        const res = await fetch('/api/ai/copilot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action,
+            context: contextPayload,
+            prompt: promptCustom
+          })
+        });
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (e) {
+        console.warn('[COPILOTO IA] Fallback local acionado:', e);
+      }
+      return null;
+    }
+
+    async function abrirCopilotoIA(modoInicial = 'plano_ensino') {
+      const cls = getActiveClass();
+      const elCtx = document.getElementById('iaContextoTurmaUC');
+      if (elCtx && cls) {
+        elCtx.textContent = `${cls.curso || 'Curso SENAI'} • UC: ${cls.uc || 'UC Ativa'} (${getActiveStudents().length} alunos)`;
+      }
+
+      try {
+        const res = await fetch('/api/ai/config');
+        if (res.ok) {
+          const cfg = await res.json();
+          const badge = document.getElementById('badgeMotorCopilotoAtivo');
+          if (badge) {
+            badge.textContent = (cfg.hasKey && cfg.provider !== 'native')
+              ? `LLM Conectado: ${cfg.provider.toUpperCase()} (${cfg.maskedKey})`
+              : 'Motor Especialista MSEP Nativo Ativo';
+          }
+          const selProv = document.getElementById('iaConfigProvider');
+          const inpMod = document.getElementById('iaConfigModel');
+          if (selProv && cfg.provider) selProv.value = cfg.provider;
+          if (inpMod && cfg.model) inpMod.value = cfg.model;
+        }
+      } catch (e) {}
+
+      selecionarModoCopilotoIA(modoInicial);
+      document.getElementById('modalCopilotoIA').classList.remove('hidden');
+    }
+
+    function fecharCopilotoIA() {
+      document.getElementById('modalCopilotoIA')?.classList.add('hidden');
+    }
+
+    function toggleConfigApiCopilotoIA() {
+      document.getElementById('painelConfigApiCopiloto')?.classList.toggle('hidden');
+    }
+
+    async function salvarConfigApiCopilotoIA() {
+      const provider = document.getElementById('iaConfigProvider').value;
+      const model = document.getElementById('iaConfigModel').value.trim();
+      const apiKey = document.getElementById('iaConfigApiKey').value.trim();
+
+      try {
+        const res = await fetch('/api/ai/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ provider, model, apiKey })
+        });
+        if (res.ok) {
+          alert(`✅ Configuração do Motor de IA salva com sucesso no banco de dados MySQL!`);
+          toggleConfigApiCopilotoIA();
+          abrirCopilotoIA(modoCopilotoIAAtual);
+        }
+      } catch (e) {
+        alert('Erro ao salvar configuração de IA.');
+      }
+    }
+
+    function selecionarModoCopilotoIA(modo) {
+      modoCopilotoIAAtual = modo;
+      ['plano_ensino', 'cronograma', 'criar_atividade', 'tutor_aluno'].forEach(m => {
+        const btn = document.getElementById(`btnModoIA-${m}`);
+        if (!btn) return;
+        btn.className = (m === modo)
+          ? 'px-3 py-2 rounded-xl font-extrabold text-xs bg-purple-600 text-white cursor-pointer flex items-center gap-1.5 shadow-xs'
+          : 'px-3 py-2 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer flex items-center gap-1.5';
+      });
+
+      const desc = document.getElementById('iaDescricaoModoAtivo');
+      if (desc) {
+        if (modo === 'plano_ensino') desc.textContent = 'Gera Situações de Aprendizagem (Formativa e Somativa), Capacidades e Critérios Críticos/Desejáveis para o Plano de Ensino.';
+        else if (modo === 'cronograma') desc.textContent = 'Distribui os assuntos e Situações de Aprendizagem nas datas (Dia/Mês/Ano) do Cronograma e vincula ao Diário de Chamada.';
+        else if (modo === 'criar_atividade') desc.textContent = 'Cria uma Atividade Prática do dia a dia (valendo de 0 a 100 pontos) vinculada aos critérios da Situação de Aprendizagem.';
+        else desc.textContent = 'Gera orientações passo a passo e um Plano de Estudos personalizado para o estudante atingir 100% dos critérios.';
+      }
+
+      document.getElementById('iaResultadoContainer')?.classList.add('hidden');
+    }
+
+    async function executarAcaoCopilotoIA() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const btn = document.getElementById('btnExecutarCopilotoIA');
+      const promptCustom = document.getElementById('iaPromptCustomizado')?.value.trim() || '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando com Copiloto IA...`;
+      }
+
+      const payload = await chamarBackendCopilotoIA(modoCopilotoIAAtual, {
+        curso: cls.curso,
+        uc: cls.uc,
+        cargaHoraria: cls.chUC || '100h',
+        capacidadesTecnicas: cls.capacidadesTecnicas,
+        capacidadesSociais: cls.capacidadesSociais,
+        conhecimentos: (cls.conhecimentos || []).map(c => c.titulo || c),
+        alunoNome: currentUser.name
+      }, promptCustom);
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar Agora com Copiloto IA`;
+      }
+
+      ultimoResultadoGeradoIA = payload ? payload.result : null;
+      const container = document.getElementById('iaResultadoContainer');
+      const preview = document.getElementById('iaResultadoPreview');
+      if (container && preview && ultimoResultadoGeradoIA) {
+        container.classList.remove('hidden');
+        if (typeof ultimoResultadoGeradoIA === 'string') {
+          preview.textContent = ultimoResultadoGeradoIA;
+        } else if (ultimoResultadoGeradoIA.resumo) {
+          preview.textContent = `${ultimoResultadoGeradoIA.resumo}\n\n${JSON.stringify(ultimoResultadoGeradoIA, null, 2)}`;
+        } else {
+          preview.textContent = JSON.stringify(ultimoResultadoGeradoIA, null, 2);
+        }
+      }
+    }
+
+    function aplicarResultadoGeradoCopilotoIA() {
+      const cls = getActiveClass();
+      if (!cls || !ultimoResultadoGeradoIA) return;
+
+      if (modoCopilotoIAAtual === 'plano_ensino' && ultimoResultadoGeradoIA.situacoesAprendizagem) {
+        cls.projetos = ultimoResultadoGeradoIA.situacoesAprendizagem.map((sa, idx) => ({
+          id: sa.id || `P${idx + 1}`,
+          nome: sa.nome,
+          tipo: sa.estrategia || 'Situação-Problema',
+          modalidade: sa.modalidade || 'FORMATIVA',
+          cargaHoraria: sa.cargaHoraria || '40h',
+          descricao: `${sa.contextualizacao || ''} ${sa.desafio || ''}`.trim(),
+          criterios: (sa.criterios || []).map((c, cIdx) => ({
+            id: c.id || `P${idx + 1}_C${cIdx + 1}`,
+            texto: c.texto,
+            critico: Boolean(c.critico),
+            capIdx: cIdx % Math.max(1, (cls.capacidadesTecnicas || []).length)
+          }))
+        }));
+        saveStateToStorage();
+        atualizarSeletoresSituacaoAprendizagemUI();
+        renderActiveTab();
+        fecharCopilotoIA();
+        alert(`✅ Plano de Ensino atualizado pelo Copiloto IA com ${cls.projetos.length} Situações de Aprendizagem e Tabelas de Avaliação!`);
+      } else if (modoCopilotoIAAtual === 'cronograma') {
+        sincronizarAssuntosComPlanoEnsino();
+        fecharCopilotoIA();
+        switchTab('cronograma');
+      } else if (modoCopilotoIAAtual === 'criar_atividade') {
+        fecharCopilotoIA();
+        abrirModalCriarAtividade();
+        gerarCamposAtividadeComCopilotoIA();
+      } else {
+        fecharCopilotoIA();
+      }
+    }
+
+    // Auxiliar direto no Modal de Criar Atividade Prática (0 a 100)
+    async function gerarCamposAtividadeComCopilotoIA() {
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      atualizarSeletoresSituacaoAprendizagemUI();
+      const saId = document.getElementById('ativSAId')?.value || 'TODAS';
+      aoMudarSAVinculadaAtividade(saId);
+
+      const resp = await chamarBackendCopilotoIA('criar_atividade', {
+        curso: cls.curso,
+        uc: cls.uc,
+        capacidadesTecnicas: cls.capacidadesTecnicas
+      });
+
+      const r = (resp && resp.result) ? resp.result : {};
+      document.getElementById('ativTitulo').value = r.titulo || `Atividade Prática Diária — Resolução de Situação Real em ${cls.uc}`;
+      document.getElementById('ativContextualizacao').value = r.contextualizacao || `No ambiente profissional de ${cls.curso}, você recebeu uma ordem de serviço técnica referente a ${cls.uc} que exige diagnóstico, execução prática e validação.`;
+      document.getElementById('ativDesafio').value = r.desafio || `Planejar e solucionar a situação prática aplicando as capacidades técnicas e socioemocionais da Unidade Curricular, registrando a evidência e autoavaliação.`;
+      document.getElementById('ativResultadosEsperados').value = r.resultadosEsperados || `Entrega prática funcional validada (0 a 100 pontos) e critérios críticos atendidos.`;
+      document.getElementById('ativDescricao').value = r.orientacoes || `1. Resolva a atividade prática.\n2. Use o Tutor Copiloto IA se precisar de dicas.\n3. Envie a evidência e marque sua autoavaliação nos critérios.`;
+
+      const prazo = new Date();
+      prazo.setDate(prazo.getDate() + 7);
+      if (document.getElementById('ativDataEntrega')) {
+        document.getElementById('ativDataEntrega').value = prazo.toISOString().slice(0, 10);
+      }
+    }
+
+    // Auxiliar direto no Modal de Correção Docente (Pré-Correção IA + Nota 0-100 + Feedback)
+    async function preCorrigirEntregaComCopilotoIA() {
+      if (!atividadeSendoCorrigida || !alunoSendoCorrigido) return;
+
+      const entrega = (appData.entregas || []).find(e => e.id_atividade === atividadeSendoCorrigida.id && String(e.id_aluno) === String(alunoSendoCorrigido.id));
+      const criterios = Array.isArray(atividadeSendoCorrigida.criterios) ? atividadeSendoCorrigida.criterios : [];
+
+      const resp = await chamarBackendCopilotoIA('corrigir_entrega', {
+        uc: getActiveClass()?.uc,
+        alunoNome: alunoSendoCorrigido.name,
+        criterios: criterios,
+        entrega: entrega || {}
+      });
+
+      // Marca os critérios conforme autoavaliação ou evidência entregue
+      const temEntrega = Boolean(entrega && (entrega.link_evidencia || entrega.texto_resposta));
+      criterios.forEach(c => {
+        const autoVal = (entrega && entrega.autoavaliacao && entrega.autoavaliacao[c.id]) ? entrega.autoavaliacao[c.id] : (temEntrega ? 'S' : 'S');
+        selecionarAvaliacaoDocenteCriterio(c.id, autoVal);
+      });
+
+      const { nota, criticosAtingidos } = recalcularNotaDocente();
+      const fbEl = document.getElementById('docenteParecerFeedback');
+      if (fbEl) {
+        fbEl.value = (resp && resp.result && resp.result.feedbackSugerido)
+          ? resp.result.feedbackSugerido
+          : `Parabéns pela dedicação em ${atividadeSendoCorrigida.titulo}, ${alunoSendoCorrigido.name}! Sua entrega atingiu ${nota}/100 pontos (${criticosAtingidos ? '100% dos critérios críticos atendidos' : 'atenção aos critérios críticos para recuperação'}). A Tabela da Situação de Aprendizagem foi atualizada automaticamente.`;
+      }
+    }
+
+    // 7. TUTOR COPILOTO IA DO ESTUDANTE & PAINEL DE DESEMPENHO COMPLETO DO ALUNO
+    async function pedirDicaTutorAlunoIA() {
+      const ativId = document.getElementById('alunoSubmissaoAtivId')?.value;
+      const ativ = (appData.atividades || []).find(a => a.id === ativId) || {};
+      const box = document.getElementById('alunoTutorIARespostaBox');
+      if (!box) return;
+      box.classList.remove('hidden');
+      box.textContent = '🤖 Consultando Tutor Copiloto IA SENAI...';
+
+      const resp = await chamarBackendCopilotoIA('tutor_aluno', {
+        uc: getActiveClass()?.uc,
+        atividadeTitulo: ativ.titulo,
+        desafio: ativ.desafio,
+        criterios: ativ.criterios,
+        respostaParcial: document.getElementById('alunoTextoResposta')?.value || ''
+      }, 'Me dê um roteiro passo a passo de como resolver esta situação prática com excelência.');
+
+      box.textContent = (resp && resp.result && resp.result.orientacaoTutor)
+        ? resp.result.orientacaoTutor
+        : `Olá, ${currentUser.name || 'Estudante'}! Para atingir 100 pontos nesta atividade:\n1. Analise o cenário e identifique os requisitos técnicos.\n2. Desenvolva a solução garantindo que todos os Critérios Críticos sejam atendidos.\n3. Descreva claramente o que você fez no campo de resposta e anexe o link da evidência.`;
+    }
+
+    async function validarRespostaAlunoComIA() {
+      const texto = (document.getElementById('alunoTextoResposta')?.value || '').trim();
+      const link = (document.getElementById('alunoLinkEvidencia')?.value || '').trim();
+      const box = document.getElementById('alunoTutorIARespostaBox');
+      if (!box) return;
+      box.classList.remove('hidden');
+
+      if (!texto && !link) {
+        box.textContent = '⚠️ Escreva um resumo da sua solução ou cole o link da evidência acima para que o Tutor Copiloto IA possa revisar antes do envio!';
+        return;
+      }
+
+      box.textContent = `✅ Pré-Validação do Tutor Copiloto IA:\n\n• Evidência / Link: ${link ? 'Informado (' + link + ')' : 'Não informado (recomendado anexar link se houver protótipo/arquivo)'}\n• Detalhamento Técnico: ${texto.length >= 30 ? 'Bom nível de detalhamento técnico!' : 'Sua descrição está curta. Recomendamos explicar quais passos técnicos você executou para comprovar os critérios críticos.'}\n• Autoavaliação: Verifique se você marcou com sinceridade técnica cada critério abaixo antes de clicar em "Submeter Entrega & Autoavaliação".`;
+    }
+
+    function renderSecaoDesempenhoCompletoAluno() {
+      const container = document.getElementById('containerAlunoDesempenhoCompleto');
+      if (!container) return;
+
+      const alunoId = currentUser.id || 1;
+      const turmaId = appData.activeClassId;
+      const activeClass = getActiveClass();
+      if (!activeClass) return;
+
+      const gradeInfo = calculateStudentGrade(alunoId);
+
+      // Frequência do aluno no Diário de Classe
+      const classAtt = (appData.attendance && appData.attendance[turmaId] && appData.attendance[turmaId][alunoId])
+        ? appData.attendance[turmaId][alunoId]
+        : { dates: {} };
+      const dateKeys = Object.keys(classAtt.dates || {});
+      const totalAulasChamada = dateKeys.length || 10;
+      const presencas = dateKeys.filter(k => classAtt.dates[k] === 'P' || classAtt.dates[k] === 'A').length || totalAulasChamada;
+      const taxaFrequencia = Math.round((presencas / Math.max(1, totalAulasChamada)) * 100);
+
+      // Notas acumuladas de 0 a 100 nas atividades do dia a dia
+      const entregasAluno = (appData.entregas || []).filter(e => String(e.id_aluno) === String(alunoId));
+      const mediaAtividadesDia = entregasAluno.length > 0
+        ? Math.round(entregasAluno.reduce((acc, e) => acc + (Number(e.nota_final) || 0), 0) / entregasAluno.length)
+        : gradeInfo.notaFinal;
+
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-extrabold uppercase text-slate-500 block">Acumulado nas Atividades (0-100)</span>
+            <span class="text-2xl font-display font-black text-indigo-700 mt-1 block">${mediaAtividadesDia} / 100 pts</span>
+            <span class="text-[11px] text-slate-500">${entregasAluno.length} atividade(s) prática(s) entregue(s)</span>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-extrabold uppercase text-slate-500 block">Nível de Desempenho MSEP</span>
+            <span class="text-2xl font-display font-black text-emerald-700 mt-1 block">Nível ${gradeInfo.nivelMsep}</span>
+            <span class="text-[11px] text-slate-600 font-semibold">${gradeInfo.situacaoRegimental}</span>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-extrabold uppercase text-slate-500 block">Frequência no Diário de Classe</span>
+            <span class="text-2xl font-display font-black ${taxaFrequencia >= 75 ? 'text-emerald-700' : 'text-rose-700'} mt-1 block">${taxaFrequencia}%</span>
+            <span class="text-[11px] text-slate-500">${presencas} presenças em ${totalAulasChamada} aulas</span>
+          </div>
+
+          <div class="bg-gradient-to-br from-purple-900 to-indigo-950 text-white rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase text-purple-300 block">Copiloto IA do Estudante</span>
+              <p class="text-xs font-bold mt-1">Gere seu Plano de Estudos personalizado para atingir 100 pontos!</p>
+            </div>
+            <button type="button" onclick="abrirCopilotoIA('tutor_aluno')" class="mt-2 bg-purple-500 hover:bg-purple-400 text-white font-extrabold px-3 py-1.5 rounded-lg text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-robot text-amber-300"></i> Abrir Tutor Copiloto IA
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
     // INICIALIZAÇÃO GERAL DO SISTEMA (DOMContentLoaded)
     // =========================================================================
     document.addEventListener("DOMContentLoaded", () => {
@@ -14441,6 +15789,8 @@ Instruções do Sistema:
       try { carregarCursosSenai(); } catch(e) { console.error("carregarCursosSenai:", e); }
       try { carregarAtividadesDoServidor(); } catch(e) { console.error("carregarAtividadesDoServidor:", e); }
       try { carregarDadosAuditoriaMIGAE(); } catch(e) { console.error("carregarDadosAuditoriaMIGAE:", e); }
+      try { carregarCamposAlocacaoRapidaGestao(); } catch(e) { console.error("carregarCamposAlocacaoRapidaGestao:", e); }
+      try { atualizarSeletoresSituacaoAprendizagemUI(); } catch(e) { console.error("atualizarSeletoresSituacaoAprendizagemUI:", e); }
       try { renderActiveTab(); } catch(e) { console.error("renderActiveTab:", e); }
       try { updateCalculator(); } catch(e) { console.error("updateCalculator:", e); }
       try { renderizarRelatorioOficialTelas(); } catch(e) { console.error("renderizarRelatorioOficialTelas:", e); }
