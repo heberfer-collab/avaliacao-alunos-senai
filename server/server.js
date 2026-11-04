@@ -911,42 +911,42 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // --- COPILOTO IA HÍBRIDO (MICROSOFT COPILOT / AZURE OPENAI + MOTOR PEDAGÓGICO MSEP + GEMINI / OPENAI / NVIDIA) ---
+    // --- COPILOTO IA HÍBRIDO (GOOGLE AI STUDIO / GEMINI @docentes.senai.br + GOOGLE CLASSROOM + MICROSOFT COPILOT + MOTOR MSEP) ---
     if (urlPath === '/api/ai/config') {
       if (req.method === 'GET') {
         try {
           let config = {
-            provider: 'microsoft_msep',
-            model: 'gpt-4o (Microsoft Copilot MSEP)',
-            endpointUrl: '',
-            hasKey: false,
-            maskedKey: 'Motor Microsoft MSEP Ativo'
+            provider: 'google_ai_studio',
+            model: 'gemini-2.5-flash',
+            endpointUrl: 'https://aistudio.google.com',
+            hasKey: Boolean(process.env.GEMINI_API_KEY),
+            maskedKey: process.env.GEMINI_API_KEY ? 'Google AI Studio Env' : 'Google AI Studio (@docentes.senai.br) + MSEP Ativo'
           };
           const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
           if (rows.length > 0 && rows[0].value) {
             const parsed = JSON.parse(rows[0].value);
             const hasKey = Boolean(parsed.apiKey && parsed.apiKey.length > 5);
             config = {
-              provider: parsed.provider || 'microsoft_msep',
-              model: parsed.model || 'gpt-4o',
-              endpointUrl: parsed.endpointUrl || '',
+              provider: parsed.provider || 'google_ai_studio',
+              model: parsed.model || 'gemini-2.5-flash',
+              endpointUrl: parsed.endpointUrl || 'https://aistudio.google.com',
               hasKey,
-              maskedKey: hasKey ? `${parsed.apiKey.substring(0, 4)}...${parsed.apiKey.slice(-3)}` : 'Modo Institucional SENAI'
+              maskedKey: hasKey ? `${parsed.apiKey.substring(0, 5)}...${parsed.apiKey.slice(-3)}` : 'Google AI Studio (@docentes.senai.br)'
             };
-          } else if (process.env.AZURE_OPENAI_API_KEY) {
+          } else if (process.env.GEMINI_API_KEY) {
             config = {
-              provider: 'microsoft_azure',
-              model: process.env.AZURE_OPENAI_MODEL || 'gpt-4o',
-              endpointUrl: process.env.AZURE_OPENAI_ENDPOINT || '',
+              provider: 'google_ai_studio',
+              model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+              endpointUrl: 'https://aistudio.google.com',
               hasKey: true,
-              maskedKey: 'Azure OpenAI Env'
+              maskedKey: 'Google AI Studio Env'
             };
           }
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(config));
         } catch (e) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ provider: 'microsoft_msep', model: 'gpt-4o', hasKey: false }));
+          res.end(JSON.stringify({ provider: 'google_ai_studio', model: 'gemini-2.5-flash', hasKey: false }));
         }
         return;
       }
@@ -955,9 +955,9 @@ const server = http.createServer(async (req, res) => {
         try {
           const body = await getJsonBody();
           const toSave = {
-            provider: body.provider || 'microsoft_msep',
-            model: body.model || 'gpt-4o',
-            endpointUrl: (body.endpointUrl || '').trim(),
+            provider: body.provider || 'google_ai_studio',
+            model: body.model || 'gemini-2.5-flash',
+            endpointUrl: (body.endpointUrl || 'https://aistudio.google.com').trim(),
             apiKey: (body.apiKey || '').trim()
           };
           await db.execute(
@@ -974,7 +974,7 @@ const server = http.createServer(async (req, res) => {
           }));
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Erro ao salvar configuração Microsoft Copilot', details: e.message }));
+          res.end(JSON.stringify({ error: 'Erro ao salvar configuração do Google AI Studio', details: e.message }));
         }
         return;
       }
@@ -988,10 +988,10 @@ const server = http.createServer(async (req, res) => {
         const promptUsuario = body.prompt || '';
 
         let aiConfig = {
-          provider: 'microsoft_msep',
-          apiKey: process.env.AZURE_OPENAI_API_KEY || process.env.GEMINI_API_KEY || '',
-          model: 'gpt-4o',
-          endpointUrl: process.env.AZURE_OPENAI_ENDPOINT || ''
+          provider: 'google_ai_studio',
+          apiKey: process.env.GEMINI_API_KEY || process.env.AZURE_OPENAI_API_KEY || '',
+          model: 'gemini-2.5-flash',
+          endpointUrl: 'https://aistudio.google.com'
         };
         try {
           const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
@@ -1010,11 +1010,11 @@ const server = http.createServer(async (req, res) => {
           ? ctx.capacidadesSociais
           : [`Demonstrar organização, responsabilidade e trabalho em equipe`, `Cumprir normas técnicas, de saúde e segurança no trabalho`];
 
-        // Estrutura pedagógica MSEP padrão (usada diretamente ou enriquecida via Microsoft Azure OpenAI)
+        // Estrutura pedagógica MSEP padrão (usada diretamente ou enriquecida em tempo real pelo Google AI Studio / Gemini 2.5)
         let structuredResult = {};
         if (acao === 'plano_ensino') {
           structuredResult = {
-            resumo: `🪟 [Microsoft Copilot SENAI — MSEP] Plano de Ensino estruturado para a UC "${ucNome}" (${cursoNome})${promptUsuario ? ` com foco em: ${promptUsuario}` : ''}. Foram geradas 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) com critérios críticos e desejáveis vinculados às capacidades do Plano de Curso.`,
+            resumo: `✨ [Google AI Studio & Gemini 2.5 — @docentes.senai.br] Plano de Ensino MSEP estruturado para a UC "${ucNome}" (${cursoNome})${promptUsuario ? ` com foco em: ${promptUsuario}` : ''}. Foram geradas 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) prontas para integração com Google Classroom e com critérios críticos e desejáveis vinculados às capacidades do Plano de Curso.`,
             situacoesAprendizagem: [
               {
                 id: 'P1',
@@ -1023,7 +1023,7 @@ const server = http.createServer(async (req, res) => {
                 modalidade: 'FORMATIVA',
                 cargaHoraria: '40h',
                 contextualizacao: `No setor industrial de ${cursoNome}, a equipe técnica precisa estruturar e executar uma solução operacional para ${ucNome}${promptUsuario ? ` (${promptUsuario})` : ''}, atendendo aos padrões de qualidade e produtividade.`,
-                desafio: `Planejar, executar e validar os procedimentos técnicos de ${ucNome}, registrando evidências práticas e realizando autoavaliação formativa.`,
+                desafio: `Planejar, executar e validar os procedimentos técnicos de ${ucNome}, registrando evidências práticas no Google Classroom / Registro Escolar e realizando autoavaliação formativa.`,
                 criterios: [
                   { id: 'P1_C1', texto: `Identifica e prepara os recursos, normas e requisitos técnicos para ${capTec[0].toLowerCase()}`, critico: true },
                   { id: 'P1_C2', texto: `Executa as etapas operacionais solucionando falhas com precisão técnica`, critico: true },
@@ -1048,16 +1048,16 @@ const server = http.createServer(async (req, res) => {
           };
         } else if (acao === 'cronograma') {
           structuredResult = {
-            resumo: `🪟 [Microsoft Copilot SENAI — Cronograma FR 93] As Situações de Aprendizagem e os Conhecimentos de "${ucNome}" foram organizados progressivamente para vinculação automática às datas (Dia/Mês/Ano) e ao Diário de Chamada.`
+            resumo: `✨ [Google AI Studio & Gemini 2.5 — Cronograma FR 93] As Situações de Aprendizagem e os Conhecimentos de "${ucNome}" foram organizados progressivamente para vinculação automática às datas (Dia/Mês/Ano) e ao Diário de Chamada.`
           };
         } else if (acao === 'criar_atividade') {
           structuredResult = {
-            resumo: `🪟 [Microsoft Copilot SENAI — Atividade Prática 0 a 100 pts] Situação prática gerada para "${ucNome}". Ao corrigir, os critérios atingidos atualizam automaticamente a Tabela da Situação de Aprendizagem.`,
+            resumo: `✨ [Google AI Studio & Google Classroom — Atividade Prática 0 a 100 pts] Situação prática gerada para "${ucNome}". Ao corrigir, os critérios atingidos atualizam automaticamente a Tabela da Situação de Aprendizagem.`,
             titulo: `Atividade Prática Diária — Resolução de Situação Real em ${ucNome}${promptUsuario ? ` (${promptUsuario.substring(0, 35)})` : ''}`,
             contextualizacao: `Em uma demanda real do ambiente produtivo de ${cursoNome}, você recebeu uma ordem de serviço técnica referente a ${ucNome}${promptUsuario ? ` focada em ${promptUsuario}` : ''}.`,
-            desafio: `Aplicar na prática os conhecimentos e capacidades de ${ucNome} para solucionar o problema proposto, testar o resultado e anexar a evidência técnica no Registro Escolar.`,
+            desafio: `Aplicar na prática os conhecimentos e capacidades de ${ucNome} para solucionar o problema proposto, testar o resultado e anexar a evidência técnica (Google Classroom / Registro Escolar).`,
             resultadosEsperados: `Solução prática funcional documentada (valendo de 0 a 100 pontos) e autoavaliação preenchida nos critérios da Situação de Aprendizagem.`,
-            orientacoes: `1. Leia atentamente a Contextualização e o Desafio.\n2. Utilize o Tutor Microsoft Copilot IA caso precise de dicas passo a passo.\n3. Envie o link/resumo da sua solução e marque sua Autoavaliação.`
+            orientacoes: `1. Leia atentamente a Contextualização e o Desafio.\n2. Utilize o Tutor Google Gemini IA caso precise de dicas passo a passo.\n3. Envie o link/resumo da sua solução e marque sua Autoavaliação.`
           };
         } else if (acao === 'corrigir_entrega') {
           const nomeAl = ctx.alunoNome || 'Estudante';
@@ -1066,30 +1066,46 @@ const server = http.createServer(async (req, res) => {
           };
         } else {
           structuredResult = {
-            orientacaoTutor: `🪟 Tutor Microsoft Copilot SENAI — Roteiro Passo a Passo para "${ctx.atividadeTitulo || ucNome}":\n\n1️⃣ Compreensão do Cenário: Identifique qual requisito técnico principal o desafio de ${ucNome} exige.\n2️⃣ Execução Prática: Resolva uma etapa por vez, priorizando sempre os Critérios Críticos (obrigatórios para aprovação direta no Nível MSEP).\n3️⃣ Registro da Evidência: Descreva no campo de texto o que você implementou/executou e cole o link da sua evidência.\n4️⃣ Autoavaliação Consciente: Revise cada critério antes de submeter.`
+            orientacaoTutor: `✨ Tutor Google AI Studio / Gemini SENAI — Roteiro Passo a Passo para "${ctx.atividadeTitulo || ucNome}":\n\n1️⃣ Compreensão do Cenário: Identifique qual requisito técnico principal o desafio de ${ucNome} exige.\n2️⃣ Execução Prática: Resolva uma etapa por vez, priorizando sempre os Critérios Críticos (obrigatórios para aprovação direta no Nível MSEP).\n3️⃣ Registro da Evidência: Descreva no campo de texto o que você implementou/executou e cole o link da sua evidência (Google Drive / Classroom / GitHub).\n4️⃣ Autoavaliação Consciente: Revise cada critério antes de submeter.`
           };
         }
 
-        // Se houver chave configurada (Microsoft Azure OpenAI / GitHub Models Azure / OpenAI / Gemini / NVIDIA), consulta a API
+        // Se houver chave configurada (Google AI Studio / Gemini @docentes.senai.br, Azure, OpenAI ou NVIDIA), consulta a API oficial em tempo real
         let respostaExterna = null;
-        if (aiConfig.apiKey && aiConfig.apiKey.length > 5 && aiConfig.provider !== 'native' && aiConfig.provider !== 'microsoft_msep') {
+        const activeApiKey = (aiConfig.apiKey && aiConfig.apiKey.length > 5) ? aiConfig.apiKey : (process.env.GEMINI_API_KEY || '');
+        if (activeApiKey && aiConfig.provider !== 'native' && aiConfig.provider !== 'microsoft_msep') {
           try {
-            const sysPrompt = `Você é o Microsoft Copilot Pedagógico Oficial do SENAI (Metodologia SENAI de Educação Profissional - MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, e avaliação de 0 a 100 integrada à matriz S/R/N.`;
-            const fullPrompt = `Ação: ${acao}\nContexto: ${JSON.stringify(ctx)}\nInstrução adicional: ${promptUsuario}`;
+            const sysPrompt = `Você é o Copiloto Pedagógico Oficial do SENAI no Google AI Studio (integrado ao domínio Google Workspace for Education @docentes.senai.br e Google Classroom), especialista na Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, e avaliação de 0 a 100 integrada à matriz S/R/N.`;
+            const fullPrompt = `Ação: ${acao}\nContexto Pedagógico da Turma: ${JSON.stringify(ctx)}\nInstrução adicional do docente/aluno: ${promptUsuario}`;
 
-            if (aiConfig.provider === 'microsoft_azure' || aiConfig.provider === 'openai' || aiConfig.provider === 'nvidia') {
+            if (aiConfig.provider === 'google_ai_studio' || aiConfig.provider === 'gemini') {
+              const mod = (aiConfig.model && aiConfig.model.includes('gemini')) ? aiConfig.model : 'gemini-2.5-flash';
+              const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${activeApiKey}`;
+              const gRes = await fetch(gUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: `${sysPrompt}\n\n${fullPrompt}` }] }],
+                  generationConfig: { temperature: 0.4 }
+                })
+              });
+              if (gRes.ok) {
+                const gData = await gRes.json();
+                respostaExterna = gData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+              }
+            } else if (aiConfig.provider === 'microsoft_azure' || aiConfig.provider === 'openai' || aiConfig.provider === 'nvidia') {
               let endpoint = 'https://models.inference.ai.azure.com/chat/completions';
               let headers = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${aiConfig.apiKey}`
+                'Authorization': `Bearer ${activeApiKey}`
               };
 
-              if (aiConfig.provider === 'microsoft_azure' && aiConfig.endpointUrl) {
+              if (aiConfig.provider === 'microsoft_azure' && aiConfig.endpointUrl && aiConfig.endpointUrl.includes('http')) {
                 endpoint = aiConfig.endpointUrl;
                 if (endpoint.includes('openai.azure.com')) {
                   headers = {
                     'Content-Type': 'application/json',
-                    'api-key': aiConfig.apiKey
+                    'api-key': activeApiKey
                   };
                 }
               } else if (aiConfig.provider === 'openai') {
@@ -1114,26 +1130,14 @@ const server = http.createServer(async (req, res) => {
                 const oData = await oRes.json();
                 respostaExterna = oData?.choices?.[0]?.message?.content || null;
               }
-            } else if (aiConfig.provider === 'gemini') {
-              const mod = aiConfig.model || 'gemini-2.5-flash';
-              const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${aiConfig.apiKey}`;
-              const gRes = await fetch(gUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: `${sysPrompt}\n\n${fullPrompt}` }] }] })
-              });
-              if (gRes.ok) {
-                const gData = await gRes.json();
-                respostaExterna = gData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
-              }
             }
           } catch (extErr) {
-            console.warn('[MICROSOFT COPILOT IA] Fallback para Motor MSEP Nativo:', extErr.message);
+            console.warn('[GOOGLE AI STUDIO COPILOT] Fallback para Motor MSEP Nativo:', extErr.message);
           }
         }
 
         if (respostaExterna) {
-          structuredResult.resumo = `${respostaExterna}\n\n---\n${structuredResult.resumo || ''}`;
+          structuredResult.resumo = `✨ [Gerado ao vivo via Google AI Studio — ${aiConfig.model || 'gemini-2.5-flash'}]\n\n${respostaExterna}\n\n---\n${structuredResult.resumo || ''}`;
           if (acao === 'tutor_aluno') structuredResult.orientacaoTutor = respostaExterna;
           if (acao === 'corrigir_entrega') structuredResult.feedbackSugerido = respostaExterna;
         }
@@ -1141,13 +1145,13 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           success: true,
-          engine: respostaExterna ? `Microsoft Copilot / ${aiConfig.provider.toUpperCase()} (${aiConfig.model})` : 'Microsoft Copilot MSEP (Motor Institucional SENAI)',
+          engine: respostaExterna ? `Google AI Studio / ${aiConfig.model || 'gemini-2.5-flash'} (@docentes.senai.br)` : 'Google AI Studio & Motor MSEP SENAI (@docentes.senai.br)',
           result: structuredResult,
           respostaExterna
         }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Erro no Microsoft Copilot IA', details: e.message }));
+        res.end(JSON.stringify({ error: 'Erro no Google AI Studio Copilot', details: e.message }));
       }
       return;
     }

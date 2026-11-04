@@ -3666,16 +3666,16 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- BOTÃO FLUTUANTE GLOBAL: MICROSOFT COPILOT SENAI MSEP -->
+  <!-- BOTÃO FLUTUANTE GLOBAL: GOOGLE AI STUDIO & GEMINI (@docentes.senai.br + CLASSROOM) -->
   <!-- ========================================== -->
   <div class="no-print fixed bottom-5 right-5 z-40 flex items-center gap-2">
-    <button type="button" onclick="abrirCopilotoIA('plano_ensino')" class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 hover:from-blue-600 hover:to-indigo-600 text-white font-display font-extrabold px-4 py-3 rounded-2xl shadow-2xl border border-blue-400/50 flex items-center gap-2.5 text-xs transition transform hover:scale-105 cursor-pointer">
-      <span class="w-7 h-7 rounded-xl bg-white/15 flex items-center justify-center text-sky-300 text-base">
-        <i class="fa-brands fa-microsoft"></i>
+    <button type="button" onclick="abrirCopilotoIA('plano_ensino')" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 hover:from-blue-500 hover:to-indigo-500 text-white font-display font-extrabold px-4 py-3 rounded-2xl shadow-2xl border border-sky-300/50 flex items-center gap-2.5 text-xs transition transform hover:scale-105 cursor-pointer">
+      <span class="w-7 h-7 rounded-xl bg-white/15 flex items-center justify-center text-amber-300 text-base">
+        <i class="fa-brands fa-google"></i>
       </span>
       <div class="text-left leading-tight">
-        <span class="block text-[10px] text-sky-200 uppercase tracking-wider">Padrão Oficial SENAI</span>
-        <span class="text-xs font-extrabold text-white">Microsoft Copilot MSEP</span>
+        <span class="block text-[10px] text-sky-200 uppercase tracking-wider">@docentes.senai.br • Classroom</span>
+        <span class="text-xs font-extrabold text-white">Google AI Studio & Gemini</span>
       </div>
     </button>
   </div>
@@ -3865,23 +3865,23 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- MODAL 3: CENTRAL DO MICROSOFT COPILOT SENAI (M365 INSTITUCIONAL + AZURE OPENAI + MOTOR MSEP) -->
+  <!-- MODAL 3: CENTRAL DO GOOGLE AI STUDIO & GEMINI (@docentes.senai.br + GOOGLE CLASSROOM + MOTOR MSEP) -->
   <!-- ========================================== -->
   <div id="modalCopilotoIA" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="bg-sky-500/20 border border-sky-400/40 p-2.5 rounded-xl">
-            <i class="fa-brands fa-microsoft text-sky-300 text-xl"></i>
+            <i class="fa-brands fa-google text-amber-300 text-xl"></i>
           </div>
           <div>
             <div class="flex flex-wrap items-center gap-2">
-              <h3 class="font-display font-extrabold text-base">Microsoft Copilot SENAI (Ecossistema Oficial M365 & Azure AI)</h3>
+              <h3 class="font-display font-extrabold text-base">Google AI Studio & Gemini SENAI (@docentes.senai.br + Classroom)</h3>
               <span id="badgeMotorCopilotoAtivo" class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full text-[10px] font-extrabold">
-                Microsoft Copilot MSEP Ativo
+                Google AI Studio (@docentes.senai.br) Ativo
               </span>
             </div>
-            <p class="text-xs text-sky-200">Homologado com a recomendação institucional SENAI (Proteção de Dados Comerciais Microsoft 365 & Azure OpenAI).</p>
+            <p class="text-xs text-sky-200">Unificado ao domínio Google Workspace for Education (<code>@docentes.senai.br</code>), Google Classroom e Metodologia MSEP.</p>
           </div>
         </div>
         <button type="button" onclick="fecharCopilotoIA()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
@@ -3904,46 +3904,49 @@
           <button type="button" onclick="selecionarModoCopilotoIA('tutor_aluno')" id="btnModoIA-tutor_aluno" class="px-3 py-2 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer flex items-center gap-1.5">
             <i class="fa-solid fa-user-graduate"></i> 4. Tutor IA do Aluno & Plano de Estudos
           </button>
-          <button type="button" onclick="toggleConfigApiCopilotoIA()" class="ml-auto px-3 py-2 rounded-xl font-bold text-xs bg-slate-800 text-sky-300 hover:bg-slate-900 cursor-pointer flex items-center gap-1.5">
-            <i class="fa-brands fa-microsoft"></i> Configurar Microsoft Azure / API
+          <button type="button" onclick="toggleConfigApiCopilotoIA()" class="ml-auto px-3 py-2 rounded-xl font-bold text-xs bg-slate-800 text-amber-300 hover:bg-slate-900 cursor-pointer flex items-center gap-1.5">
+            <i class="fa-brands fa-google"></i> Chave API Google AI Studio
           </button>
         </div>
 
-        <!-- Painel de Configuração Microsoft Azure OpenAI / AI Foundry (Salvo no MySQL da VPS) -->
+        <!-- Painel de Configuração Google AI Studio / Gemini (@docentes.senai.br) (Salvo no MySQL da VPS) -->
         <div id="painelConfigApiCopiloto" class="hidden bg-slate-900 text-white rounded-xl p-4 space-y-3 border border-slate-700">
-          <div class="flex items-center justify-between">
-            <span class="font-extrabold text-sky-300 text-xs flex items-center gap-1.5">
-              <i class="fa-brands fa-microsoft"></i> Conexão com Ecossistema Microsoft Copilot / Azure OpenAI (Salvo no MySQL)
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-extrabold text-amber-300 text-xs flex items-center gap-1.5">
+              <i class="fa-brands fa-google"></i> Conexão com Google AI Studio (`aistudio.google.com`) — Conta `@docentes.senai.br`
             </span>
-            <span class="text-[10px] text-slate-400">Compatível com Microsoft 365 SENAI e Azure AI Foundry</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 px-2.5 py-1 rounded-lg font-extrabold text-[11px] flex items-center gap-1.5">
+              <i class="fa-solid fa-key"></i> Pegar API Key Gratuita no Google AI Studio (@docentes.senai.br)
+            </a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Motor de IA (Padrão Recomendado SENAI):</label>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Provedor de IA (Ecossistema Google Classroom):</label>
               <select id="iaConfigProvider" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white font-bold text-xs">
-                <option value="microsoft_msep">🪟 Microsoft Copilot MSEP (Institucional SENAI + Conta @senai.br)</option>
-                <option value="microsoft_azure">☁️ Microsoft Azure OpenAI / Azure AI Foundry (API Corporativa)</option>
+                <option value="google_ai_studio">✨ Google AI Studio — Gemini 2.5 (@docentes.senai.br)</option>
+                <option value="microsoft_msep">🪟 Microsoft Copilot MSEP (Modo Institucional)</option>
+                <option value="microsoft_azure">☁️ Microsoft Azure OpenAI</option>
                 <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
-                <option value="gemini">Google Gemini API</option>
                 <option value="nvidia">NVIDIA NIM API</option>
               </select>
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Deployment / Modelo Microsoft:</label>
-              <input type="text" id="iaConfigModel" value="gpt-4o" placeholder="gpt-4o (Modelo do Microsoft Copilot)" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Modelo Google Gemini (AI Studio):</label>
+              <input type="text" id="iaConfigModel" value="gemini-2.5-flash" placeholder="gemini-2.5-flash ou gemini-2.5-pro" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Endpoint Azure OpenAI (opcional):</label>
-              <input type="text" id="iaConfigEndpoint" placeholder="https://seu-recurso.openai.azure.com/openai/deployments/..." class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Domínio Google Workspace / Endpoint:</label>
+              <input type="text" id="iaConfigEndpoint" value="https://aistudio.google.com" placeholder="https://aistudio.google.com (@docentes.senai.br)" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Chave de API Microsoft Azure / Token (opcional):</label>
-              <input type="password" id="iaConfigApiKey" placeholder="Chave Azure OpenAI / GitHub Models (ou em branco p/ modo institucional)" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">API Key do Google AI Studio (`AIzaSy...`):</label>
+              <input type="password" id="iaConfigApiKey" placeholder="Cole sua chave AIzaSy... gerada em aistudio.google.com/app/apikey" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
             </div>
           </div>
-          <div class="flex justify-end">
-            <button type="button" onclick="salvarConfigApiCopilotoIA()" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs cursor-pointer">
-              Salvar Configuração Microsoft no Servidor
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-[10px] text-slate-400">Dica: Com o e-mail <code>@docentes.senai.br</code>, gere a chave gratuita no Google AI Studio e salve aqui para geração automática para todos os professores e alunos.</span>
+            <button type="button" onclick="salvarConfigApiCopilotoIA()" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs cursor-pointer flex-shrink-0">
+              Salvar Chave no Banco MySQL
             </button>
           </div>
         </div>
@@ -3952,25 +3955,25 @@
         <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3.5 space-y-2">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-extrabold text-blue-950 text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-bullseye text-senai-red"></i> Contexto Pedagógico Detectado Automaticamente:
+              <i class="fa-solid fa-bullseye text-senai-red"></i> Contexto Pedagógico Detectado Automaticamente (Plano de Curso + Classroom):
             </span>
             <span id="iaContextoTurmaUC" class="font-mono font-bold text-[11px] bg-white px-2.5 py-0.5 rounded border border-blue-200 text-blue-900">
               Turma / UC Ativa
             </span>
           </div>
-          <label class="block font-bold text-slate-700 text-[11px]">Instrução ou Tema Específico para o Microsoft Copilot (opcional):</label>
-          <input type="text" id="iaPromptCustomizado" placeholder="Ex: Focar em manutenção preventiva industrial com uso de sensores IoT e trabalho em equipe..." class="w-full bg-white border border-blue-300 rounded-lg px-3 py-2 text-slate-800 font-medium">
+          <label class="block font-bold text-slate-700 text-[11px]">Instrução ou Tema Específico para o Google AI Studio / Gemini (opcional):</label>
+          <input type="text" id="iaPromptCustomizado" placeholder="Ex: Focar em manutenção preventiva industrial com sensores IoT e entrega via Google Classroom..." class="w-full bg-white border border-blue-300 rounded-lg px-3 py-2 text-slate-800 font-medium">
         </div>
 
-        <!-- Botões de Disparo: 1) Geração Direta no Sistema OU 2) Abrir no Microsoft Copilot Web (copilot.microsoft.com com conta @senai.br) -->
+        <!-- Botões de Disparo: 1) Geração Direta via API Google AI Studio OU 2) Abrir no Google AI Studio Web (aistudio.google.com com conta @docentes.senai.br) -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span id="iaDescricaoModoAtivo" class="text-[11px] text-slate-700 font-semibold">
-              Escolha gerar diretamente aqui no sistema ou abrir com 1 clique no Microsoft Copilot oficial (`copilot.microsoft.com`) usando sua conta institucional SENAI:
+              Gere diretamente aqui no sistema (via API Google AI Studio / Motor MSEP) ou abra com 1 clique no Google AI Studio (<code>aistudio.google.com</code>) usando sua conta <code>@docentes.senai.br</code>:
             </span>
             <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
-              <button type="button" onclick="abrirNoMicrosoftCopilotWebOficial()" class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 font-extrabold px-3.5 py-2.5 rounded-xl text-xs shadow-sm flex items-center gap-2 cursor-pointer" title="Copia o Prompt MSEP estruturado desta turma e abre o copilot.microsoft.com para usar sua conta institucional @senai.br">
-                <i class="fa-brands fa-microsoft text-sky-400"></i> Abrir no Microsoft Copilot (@senai.br)
+              <button type="button" onclick="abrirNoMicrosoftCopilotWebOficial()" class="bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 font-extrabold px-3.5 py-2.5 rounded-xl text-xs shadow-sm flex items-center gap-2 cursor-pointer" title="Copia o Prompt MSEP estruturado desta turma e abre o Google AI Studio (aistudio.google.com) para usar sua conta institucional @docentes.senai.br">
+                <i class="fa-brands fa-google text-amber-400"></i> Abrir no Google AI Studio (@docentes.senai.br)
               </button>
               <button type="button" id="btnExecutarCopilotoIA" onclick="executarAcaoCopilotoIA()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-md flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar Direto Aqui no Sistema
@@ -3978,15 +3981,15 @@
             </div>
           </div>
 
-          <!-- Caixa para Colar Resposta vinda do Microsoft Copilot Web (copilot.microsoft.com) -->
+          <!-- Caixa para Colar Resposta vinda do Google AI Studio Web (aistudio.google.com) -->
           <div id="boxColarRespostaMicrosoftCopilot" class="hidden pt-2 border-t border-slate-200 space-y-2">
             <label class="block font-extrabold text-blue-950 text-[11px]">
-              📋 O Prompt MSEP já foi copiado para sua área de transferência! Cole no <code>copilot.microsoft.com</code> (Ctrl+V) e, se desejar, cole a resposta do Microsoft Copilot aqui abaixo para aplicar no sistema:
+              📋 O Prompt MSEP já foi copiado para sua área de transferência! Cole no <code>aistudio.google.com</code> (Ctrl+V) logado com seu <code>@docentes.senai.br</code> e cole a resposta abaixo para aplicar no sistema:
             </label>
-            <textarea id="iaTextoColadoMicrosoftWeb" rows="3" placeholder="Cole aqui a resposta gerada pelo Microsoft Copilot (copilot.microsoft.com)..." class="w-full bg-white border border-blue-300 rounded-lg p-2.5 text-slate-800 text-xs"></textarea>
+            <textarea id="iaTextoColadoMicrosoftWeb" rows="3" placeholder="Cole aqui a resposta gerada pelo Google AI Studio (aistudio.google.com) ou Gemini..." class="w-full bg-white border border-blue-300 rounded-lg p-2.5 text-slate-800 text-xs"></textarea>
             <div class="flex justify-end">
               <button type="button" onclick="importarRespostaColadaMicrosoftCopilot()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs cursor-pointer flex items-center gap-1.5">
-                <i class="fa-solid fa-file-import"></i> Processar e Aplicar Resposta do Microsoft Copilot
+                <i class="fa-solid fa-file-import"></i> Processar e Aplicar Resposta do Google AI Studio
               </button>
             </div>
           </div>
@@ -3996,7 +3999,7 @@
         <div id="iaResultadoContainer" class="hidden space-y-3 border-t border-slate-200 pt-4">
           <div class="flex items-center justify-between">
             <span class="font-extrabold text-emerald-800 text-xs flex items-center gap-1.5">
-              <i class="fa-brands fa-microsoft text-blue-600"></i> Sugestão Estruturada pelo Microsoft Copilot MSEP:
+              <i class="fa-brands fa-google text-blue-600"></i> Sugestão Estruturada pelo Google AI Studio & Gemini (MSEP):
             </span>
             <button type="button" id="btnAplicarResultadoIA" onclick="aplicarResultadoGeradoCopilotoIA()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs shadow-sm flex items-center gap-1.5 cursor-pointer">
               <i class="fa-solid fa-bolt"></i> Aplicar Automaticamente no Sistema
@@ -4007,7 +4010,7 @@
       </div>
 
       <div class="bg-slate-50 border-t border-slate-200 px-6 py-3 flex items-center justify-between">
-        <span class="text-[11px] text-slate-500">Homologado para Microsoft Copilot (Proteção de Dados Comerciais M365 SENAI), Metodologia MSEP e Governança MIGAE.</span>
+        <span class="text-[11px] text-slate-500">Integrado ao domínio Google Workspace for Education (<code>@docentes.senai.br</code>), Google AI Studio, Google Classroom, MSEP e Governança MIGAE.</span>
         <button type="button" onclick="fecharCopilotoIA()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs cursor-pointer">
           Fechar
         </button>
@@ -15504,9 +15507,9 @@ Instruções do Sistema:
           const cfg = await res.json();
           const badge = document.getElementById('badgeMotorCopilotoAtivo');
           if (badge) {
-            badge.textContent = (cfg.hasKey && cfg.provider !== 'native' && cfg.provider !== 'microsoft_msep')
-              ? `Microsoft / ${cfg.provider.toUpperCase()} (${cfg.maskedKey})`
-              : 'Microsoft Copilot MSEP Ativo';
+            badge.textContent = cfg.hasKey
+              ? `Google AI Studio (${cfg.maskedKey})`
+              : 'Google AI Studio (@docentes.senai.br) Ativo';
           }
           const selProv = document.getElementById('iaConfigProvider');
           const inpMod = document.getElementById('iaConfigModel');
@@ -15532,7 +15535,7 @@ Instruções do Sistema:
     async function salvarConfigApiCopilotoIA() {
       const provider = document.getElementById('iaConfigProvider').value;
       const model = document.getElementById('iaConfigModel').value.trim();
-      const endpointUrl = document.getElementById('iaConfigEndpoint')?.value.trim() || '';
+      const endpointUrl = document.getElementById('iaConfigEndpoint')?.value.trim() || 'https://aistudio.google.com';
       const apiKey = document.getElementById('iaConfigApiKey').value.trim();
 
       try {
@@ -15542,12 +15545,12 @@ Instruções do Sistema:
           body: JSON.stringify({ provider, model, endpointUrl, apiKey })
         });
         if (res.ok) {
-          alert(`✅ Configuração do Microsoft Copilot / Azure AI salva com sucesso no banco de dados MySQL!`);
+          alert(`✅ Configuração do Google AI Studio / Gemini (@docentes.senai.br) salva com sucesso no banco de dados MySQL!`);
           toggleConfigApiCopilotoIA();
           abrirCopilotoIA(modoCopilotoIAAtual);
         }
       } catch (e) {
-        alert('Erro ao salvar configuração Microsoft Copilot.');
+        alert('Erro ao salvar configuração do Google AI Studio.');
       }
     }
 
@@ -15563,17 +15566,17 @@ Instruções do Sistema:
 
       const desc = document.getElementById('iaDescricaoModoAtivo');
       if (desc) {
-        if (modo === 'plano_ensino') desc.textContent = 'Gera Situações de Aprendizagem (Formativa e Somativa), Capacidades e Critérios Críticos/Desejáveis para o Plano de Ensino.';
+        if (modo === 'plano_ensino') desc.textContent = 'Gera Situações de Aprendizagem (Formativa e Somativa), Capacidades e Critérios Críticos/Desejáveis com o Google AI Studio.';
         else if (modo === 'cronograma') desc.textContent = 'Distribui os assuntos e Situações de Aprendizagem nas datas (Dia/Mês/Ano) do Cronograma e vincula ao Diário de Chamada.';
-        else if (modo === 'criar_atividade') desc.textContent = 'Cria uma Atividade Prática do dia a dia (valendo de 0 a 100 pontos) vinculada aos critérios da Situação de Aprendizagem.';
-        else desc.textContent = 'Gera orientações passo a passo e um Plano de Estudos personalizado para o estudante atingir 100% dos critérios.';
+        else if (modo === 'criar_atividade') desc.textContent = 'Cria uma Atividade Prática do dia a dia (valendo de 0 a 100 pontos, pronta para Google Classroom) vinculada à Situação de Aprendizagem.';
+        else desc.textContent = 'Gera orientações passo a passo e um Plano de Estudos personalizado via Gemini para o estudante atingir 100% dos critérios.';
       }
 
       document.getElementById('iaResultadoContainer')?.classList.add('hidden');
       document.getElementById('boxColarRespostaMicrosoftCopilot')?.classList.add('hidden');
     }
 
-    // Ponte Oficial: Copia o Prompt MSEP estruturado e abre o Microsoft Copilot (copilot.microsoft.com) para usar a conta institucional @senai.br
+    // Ponte Oficial: Copia o Prompt MSEP estruturado e abre o Google AI Studio (aistudio.google.com) para usar a conta institucional @docentes.senai.br
     function abrirNoMicrosoftCopilotWebOficial() {
       const cls = getActiveClass();
       if (!cls) return;
@@ -15582,41 +15585,41 @@ Instruções do Sistema:
       const capSoc = (cls.capacidadesSociais || []).join('; ');
       const conh = (cls.conhecimentos || []).map(c => c.titulo || c).join('; ');
 
-      let promptMicrosoft = '';
+      let promptGoogleAIStudio = '';
       if (modoCopilotoIAAtual === 'plano_ensino') {
-        promptMicrosoft = `Atue como Especialista na Metodologia SENAI de Educação Profissional (MSEP).\nElabore 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) para o Plano de Ensino da seguinte turma:\n- Escola: ${cls.escola || 'SENAI'}\n- Curso: ${cls.curso}\n- Unidade Curricular: ${cls.uc} (Carga Horária: ${cls.chUC || '100h'})\n- Capacidades Técnicas: ${capTec}\n- Capacidades Sociais, Organizativas e Metodológicas: ${capSoc}\n- Conhecimentos: ${conh}\n${instrucaoExtra ? `- Foco específico solicitado pelo docente: ${instrucaoExtra}\n` : ''}\nPara cada Situação de Aprendizagem, apresente: Nome da SA, Estratégia Desafiadora, Contextualização Industrial, Desafio, Resultados Esperados e a Tabela de Critérios de Avaliação (indicando quais são CRÍTICOS e quais são DESEJÁVEIS).`;
+        promptGoogleAIStudio = `Atue como Especialista na Metodologia SENAI de Educação Profissional (MSEP) integrado ao Google Classroom (@docentes.senai.br).\nElabore 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) para o Plano de Ensino da seguinte turma:\n- Escola: ${cls.escola || 'SENAI'}\n- Curso: ${cls.curso}\n- Unidade Curricular: ${cls.uc} (Carga Horária: ${cls.chUC || '100h'})\n- Capacidades Técnicas: ${capTec}\n- Capacidades Sociais, Organizativas e Metodológicas: ${capSoc}\n- Conhecimentos: ${conh}\n${instrucaoExtra ? `- Foco específico solicitado pelo docente: ${instrucaoExtra}\n` : ''}\nPara cada Situação de Aprendizagem, apresente: Nome da SA, Estratégia Desafiadora, Contextualização Industrial, Desafio, Resultados Esperados e a Tabela de Critérios de Avaliação (indicando quais são CRÍTICOS e quais são DESEJÁVEIS).`;
       } else if (modoCopilotoIAAtual === 'cronograma') {
-        promptMicrosoft = `Atue como Especialista na Metodologia SENAI de Educação Profissional (MSEP).\nOrganize um Cronograma de Aulas (Dia/Mês/Ano) distribuindo as Situações de Aprendizagem e os Conhecimentos da Unidade Curricular "${cls.uc}" (${cls.chUC || '100h'}) do curso "${cls.curso}".\nConhecimentos: ${conh}.\n${instrucaoExtra ? `Observação: ${instrucaoExtra}` : ''}`;
+        promptGoogleAIStudio = `Atue como Especialista na Metodologia SENAI de Educação Profissional (MSEP).\nOrganize um Cronograma de Aulas (Dia/Mês/Ano) distribuindo as Situações de Aprendizagem e os Conhecimentos da Unidade Curricular "${cls.uc}" (${cls.chUC || '100h'}) do curso "${cls.curso}".\nConhecimentos: ${conh}.\n${instrucaoExtra ? `Observação: ${instrucaoExtra}` : ''}`;
       } else if (modoCopilotoIAAtual === 'criar_atividade') {
-        promptMicrosoft = `Atue como Docente Especialista na Metodologia SENAI de Educação Profissional (MSEP).\nCrie uma Atividade Prática do Dia a Dia (valendo de 0 a 100 pontos) para os alunos resolverem na prática na Unidade Curricular "${cls.uc}" (${cls.curso}).\nInclua:\n1. Título da Atividade Prática\n2. Contextualização (cenário real da indústria)\n3. Desafio Prático para o aluno resolver\n4. Resultados Esperados (Entregável)\n5. Critérios de Avaliação somando 100 pontos (Críticos e Desejáveis).\n${instrucaoExtra ? `Tema específico: ${instrucaoExtra}` : ''}`;
+        promptGoogleAIStudio = `Atue como Docente Especialista na Metodologia SENAI de Educação Profissional (MSEP) com Google Classroom (@docentes.senai.br).\nCrie uma Atividade Prática do Dia a Dia (valendo de 0 a 100 pontos) para os alunos resolverem na prática na Unidade Curricular "${cls.uc}" (${cls.curso}).\nInclua:\n1. Título da Atividade Prática\n2. Contextualização (cenário real da indústria)\n3. Desafio Prático para o aluno resolver\n4. Resultados Esperados (Entregável no Google Classroom / Registro Escolar)\n5. Critérios de Avaliação somando 100 pontos (Críticos e Desejáveis).\n${instrucaoExtra ? `Tema específico: ${instrucaoExtra}` : ''}`;
       } else {
-        promptMicrosoft = `Atue como Tutor Pedagógico SENAI (MSEP) para o estudante ${currentUser.name || 'SENAI'} na Unidade Curricular "${cls.uc}" (${cls.curso}).\nExplique passo a passo como estudar e resolver as situações práticas para atingir 100% dos critérios críticos e desejáveis desta UC.\n${instrucaoExtra ? `Dúvida específica: ${instrucaoExtra}` : ''}`;
+        promptGoogleAIStudio = `Atue como Tutor Pedagógico SENAI (MSEP) para o estudante ${currentUser.name || 'SENAI'} na Unidade Curricular "${cls.uc}" (${cls.curso}).\nExplique passo a passo como estudar e resolver as situações práticas para atingir 100% dos critérios críticos e desejáveis desta UC.\n${instrucaoExtra ? `Dúvida específica: ${instrucaoExtra}` : ''}`;
       }
 
-      navigator.clipboard.writeText(promptMicrosoft).catch(() => {});
+      navigator.clipboard.writeText(promptGoogleAIStudio).catch(() => {});
       document.getElementById('boxColarRespostaMicrosoftCopilot')?.classList.remove('hidden');
-      window.open('https://copilot.microsoft.com/', '_blank');
+      window.open('https://aistudio.google.com/prompts/new_chat', '_blank');
     }
 
     function importarRespostaColadaMicrosoftCopilot() {
       const textoColado = (document.getElementById('iaTextoColadoMicrosoftWeb')?.value || '').trim();
       if (!textoColado) {
-        alert('Cole primeiro o texto gerado pelo Microsoft Copilot na caixa acima!');
+        alert('Cole primeiro o texto gerado pelo Google AI Studio / Gemini na caixa acima!');
         return;
       }
 
       const cls = getActiveClass();
       ultimoResultadoGeradoIA = {
-        resumo: `🪟 [Importado do Microsoft Copilot Institucional SENAI]\n\n${textoColado}`,
+        resumo: `✨ [Importado do Google AI Studio — @docentes.senai.br]\n\n${textoColado}`,
         situacoesAprendizagem: [
           {
             id: 'P1',
-            nome: `SA 01 (Formativa — Microsoft Copilot) — ${cls?.uc || 'UC'}`,
+            nome: `SA 01 (Formativa — Google AI Studio) — ${cls?.uc || 'UC'}`,
             estrategia: 'Situação-Problema',
             modalidade: 'FORMATIVA',
             cargaHoraria: '40h',
             contextualizacao: textoColado.substring(0, 350),
-            desafio: 'Resolução estruturada via Microsoft Copilot Institucional SENAI.',
+            desafio: 'Resolução estruturada via Google AI Studio (@docentes.senai.br) & Google Classroom.',
             criterios: [
               { id: 'P1_C1', texto: `Atende aos requisitos técnicos críticos de ${cls?.uc || 'UC'} definidos na SA`, critico: true },
               { id: 'P1_C2', texto: `Valida o funcionamento prático e entrega a solução sem falhas críticas`, critico: true },
@@ -15632,7 +15635,7 @@ Instruções do Sistema:
         container.classList.remove('hidden');
         preview.textContent = ultimoResultadoGeradoIA.resumo;
       }
-      alert('✅ Resposta do Microsoft Copilot processada! Clique em "Aplicar Automaticamente no Sistema" abaixo para gravar.');
+      alert('✅ Resposta do Google AI Studio processada! Clique em "Aplicar Automaticamente no Sistema" abaixo para gravar.');
     }
 
     async function executarAcaoCopilotoIA() {
