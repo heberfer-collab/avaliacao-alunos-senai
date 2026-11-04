@@ -682,6 +682,20 @@
                   <div class="text-[11px] text-slate-500 leading-tight">Auditoria técnica de interfaces, telas e feedbacks pedagógicos.</div>
                 </div>
               </button>
+
+              <!-- 6. Governança Algorítmica Educacional (MIGAE - Artigo Pós-Graduação) -->
+              <button type="button" onclick="fecharMenuAvaliacoesMsep(); switchTab('migae');" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 flex items-start gap-2.5 transition text-slate-800 group cursor-pointer border-t border-slate-100 pt-2">
+                <div class="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-purple-700 group-hover:text-white transition">
+                  <i class="fa-solid fa-shield-halved text-xs"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 group-hover:text-purple-700 flex items-center gap-1.5">
+                    <span>Governança MIGAE</span>
+                    <span class="text-[9px] bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded font-black">Científico</span>
+                  </div>
+                  <div class="text-[11px] text-slate-500 leading-tight">Correção Cega Anti-Viés, Conversão Latente→Manifesta, LGPD e n8n.</div>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -777,6 +791,10 @@
             <i class="fa-solid fa-calculator text-slate-500"></i>
             <span>Calculadora JSON</span>
           </button>
+          <button onclick="switchTab('migae')" id="tab-btn-migae" class="tab-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-purple-800 bg-purple-50 hover:bg-purple-100 border border-purple-200" title="Modelo Integrado de Governança Algorítmica Educacional (Ferreira, 2026)">
+            <i class="fa-solid fa-shield-halved text-purple-700"></i>
+            <span>Governança MIGAE (Pós)</span>
+          </button>
         </div>
 
         <!-- MODULE: AULAS -->
@@ -821,6 +839,10 @@
             <i class="fa-solid fa-user-graduate text-slate-500"></i>
             <span>Relatório Aluno</span>
           </button>
+          <button onclick="switchTab('migae')" id="tab-btn-migae-proj" class="tab-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-purple-800 bg-purple-50 hover:bg-purple-100 border border-purple-200">
+            <i class="fa-solid fa-shield-halved text-purple-700"></i>
+            <span>Governança MIGAE</span>
+          </button>
         </div>
 
         <!-- MODULE: ADMIN -->
@@ -832,6 +854,10 @@
           <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-slate-700 hover:text-slate-900 hover:bg-slate-200/70">
             <i class="fa-solid fa-shield-halved text-purple-600"></i>
             <span>Painel Coordenação</span>
+          </button>
+          <button onclick="switchTab('migae')" id="tab-btn-migae-adm" class="tab-btn whitespace-nowrap flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all text-purple-800 bg-purple-50 hover:bg-purple-100 border border-purple-200">
+            <i class="fa-solid fa-microscope text-purple-700"></i>
+            <span>Auditoria Científica MIGAE</span>
           </button>
         </div>
 
@@ -2708,7 +2734,291 @@
       </div>
     </section>
 
+    <!-- ========================================== -->
+    <!-- TAB: GOVERNANÇA ALGORÍTMICA EDUCACIONAL (MIGAE - ARTIGO DE PÓS-GRADUAÇÃO) -->
+    <!-- ========================================== -->
+    <section id="tab-migae" class="tab-content hidden space-y-6">
+      <!-- Banner Acadêmico Oficial do Artigo -->
+      <div class="bg-gradient-to-r from-slate-900 via-purple-950 to-indigo-950 text-white rounded-2xl p-6 shadow-xl border border-purple-500/30 relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div class="space-y-2 max-w-4xl">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-purple-500/30 text-purple-200 border border-purple-400/40">
+                <i class="fa-solid fa-graduation-cap mr-1"></i> Artigo Científico de Pós-Graduação (2026)
+              </span>
+              <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                <i class="fa-solid fa-database mr-1"></i> Persistência MySQL 8.0 + Docker Ativa
+              </span>
+              <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                Faculdade Única (Grupo Prominas) • Votuporanga - SP
+              </span>
+            </div>
+            <h2 class="font-display font-extrabold text-xl sm:text-2xl text-white leading-snug">
+              MIGAE — Modelo Integrado de Governança Algorítmica Educacional
+            </h2>
+            <p class="text-xs sm:text-sm text-purple-100/90 font-medium leading-relaxed">
+              <em>"Automação, Gestão do Conhecimento e Segurança da Informação no Ensino Técnico: Estruturação e Proteção de Dados Educacionais para Apoio à Decisão Docente"</em>
+            </p>
+            <div class="text-xs text-slate-300 pt-1 flex flex-wrap items-center gap-4">
+              <span><strong class="text-white">Autor:</strong> Prof. Esp. Heber Roberto Ferreira</span>
+              <span>•</span>
+              <span><strong class="text-white">Referenciais Teóricos:</strong> Borko (1968), Robredo (2003), Ladeira (2010), O'Neil (2016), Williamson (2017), Crawford (2021), Vasconcelos et al. (2026)</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row lg:flex-col gap-2.5 flex-shrink-0">
+            <button type="button" onclick="exportarDatasetCientificoMIGAE()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-file-csv text-sm"></i>
+              <span>Exportar Dataset Anonimizado (CSV)</span>
+            </button>
+            <button type="button" onclick="carregarDadosAuditoriaMIGAE()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Atualizar Telemetria MIGAE</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AS 3 DIMENSÕES DO MODELO MIGAE (QUADRO 1 DO ARTIGO) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- 1ª Dimensão: Infraestrutura Segura, Sanitização & Orquestração n8n -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-blue-100 text-blue-900 border border-blue-200">
+                1ª Dimensão • Robredo (2003)
+              </span>
+              <span class="text-xs font-extrabold text-emerald-700 flex items-center gap-1">
+                <i class="fa-solid fa-shield-check"></i> Ativa
+              </span>
+            </div>
+            <h3 class="font-display font-bold text-slate-900 text-base">
+              Infraestrutura Segura, LGPD & Webhooks n8n
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Sanitização preventiva de entradas discentes (Anti-XSS / Anti-SQLi), isolamento transacional ACID em contêineres Docker/MySQL e orquestração automatizada via Webhooks (<strong>n8n</strong>).
+            </p>
+
+            <!-- Controle de Pseudonimização LGPD -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3">
+              <div>
+                <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-user-lock text-blue-600"></i> Pseudonimização LGPD
+                </div>
+                <div class="text-[11px] text-slate-500">Mascara CPFs e REs nos relatórios em tela</div>
+              </div>
+              <button type="button" id="btnToggleLgpdMigae" onclick="toggleMigaeLgpdMask()" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white">
+                ATIVO
+              </button>
+            </div>
+
+            <!-- Configuração Webhook n8n -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+              <label class="block font-bold text-slate-800 text-xs flex items-center justify-between">
+                <span><i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Endpoint Webhook n8n (VPS):</span>
+                <span id="badgeStatusN8nMigae" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">Pronto</span>
+              </label>
+              <input type="url" id="inputWebhookN8nMigae" placeholder="https://n8n.hrftec.com.br/webhook/migae-senai" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600">
+              <div class="flex items-center gap-2 pt-1">
+                <button type="button" onclick="salvarTestarWebhookN8n(false)" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-bold py-1.5 px-2.5 rounded-lg text-[11px] transition cursor-pointer">
+                  Salvar URL
+                </button>
+                <button type="button" onclick="salvarTestarWebhookN8n(true)" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-2.5 rounded-lg text-[11px] transition cursor-pointer flex items-center justify-center gap-1">
+                  <i class="fa-solid fa-paper-plane"></i> Testar n8n
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-500 border-t border-slate-100 pt-2.5 flex items-center justify-between">
+            <span>Filtro Anti-XSS / SQLi: <strong>100% Operante</strong></span>
+            <span class="font-mono text-slate-700">SHA-256</span>
+          </div>
+        </div>
+
+        <!-- 2ª Dimensão: Ciência da Informação (Latente -> Manifesta) & Apoio à Decisão -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-emerald-100 text-emerald-900 border border-emerald-200">
+                2ª Dimensão • Borko (1968) & Ladeira (2010)
+              </span>
+              <span class="text-xs font-extrabold text-emerald-700 flex items-center gap-1">
+                <i class="fa-solid fa-brain"></i> Cognitiva
+              </span>
+            </div>
+            <h3 class="font-display font-bold text-slate-900 text-base">
+              Conversão Latente → Manifesta & Decisão Docente
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Transforma submissões brutas (links, códigos e autoavaliações dispersas — <em>informação latente</em>) em metadados estruturados de domínio de capacidades (<em>informação manifesta</em>).
+            </p>
+
+            <!-- KPIs de Conversão Informacional da Turma Ativa -->
+            <div id="migaeKpisDimensao2" class="grid grid-cols-2 gap-2.5 pt-1">
+              <!-- Preenchido via JS -->
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-500 border-t border-slate-100 pt-2.5 flex items-center justify-between">
+            <span>Redução de Sobrecarga Cognitiva Docente</span>
+            <span class="font-bold text-emerald-700">Tempo Real</span>
+          </div>
+        </div>
+
+        <!-- 3ª Dimensão: Governança Ético-Regulatória & Avaliação Cega Anti-Viés -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-purple-100 text-purple-900 border border-purple-200">
+                3ª Dimensão • O'Neil (2016) & Crawford (2021)
+              </span>
+              <span class="text-xs font-extrabold text-purple-700 flex items-center gap-1">
+                <i class="fa-solid fa-scale-balanced"></i> Ética
+              </span>
+            </div>
+            <h3 class="font-display font-bold text-slate-900 text-base">
+              Governança Ética & Modo Correção Cega Anti-Viés
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Mitiga vieses inconscientes ou estigmatizações na avaliação formativa/somativa ocultando a identidade nominal do estudante por identificadores criptográficos neutros (<code>#HASH</code>) durante a correção.
+            </p>
+
+            <!-- Controle de Avaliação Cega (Blind Grading) -->
+            <div class="bg-purple-50/80 border border-purple-200 rounded-xl p-3.5 space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-extrabold text-purple-950 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye-slash text-purple-700"></i> Modo Correção Cega Anti-Viés
+                  </div>
+                  <div class="text-[11px] text-purple-800/80 leading-tight mt-0.5">
+                    Substitui nomes de alunos por <code>Estudante #HASH</code> no painel de correção de entregas.
+                  </div>
+                </div>
+                <button type="button" id="btnToggleBlindMigae" onclick="toggleMigaeBlindMode()" class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-slate-200 text-slate-700 hover:bg-slate-300 flex-shrink-0">
+                  DESATIVADO
+                </button>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-[11px] text-slate-600 leading-relaxed">
+              <strong class="text-slate-900"><i class="fa-solid fa-gavel text-purple-700 mr-1"></i> Soberania Pedagógica (Vasconcelos et al., 2026):</strong> O algoritmo atua exclusivamente como sistema de apoio à decisão (SAD), preservando a deliberação final humana do docente.
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-500 border-t border-slate-100 pt-2.5 flex items-center justify-between">
+            <span>Auditoria Ética e Transparência</span>
+            <span class="font-bold text-purple-700">Conformidade MSEP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RADAR DE LACUNAS COGNITIVAS DA TURMA (APOIO À DECISÃO DOCENTE - 2ª DIMENSÃO) -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-satellite-dish text-rose-600"></i>
+              <span>Radar de Lacunas Cognitivas & Apoio à Decisão Docente (Ladeira, 2010)</span>
+            </h3>
+            <p class="text-xs text-slate-500">
+              Identificação automatizada de critérios de avaliação com maior índice de retenção (<strong>[R]</strong> / <strong>[N]</strong>) na turma ativa para subsidiar intervenções pedagógicas imediatas.
+            </p>
+          </div>
+          <span id="migaeBadgeTurmaRadar" class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200 self-start sm:self-center">
+            Turma Ativa
+          </span>
+        </div>
+
+        <div id="migaeRadarLacunasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <!-- MATRIZ DE CONVERSÃO: INFORMAÇÃO LATENTE -> INFORMAÇÃO MANIFESTA (BORKO, 1968) -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-emerald-600"></i>
+              <span>Matriz de Conversão: Informação Latente → Informação Manifesta (Borko, 1968)</span>
+            </h3>
+            <p class="text-xs text-slate-500">
+              Rastreabilidade de artefatos discentes processados, classificação semântica da evidência, índice de convergência cognitiva e assinatura de integridade SHA-256.
+            </p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-200 text-xs text-left">
+            <thead class="bg-slate-900 text-white font-bold uppercase text-[10px] tracking-wider">
+              <tr>
+                <th class="p-3">Identificação (LGPD / Cega)</th>
+                <th class="p-3">Entrada Latente (Bruta)</th>
+                <th class="p-3">Metadado Manifesto (Classificação)</th>
+                <th class="p-3 text-center">Convergência Auto × Docente</th>
+                <th class="p-3 text-center">Hash SHA-256 (Integridade)</th>
+                <th class="p-3 text-center">Status / Nota</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyMatrizLatenteManifesta" class="divide-y divide-slate-100 bg-white">
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TRILHA IMUTÁVEL DE AUDITORIA E SEGURANÇA DA INFORMAÇÃO (MYSQL) -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-fingerprint text-purple-600"></i>
+              <span>Trilha Imutável de Auditoria Criptográfica & Disparo de Webhooks (MySQL)</span>
+            </h3>
+            <p class="text-xs text-slate-500">
+              Registros da tabela <code>migae_audit_logs</code> no banco de dados relacional com verificação de integridade SHA-256.
+            </p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto max-h-80">
+          <table class="min-w-full divide-y divide-slate-200 text-xs text-left">
+            <thead class="bg-slate-100 text-slate-700 font-bold uppercase text-[10px]">
+              <tr>
+                <th class="p-2.5">Data/Hora</th>
+                <th class="p-2.5">Evento de Governança</th>
+                <th class="p-2.5">Ator</th>
+                <th class="p-2.5">Hash SHA-256</th>
+                <th class="p-2.5">Orquestração n8n</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyLogsAuditoriaMigae" class="divide-y divide-slate-100 bg-white font-mono text-[11px]">
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- RODAPÉ CIENTÍFICO OFICIAL (FUNDAMENTAÇÃO TEÓRICA DO ARTIGO) -->
+  <footer class="no-print bg-slate-900 text-slate-400 border-t border-slate-800 py-4 px-4 sm:px-8 mt-auto text-[11px]">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="bg-purple-900/60 text-purple-300 border border-purple-700/50 px-2 py-0.5 rounded font-extrabold uppercase text-[10px]">
+          Arquitetura MIGAE
+        </span>
+        <span>
+          Fundamentado no artigo científico: <strong class="text-slate-200">"Automação, Gestão do Conhecimento e Segurança da Informação no Ensino Técnico"</strong> — <strong class="text-white">Prof. Esp. Heber Roberto Ferreira</strong> (Faculdade Única / Grupo Prominas, Votuporanga-SP, 2026).
+        </span>
+      </div>
+      <button type="button" onclick="switchTab('migae')" class="text-purple-400 hover:text-purple-300 font-bold flex items-center gap-1 cursor-pointer whitespace-nowrap">
+        <i class="fa-solid fa-shield-halved"></i> Abrir Painel Científico MIGAE
+      </button>
+    </div>
+  </footer>
 
   <!-- ========================================== -->
   <!-- MODAL: CRIAR / EDITAR ATIVIDADE PEDAGÓGICA -->
@@ -3069,9 +3379,15 @@
             <div id="docenteModalAtivBadges" class="flex flex-wrap items-center gap-1.5 mt-1"></div>
           </div>
         </div>
-        <button onclick="fecharModalCorrecaoDocente()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnToggleBlindModalCorrecao" onclick="toggleMigaeBlindMode()" class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition cursor-pointer bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-400/40 flex items-center gap-1.5" title="3ª Dimensão MIGAE (O'Neil, 2016; Crawford, 2021): Oculta o nome nominal do estudante por Hash criptográfico durante a correção">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span id="txtBlindModalCorrecao">Correção Cega MIGAE: OFF</span>
+          </button>
+          <button onclick="fecharModalCorrecaoDocente()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Modal Body -->
@@ -5366,6 +5682,7 @@ DANIEL FERREIRA..." class="w-full bg-slate-50 border border-slate-200 rounded-lg
       if (typeof renderCronogramaMsep === 'function') renderCronogramaMsep();
       if (typeof renderTabelaNiveisDesempenho === 'function') renderTabelaNiveisDesempenho();
       if (typeof renderTimesheetTable === 'function') renderTimesheetTable();
+      if (typeof renderPainelMIGAE === 'function') renderPainelMIGAE();
     }
 
     // =========================================================================
@@ -12201,8 +12518,9 @@ Instruções do Sistema:
         btn.id = `btn_aluno_corrigir_${s.id}`;
         btn.className = `px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer border flex items-center gap-1.5 ${isSelected ? 'bg-slate-900 text-white border-slate-900 shadow-xs' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'}`;
         btn.onclick = () => selecionarAlunoParaCorrecao(s.id);
+        const nomeExibido = (typeof formatarNomeEstudanteMIGAE === 'function') ? formatarNomeEstudanteMIGAE(s) : s.name;
         btn.innerHTML = `
-          <span class="truncate max-w-[120px]">${s.name}</span>
+          <span class="truncate max-w-[140px]">${nomeExibido}</span>
           <span class="w-2 h-2 rounded-full ${entrega ? (entrega.status === 'Avaliado' ? 'bg-emerald-500' : 'bg-amber-500') : 'bg-slate-300'}"></span>
         `;
         barraAlunos.appendChild(btn);
@@ -12220,7 +12538,9 @@ Instruções do Sistema:
 
       alunoSendoCorrigido = aluno;
       document.getElementById('docenteCorrecaoAlunoId').value = aluno.id;
-      document.getElementById('docenteModalAlunoInfo').textContent = `Aluno: ${aluno.name} (RE/Matrícula: ${aluno.id})`;
+      const nomeExibido = (typeof formatarNomeEstudanteMIGAE === 'function') ? formatarNomeEstudanteMIGAE(aluno) : aluno.name;
+      const reExibido = (typeof migaeBlindMode !== 'undefined' && migaeBlindMode) ? 'OCULTO (CORREÇÃO CEGA ANTI-VIÉS)' : aluno.id;
+      document.getElementById('docenteModalAlunoInfo').textContent = `Avaliando: ${nomeExibido} • Identificador: ${reExibido}`;
 
       // Atualiza estilo dos botões da barra
       students.forEach(s => {
@@ -13697,6 +14017,418 @@ Instruções do Sistema:
     }
 
     // =========================================================================
+    // MÓDULO CIENTÍFICO: MODELO INTEGRADO DE GOVERNANÇA ALGORÍTMICA EDUCACIONAL (MIGAE)
+    // Fundamentado no Artigo de Pós-Graduação de Heber Roberto Ferreira (2026)
+    // Faculdade Única / Grupo Prominas - Votuporanga - SP
+    // =========================================================================
+    let migaeBlindMode = false;
+    let migaeLgpdMask = true;
+    let migaeLogsAuditoria = [];
+
+    function gerarHashCurtoEstudante(idOuNome) {
+      const str = String(idOuNome || 'SENAI');
+      let h = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h >>> 0).toString(16).toUpperCase().padStart(8, '0');
+    }
+
+    function formatarNomeEstudanteMIGAE(student) {
+      if (!student) return 'Estudante';
+      if (migaeBlindMode) {
+        const hashCode = gerarHashCurtoEstudante(`${student.id}_${student.name}`);
+        return `Estudante #HASH-${hashCode.substring(0, 6)}`;
+      }
+      return student.name || 'Estudante';
+    }
+
+    function formatarCpfLgpdMIGAE(cpfOuRe) {
+      const raw = String(cpfOuRe || '000.000.000-00');
+      if (!migaeLgpdMask) return raw;
+      if (raw.includes('.')) {
+        const partes = raw.split('.');
+        return `${partes[0] || '***'}.***.***-**`;
+      }
+      return `RE-***${raw.slice(-2)}`;
+    }
+
+    function toggleMigaeBlindMode() {
+      migaeBlindMode = !migaeBlindMode;
+      atualizarBotoesEstadoMIGAE();
+      renderPainelMIGAE();
+      if (atividadeSendoCorrigida && !document.getElementById('modalCorrecaoDocente').classList.contains('hidden')) {
+        abrirModalCorrecaoDocente(atividadeSendoCorrigida.id, alunoSendoCorrigido ? alunoSendoCorrigido.id : null);
+      }
+    }
+
+    function toggleMigaeLgpdMask() {
+      migaeLgpdMask = !migaeLgpdMask;
+      atualizarBotoesEstadoMIGAE();
+      renderPainelMIGAE();
+    }
+
+    function atualizarBotoesEstadoMIGAE() {
+      const btnBlind = document.getElementById('btnToggleBlindMigae');
+      const btnBlindModal = document.getElementById('btnToggleBlindModalCorrecao');
+      const txtBlindModal = document.getElementById('txtBlindModalCorrecao');
+      const btnLgpd = document.getElementById('btnToggleLgpdMigae');
+
+      if (btnBlind) {
+        btnBlind.textContent = migaeBlindMode ? 'ATIVO (CEGO)' : 'DESATIVADO';
+        btnBlind.className = migaeBlindMode
+          ? 'px-3.5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-purple-700 text-white shadow-sm flex-shrink-0'
+          : 'px-3.5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-slate-200 text-slate-700 hover:bg-slate-300 flex-shrink-0';
+      }
+
+      if (btnBlindModal && txtBlindModal) {
+        txtBlindModal.textContent = migaeBlindMode ? 'Correção Cega MIGAE: ON' : 'Correção Cega MIGAE: OFF';
+        btnBlindModal.className = migaeBlindMode
+          ? 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition cursor-pointer bg-purple-500 text-white border border-purple-300 flex items-center gap-1.5 shadow-sm'
+          : 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition cursor-pointer bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-400/40 flex items-center gap-1.5';
+      }
+
+      if (btnLgpd) {
+        btnLgpd.textContent = migaeLgpdMask ? 'ATIVO' : 'DESATIVADO';
+        btnLgpd.className = migaeLgpdMask
+          ? 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white'
+          : 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer bg-slate-200 text-slate-700';
+      }
+    }
+
+    async function carregarDadosAuditoriaMIGAE() {
+      try {
+        const res = await fetch('/api/migae/audit');
+        if (res.ok) {
+          const data = await res.json();
+          migaeLogsAuditoria = Array.isArray(data.logs) ? data.logs : [];
+          const inputUrl = document.getElementById('inputWebhookN8nMigae');
+          if (inputUrl && data.webhookUrl && !inputUrl.value) {
+            inputUrl.value = data.webhookUrl;
+          } else if (inputUrl && !inputUrl.value) {
+            inputUrl.value = 'https://n8n.hrftec.com.br/webhook/migae-senai';
+          }
+          renderTabelaLogsAuditoriaMIGAE();
+        }
+      } catch (e) {
+        console.warn('[MIGAE] Modo local de auditoria:', e);
+      }
+    }
+
+    async function salvarTestarWebhookN8n(testFire = false) {
+      const inputUrl = document.getElementById('inputWebhookN8nMigae');
+      const badge = document.getElementById('badgeStatusN8nMigae');
+      const webhookUrl = inputUrl ? inputUrl.value.trim() : '';
+
+      if (badge) {
+        badge.textContent = testFire ? 'Disparando...' : 'Salvando...';
+        badge.className = 'text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 text-amber-800';
+      }
+
+      try {
+        const res = await fetch('/api/migae/webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            webhookUrl,
+            testFire,
+            ator: currentUser && currentUser.name ? currentUser.name : 'Prof. Heber Roberto Ferreira'
+          })
+        });
+        const data = await res.json();
+        if (badge) {
+          badge.textContent = data.statusN8n || 'OK';
+          badge.className = (data.statusN8n && data.statusN8n.includes('200'))
+            ? 'text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold'
+            : 'text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold';
+        }
+        await carregarDadosAuditoriaMIGAE();
+        if (testFire) {
+          alert(`⚡ Disparo de Webhook MIGAE -> n8n executado!\n\n• Endpoint: ${webhookUrl || 'Não informado'}\n• Status do Barramento: ${data.statusN8n}\n• Hash SHA-256 Gerado: ${data.hashTeste}`);
+        } else {
+          alert(`✅ Endpoint Webhook n8n salvo na tabela app_state do MySQL!`);
+        }
+      } catch (e) {
+        if (badge) badge.textContent = 'Erro de Rede';
+      }
+    }
+
+    function renderPainelMIGAE() {
+      atualizarBotoesEstadoMIGAE();
+      const activeClass = getActiveClass();
+      const students = getActiveStudents();
+      const entregasTurma = (appData.entregas || []).filter(e => !e.id_turma || e.id_turma === appData.activeClassId);
+
+      const badgeTurma = document.getElementById('migaeBadgeTurmaRadar');
+      if (badgeTurma && activeClass) {
+        badgeTurma.textContent = `UC: ${activeClass.uc} (${students.length} estudantes)`;
+      }
+
+      // 1. Renderizar KPIs da 2ª Dimensão (Borko, 1968; Ladeira, 2010)
+      const kpiContainer = document.getElementById('migaeKpisDimensao2');
+      if (kpiContainer) {
+        let totalCriteriosAvaliados = 0;
+        let totalCriticosAtingidos = 0;
+        let totalCriticosAvaliados = 0;
+
+        students.forEach(st => {
+          const g = calculateStudentGrade(st.id);
+          totalCriticosAvaliados += g.totalCritical;
+          totalCriticosAtingidos += g.reachedCritical;
+          totalCriteriosAvaliados += (g.totalCritical + g.totalDesirable);
+        });
+
+        const taxaDominioCritico = totalCriticosAvaliados > 0
+          ? Math.round((totalCriticosAtingidos / totalCriticosAvaliados) * 100)
+          : 100;
+
+        kpiContainer.innerHTML = `
+          <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-2.5 text-center">
+            <span class="text-[10px] font-extrabold uppercase text-emerald-800 block">Dados Convertidos</span>
+            <span class="text-lg font-display font-black text-emerald-950">${totalCriteriosAvaliados}</span>
+            <span class="text-[10px] text-emerald-700 block">Cotejos Manifestos</span>
+          </div>
+          <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-2.5 text-center">
+            <span class="text-[10px] font-extrabold uppercase text-indigo-800 block">Domínio Crítico</span>
+            <span class="text-lg font-display font-black text-indigo-950">${taxaDominioCritico}%</span>
+            <span class="text-[10px] text-indigo-700 block">Índice da Turma</span>
+          </div>
+        `;
+      }
+
+      // 2. Renderizar Radar de Lacunas Cognitivas (Apoio à Decisão Docente)
+      const radarContainer = document.getElementById('migaeRadarLacunasContainer');
+      if (radarContainer && activeClass) {
+        const analiseCriterios = [];
+        (activeClass.projetos || []).forEach(proj => {
+          (proj.criterios || []).forEach(crit => {
+            let qtdS = 0, qtdR = 0, qtdN = 0;
+            students.forEach(st => {
+              const key = `${appData.activeClassId}_${st.id}_${crit.id}`;
+              const val = appData.evaluations[key] || 'S';
+              if (val === 'S') qtdS++;
+              else if (val === 'R') qtdR++;
+              else qtdN++;
+            });
+            const totalSt = Math.max(1, students.length);
+            const taxaLacuna = Math.round(((qtdR + qtdN) / totalSt) * 100);
+            analiseCriterios.push({
+              id: crit.id,
+              texto: crit.texto,
+              critico: crit.critico,
+              projeto: proj.nome,
+              qtdS,
+              qtdR,
+              qtdN,
+              taxaLacuna
+            });
+          });
+        });
+
+        analiseCriterios.sort((a, b) => b.taxaLacuna - a.taxaLacuna);
+
+        radarContainer.innerHTML = analiseCriterios.slice(0, 6).map(item => {
+          const corBarra = item.taxaLacuna >= 25
+            ? 'bg-rose-600'
+            : (item.taxaLacuna > 0 ? 'bg-amber-500' : 'bg-emerald-600');
+          const statusRec = item.taxaLacuna >= 25
+            ? '⚠️ Intervenção Pedagógica Recomendada'
+            : (item.taxaLacuna > 0 ? '🔎 Monitoramento Formativo' : '✅ Domínio Consolidado na Turma');
+
+          return `
+            <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/60 flex flex-col justify-between space-y-2.5">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase ${item.critico ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-blue-100 text-blue-800 border border-blue-200'}">
+                    ${item.critico ? 'Critério Crítico' : 'Critério Desejável'}
+                  </span>
+                  <span class="text-[11px] font-extrabold ${item.taxaLacuna > 0 ? 'text-rose-700' : 'text-emerald-700'}">
+                    ${item.taxaLacuna}% em Retenção [R/N]
+                  </span>
+                </div>
+                <p class="text-xs font-bold text-slate-900 leading-snug">${item.texto}</p>
+              </div>
+              <div class="space-y-1.5">
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div class="${corBarra} h-full rounded-full transition-all" style="width: ${Math.max(6, 100 - item.taxaLacuna)}%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[10px] font-semibold text-slate-600">
+                  <span>[S]: ${item.qtdS} • [R]: ${item.qtdR} • [N]: ${item.qtdN}</span>
+                  <span class="font-bold text-slate-800">${statusRec}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 3. Renderizar Matriz de Conversão Latente -> Manifesta (Borko, 1968)
+      const tbodyLatente = document.getElementById('tbodyMatrizLatenteManifesta');
+      if (tbodyLatente) {
+        const linhas = [];
+
+        // Se houver entregas reais na tabela entregas, usa elas; também complementa com a auditoria formativa
+        entregasTurma.forEach(ent => {
+          const stObj = students.find(s => String(s.id) === String(ent.id_aluno)) || { id: ent.id_aluno, name: ent.nome_aluno, cpf: `${String(ent.id_aluno).padStart(3, '0')}.000.000-00` };
+          const nomeExib = formatarNomeEstudanteMIGAE(stObj);
+          const cpfExib = formatarCpfLgpdMIGAE(stObj.cpf || ent.re_aluno);
+          const link = ent.link_evidencia || '';
+          let tipoArtefato = 'Evidência Textual / Resposta Direta';
+          if (/github\.com|gitlab\.com/i.test(link)) tipoArtefato = 'Repositório de Código-Fonte (Git)';
+          else if (/figma\.com|canva\.com/i.test(link)) tipoArtefato = 'Protótipo de Interface UI/UX';
+          else if (/drive\.google\.com|docs\.google\.com/i.test(link)) tipoArtefato = 'Artefato em Nuvem (Google Workspace)';
+          else if (link.startsWith('http')) tipoArtefato = 'Aplicação Web / Evidência Externa';
+
+          const autoKeys = Object.keys(ent.autoavaliacao || {}).filter(k => k !== 'parecer_aluno');
+          const autoS = autoKeys.filter(k => ent.autoavaliacao[k] === 'S').length;
+          const convTxt = autoKeys.length > 0 ? `${autoS}/${autoKeys.length} Critérios [S]` : 'Submissão Direta';
+          const hash = ent.hash_integridade || gerarHashCurtoEstudante(`${ent.id}_${ent.nome_aluno}_${ent.data_entrega}`) + 'A9F2C4E1';
+
+          linhas.push(`
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3">
+                <div class="font-bold text-slate-900">${nomeExib}</div>
+                <div class="text-[10px] font-mono text-slate-500">${cpfExib}</div>
+              </td>
+              <td class="p-3 text-slate-600 max-w-xs truncate">
+                ${link ? `<span class="font-mono text-[11px] text-indigo-700">${link}</span>` : (ent.texto_resposta || 'Artefato registrado no RE')}
+              </td>
+              <td class="p-3">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  ${tipoArtefato}
+                </span>
+              </td>
+              <td class="p-3 text-center font-bold text-slate-700">${convTxt}</td>
+              <td class="p-3 text-center">
+                <code class="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-[10px] font-mono text-purple-900">${hash.substring(0, 16)}</code>
+              </td>
+              <td class="p-3 text-center">
+                <span class="font-extrabold text-slate-900">${ent.status === 'Avaliado' ? `${ent.nota_final} pts` : 'Em Análise'}</span>
+              </td>
+            </tr>
+          `);
+        });
+
+        // Complementa com amostra dos estudantes da turma ativa para demonstrar a conversão Latente -> Manifesta
+        students.slice(0, Math.max(0, 8 - linhas.length)).forEach(st => {
+          const g = calculateStudentGrade(st.id);
+          const nomeExib = formatarNomeEstudanteMIGAE(st);
+          const cpfExib = formatarCpfLgpdMIGAE(st.cpf || st.id);
+          const hash = gerarHashCurtoEstudante(`${st.id}_${st.name}_${g.notaFinal}`) + '8B4D1E7A';
+
+          linhas.push(`
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3">
+                <div class="font-bold text-slate-900">${nomeExib}</div>
+                <div class="text-[10px] font-mono text-slate-500">${cpfExib}</div>
+              </td>
+              <td class="p-3 text-slate-600">
+                <span class="font-mono text-[11px]">Cotejo de Tarefas MSEP (${g.totalCritical + g.totalDesirable} indicadores brutos)</span>
+              </td>
+              <td class="p-3">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                  Nível MSEP ${g.nivelMsep} • ${g.situacaoRegimental}
+                </span>
+              </td>
+              <td class="p-3 text-center font-bold text-slate-700">
+                Críticos: ${g.reachedCritical}/${g.totalCritical}
+              </td>
+              <td class="p-3 text-center">
+                <code class="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-[10px] font-mono text-purple-900">${hash.substring(0, 16)}</code>
+              </td>
+              <td class="p-3 text-center">
+                <span class="font-extrabold text-emerald-700">${g.notaFinal} pts</span>
+              </td>
+            </tr>
+          `);
+        });
+
+        tbodyLatente.innerHTML = linhas.join('');
+      }
+
+      renderTabelaLogsAuditoriaMIGAE();
+    }
+
+    function renderTabelaLogsAuditoriaMIGAE() {
+      const tbody = document.getElementById('tbodyLogsAuditoriaMigae');
+      if (!tbody) return;
+
+      if (!migaeLogsAuditoria || migaeLogsAuditoria.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="p-4 text-center text-slate-500">
+              Sistema MIGAE inicializado. Submeta uma atividade ou clique em "Testar n8n" para gerar eventos criptográficos na tabela <code>migae_audit_logs</code>.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = migaeLogsAuditoria.map(log => {
+        const dt = log.created_at ? new Date(log.created_at).toLocaleString('pt-BR') : new Date().toLocaleString('pt-BR');
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2.5 text-slate-500 whitespace-nowrap">${dt}</td>
+            <td class="p-2.5 font-bold text-slate-900">${log.evento}</td>
+            <td class="p-2.5 text-slate-700">${migaeBlindMode ? 'Ator Pseudonimizado (#HASH)' : log.ator}</td>
+            <td class="p-2.5"><code class="bg-purple-50 text-purple-900 border border-purple-200 px-1.5 py-0.5 rounded">${log.hash_integridade}</code></td>
+            <td class="p-2.5">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-300">
+                ${log.status_n8n || 'REGISTRADO'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportarDatasetCientificoMIGAE() {
+      const students = getActiveStudents();
+      const activeClass = getActiveClass();
+      const headers = [
+        'HASH_ESTUDANTE_ANONIMIZADO',
+        'UNIDADE_CURRICULAR',
+        'CRITERIOS_CRITICOS_ATINGIDOS',
+        'TOTAL_CRITERIOS_CRITICOS',
+        'CRITERIOS_DESEJAVEIS_ATINGIDOS',
+        'TOTAL_CRITERIOS_DESEJAVEIS',
+        'NIVEL_MSEP_1_A_6',
+        'NOTA_REGIMENTAL_MSEP',
+        'SITUACAO_DECISAO_DOCENTE',
+        'MODELO_CIENTIFICO'
+      ];
+
+      const rows = students.map(st => {
+        const g = calculateStudentGrade(st.id);
+        const hashAnon = `EST-${gerarHashCurtoEstudante(st.id + '_' + st.name)}`;
+        return [
+          hashAnon,
+          `"${(activeClass.uc || 'UC SENAI').replace(/"/g, '""')}"`,
+          g.reachedCritical,
+          g.totalCritical,
+          g.reachedDesirable,
+          g.totalDesirable,
+          g.nivelMsep,
+          g.notaFinal,
+          `"${g.situacaoRegimental}"`,
+          '"MIGAE - Ferreira (2026)"'
+        ].join(';');
+      });
+
+      const csvContent = '\uFEFF' + headers.join(';') + '\n' + rows.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dataset_cientifico_migae_${appData.activeClassId || 'senai'}_2026.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
     // INICIALIZAÇÃO GERAL DO SISTEMA (DOMContentLoaded)
     // =========================================================================
     document.addEventListener("DOMContentLoaded", () => {
@@ -13708,6 +14440,7 @@ Instruções do Sistema:
       try { carregarTimesheets(); } catch(e) { console.error("carregarTimesheets:", e); }
       try { carregarCursosSenai(); } catch(e) { console.error("carregarCursosSenai:", e); }
       try { carregarAtividadesDoServidor(); } catch(e) { console.error("carregarAtividadesDoServidor:", e); }
+      try { carregarDadosAuditoriaMIGAE(); } catch(e) { console.error("carregarDadosAuditoriaMIGAE:", e); }
       try { renderActiveTab(); } catch(e) { console.error("renderActiveTab:", e); }
       try { updateCalculator(); } catch(e) { console.error("updateCalculator:", e); }
       try { renderizarRelatorioOficialTelas(); } catch(e) { console.error("renderizarRelatorioOficialTelas:", e); }

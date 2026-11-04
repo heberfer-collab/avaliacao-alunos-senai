@@ -156,4 +156,18 @@ CREATE TABLE IF NOT EXISTS `user_passwords` (
   PRIMARY KEY (`user_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 10. Tabela de Auditoria e Governança Algorítmica Educacional (MIGAE - Ferreira, 2026)
+CREATE TABLE IF NOT EXISTS `migae_audit_logs` (
+  `id` VARCHAR(64) NOT NULL,
+  `evento` VARCHAR(64) NOT NULL,
+  `ator` VARCHAR(128) DEFAULT NULL,
+  `hash_integridade` VARCHAR(64) NOT NULL,
+  `metadados_manifestos` LONGTEXT DEFAULT NULL,
+  `status_n8n` VARCHAR(64) DEFAULT 'REGISTRADO_MYSQL',
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_migae_evento` (`evento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 

@@ -212,6 +212,18 @@ async function createMySQLTables() {
       \`password\` VARCHAR(255) NOT NULL,
       \`updated_at\` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (\`user_key\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`,
+
+    `CREATE TABLE IF NOT EXISTS \`migae_audit_logs\` (
+      \`id\` VARCHAR(64) NOT NULL,
+      \`evento\` VARCHAR(64) NOT NULL,
+      \`ator\` VARCHAR(128) DEFAULT NULL,
+      \`hash_integridade\` VARCHAR(64) NOT NULL,
+      \`metadados_manifestos\` LONGTEXT DEFAULT NULL,
+      \`status_n8n\` VARCHAR(64) DEFAULT 'REGISTRADO_MYSQL',
+      \`created_at\` DATETIME DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (\`id\`),
+      KEY \`idx_migae_evento\` (\`evento\`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`
   ];
 
@@ -351,6 +363,15 @@ function initSQLite() {
         user_key TEXT PRIMARY KEY,
         password TEXT NOT NULL,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE TABLE IF NOT EXISTS migae_audit_logs (
+        id TEXT PRIMARY KEY,
+        evento TEXT NOT NULL,
+        ator TEXT,
+        hash_integridade TEXT NOT NULL,
+        metadados_manifestos TEXT,
+        status_n8n TEXT DEFAULT 'REGISTRADO_SQLITE',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
     activeEngine = 'sqlite';

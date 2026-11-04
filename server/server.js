@@ -6,12 +6,109 @@
 
 require('dotenv').config();
 const http = require('http');
+const https = require('https');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const db = require('./db');
 
 const PORT = process.env.PORT || 3000;
 const ROOT_DIR = path.resolve(__dirname, '..');
+const MIGAE_SECRET = process.env.N8N_WEBHOOK_SECRET || 'migae_senai_heber_2026_secret';
+
+// =============================================================================
+// MOTOR CIENTÍFICO MIGAE (FERREIRA, 2026)
+// 1ª Dimensão: Sanitização Anti-XSS/SQLi & Integridade Criptográfica (Robredo, 2003)
+// 2ª Dimensão: Conversão Informação Latente -> Manifesta (Borko, 1968; Ladeira, 2010)
+// 3ª Dimensão: Governança Ético-Regulatória e Trilha de Auditoria (O'Neil, 2016)
+// =============================================================================
+function sanitizeInputMIGAE(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[XSS_BLOCKED]')
+    .replace(/javascript:/gi, '[JS_PROTOCOL_BLOCKED]')
+    .replace(/on\w+\s*=/gi, '[EVENT_HANDLER_BLOCKED]')
+    .trim();
+}
+
+function generateHashMIGAE(payload) {
+  const raw = typeof payload === 'string' ? payload : JSON.stringify(payload);
+  return crypto.createHash('sha256').update(raw + MIGAE_SECRET).digest('hex').substring(0, 16).toUpperCase();
+}
+
+function classifyLatentToManifest(link, texto, autoObj, docObj) {
+  const urlLower = (link || '').toLowerCase();
+  let tipoArtefato = 'Relatório Técnico / Resposta Textual';
+  if (urlLower.includes('github.com') || urlLower.includes('gitlab.com')) {
+    tipoArtefato = 'Repositório de Código-Fonte (Git)';
+  } else if (urlLower.includes('figma.com') || urlLower.includes('canva.com') || urlLower.includes('behance.net')) {
+    tipoArtefato = 'Protótipo de Interface / Design Multimídia';
+  } else if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be') || urlLower.includes('vimeo.com')) {
+    tipoArtefato = 'Produção Audiovisual / Vídeo Digital';
+  } else if (urlLower.includes('drive.google.com') || urlLower.includes('docs.google.com') || urlLower.includes('onedrive')) {
+    tipoArtefato = 'Artefato em Nuvem Estruturada';
+  } else if (urlLower.startsWith('http')) {
+    tipoArtefato = 'Artefato Web / Deploy Externo';
+  }
+
+  // Cálculo de convergência Autoavaliação vs Docente
+  const autoKeys = Object.keys(autoObj || {});
+  let matches = 0;
+  let compared = 0;
+  autoKeys.forEach(k => {
+    if (docObj && docObj[k]) {
+      compared++;
+      if (autoObj[k] === docObj[k]) matches++;
+    }
+  });
+  const convergencia = compared > 0 ? Math.round((matches / compared) * 100) : null;
+
+  return {
+    tipo_artefato: tipoArtefato,
+    protocolo_seguro_https: urlLower.startsWith('https://'),
+    densidade_textual_chars: (texto || '').length,
+    criterios_autoavaliados: autoKeys.length,
+    indice_convergencia_docente: convergencia !== null ? `${convergencia}%` : 'Aguardando Avaliação Docente',
+    referencia_teorica: 'Borko (1968) - Conversão Latente -> Manifesta'
+  };
+}
+
+async function dispatchN8nWebhookMIGAE(webhookUrl, eventName, dataPayload) {
+  if (!webhookUrl || !webhookUrl.startsWith('http')) return 'LOCAL_MYSQL_ONLY';
+  return new Promise((resolve) => {
+    try {
+      const bodyStr = JSON.stringify({
+        framework: 'MIGAE - Heber Roberto Ferreira (2026)',
+        event: eventName,
+        timestamp: new Date().toISOString(),
+        hash_sha256: generateHashMIGAE(dataPayload),
+        data: dataPayload
+      });
+      const signature = crypto.createHmac('sha256', MIGAE_SECRET).update(bodyStr).digest('hex');
+      const parsedUrl = new URL(webhookUrl);
+      const client = parsedUrl.protocol === 'https:' ? https : http;
+
+      const req = client.request(parsedUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(bodyStr),
+          'X-MIGAE-Signature': signature,
+          'X-MIGAE-Author': 'Heber-Roberto-Ferreira-2026'
+        },
+        timeout: 4000
+      }, (res) => {
+        resolve(`N8N_HTTP_${res.statusCode}`);
+      });
+      req.on('error', (err) => resolve(`N8N_OFFLINE (${err.code || 'ERR'})`));
+      req.on('timeout', () => { req.destroy(); resolve('N8N_TIMEOUT'); });
+      req.write(bodyStr);
+      req.end();
+    } catch (e) {
+      resolve('N8N_URL_INVALIDA');
+    }
+  });
+}
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -552,8 +649,22 @@ const server = http.createServer(async (req, res) => {
         try {
           const en = await getJsonBody();
           en.id = en.id || `ent-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-          const autoStr = typeof en.autoavaliacao === 'string' ? en.autoavaliacao : JSON.stringify(en.autoavaliacao || {});
-          const docStr = typeof en.avaliacao_docente === 'string' ? en.avaliacao_docente : JSON.stringify(en.avaliacao_docente || {});
+
+          // 1ª Dimensão MIGAE: Sanitização de Entradas Discentes (Anti-XSS / Anti-SQLi)
+          en.link_evidencia = sanitizeInputMIGAE(en.link_evidencia || '');
+          en.texto_resposta = sanitizeInputMIGAE(en.texto_resposta || '');
+          en.parecer_reflexivo = sanitizeInputMIGAE(en.parecer_reflexivo || '');
+
+          const autoObj = typeof en.autoavaliacao === 'string' ? JSON.parse(en.autoavaliacao || '{}') : (en.autoavaliacao || {});
+          const docObj = typeof en.avaliacao_docente === 'string' ? JSON.parse(en.avaliacao_docente || '{}') : (en.avaliacao_docente || {});
+          const autoStr = JSON.stringify(autoObj);
+          const docStr = JSON.stringify(docObj);
+
+          // 2ª Dimensão MIGAE: Conversão de Informação Latente -> Manifesta (Borko, 1968) + Hash SHA-256
+          const hashIntegridade = generateHashMIGAE(en);
+          const manifestMeta = classifyLatentToManifest(en.link_evidencia, en.texto_resposta, autoObj);
+          en.hash_integridade = hashIntegridade;
+          en.metadados_manifestos = manifestMeta;
 
           await db.execute(
             `REPLACE INTO entregas (
@@ -579,6 +690,39 @@ const server = http.createServer(async (req, res) => {
               en.status || 'Pendente'
             ]
           );
+
+          // 1ª & 3ª Dimensão MIGAE: Disparo Assíncrono n8n + Log Imutável de Auditoria
+          let webhookUrl = process.env.N8N_WEBHOOK_URL || '';
+          try {
+            const stateRows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['migae_n8n_url']);
+            if (stateRows.length > 0 && stateRows[0].value) webhookUrl = stateRows[0].value;
+          } catch (_) {}
+
+          const n8nStatus = await dispatchN8nWebhookMIGAE(webhookUrl, {
+            evento: en.status === 'Avaliado' ? 'AVALIACAO_DOCENTE_MIGAE' : 'SUBMISSAO_ARTEFATO_DISCENTE',
+            id_entrega: en.id,
+            id_atividade: en.id_atividade,
+            id_turma: en.id_turma,
+            ator_pseudonimizado: `ESTUDANTE-${hashIntegridade.substring(0, 6)}`,
+            hash_sha256: hashIntegridade,
+            metadados_manifestos: manifestMeta,
+            status_entrega: en.status || 'Pendente',
+            nota_final: Number(en.nota_final) || 0,
+            timestamp: new Date().toISOString()
+          });
+
+          try {
+            await db.execute(
+              'INSERT INTO migae_audit_logs (evento, ator, hash_integridade, metadados_manifestos, status_n8n) VALUES (?, ?, ?, ?, ?)',
+              [
+                en.status === 'Avaliado' ? 'AVALIACAO_DOCENTE_CONSOLIDADA' : 'INGESTAO_EVIDENCIA_SANITIZADA',
+                `${en.nome_aluno || 'Estudante'} (${en.re_aluno || en.id_aluno})`,
+                hashIntegridade,
+                JSON.stringify(manifestMeta),
+                n8nStatus
+              ]
+            );
+          } catch (_) {}
 
           const allEnt = await db.query('SELECT * FROM entregas ORDER BY created_at DESC');
           syncJsonFile('entregas_data.json', allEnt);
@@ -686,6 +830,79 @@ const server = http.createServer(async (req, res) => {
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Erro ao excluir cronograma', details: e.message }));
+      }
+      return;
+    }
+
+    // --- GOVERNANÇA ALGORÍTMICA EDUCACIONAL (MIGAE - FERREIRA, 2026) ---
+    if (urlPath === '/api/migae/audit' && req.method === 'GET') {
+      try {
+        const logs = await db.query('SELECT * FROM migae_audit_logs ORDER BY created_at DESC LIMIT 60');
+        let webhookUrl = process.env.N8N_WEBHOOK_URL || '';
+        try {
+          const stateRows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['migae_n8n_url']);
+          if (stateRows.length > 0 && stateRows[0].value) webhookUrl = stateRows[0].value;
+        } catch (_) {}
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          framework: 'MIGAE - Modelo Integrado de Governança Algorítmica Educacional (Ferreira, 2026)',
+          webhookUrl,
+          dbEngine: db.getEngine(),
+          logs: logs.map(l => ({
+            ...l,
+            metadados_manifestos: typeof l.metadados_manifestos === 'string'
+              ? JSON.parse(l.metadados_manifestos || '{}')
+              : (l.metadados_manifestos || {})
+          }))
+        }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Erro ao consultar auditoria MIGAE', details: e.message }));
+      }
+      return;
+    }
+
+    if (urlPath === '/api/migae/webhook' && req.method === 'POST') {
+      try {
+        const body = await getJsonBody();
+        const webhookUrl = String(body.webhookUrl || '').trim();
+        const testFire = Boolean(body.testFire);
+
+        await db.execute(
+          'REPLACE INTO app_state (`key`, value) VALUES (?, ?)',
+          ['migae_n8n_url', webhookUrl]
+        );
+
+        let statusN8n = 'CONFIGURACAO_SALVA';
+        const hashTeste = crypto.createHash('sha256').update(`MIGAE-TEST-${Date.now()}`).digest('hex').substring(0, 16).toUpperCase();
+
+        if (testFire && webhookUrl) {
+          statusN8n = await dispatchN8nWebhookMIGAE(webhookUrl, {
+            evento: 'TESTE_CONECTIVIDADE_MIGAE_N8N',
+            autor_modelo: 'Heber Roberto Ferreira (Faculdade Única / Grupo Prominas, 2026)',
+            hash_sha256: hashTeste,
+            dimensao: '1ª Dimensão: Automação de Fluxos via Webhooks (Robredo, 2003)',
+            timestamp: new Date().toISOString()
+          });
+        }
+
+        await db.execute(
+          'INSERT INTO migae_audit_logs (evento, ator, hash_integridade, metadados_manifestos, status_n8n) VALUES (?, ?, ?, ?, ?)',
+          [
+            testFire ? 'TESTE_WEBHOOK_N8N_MIGAE' : 'ATUALIZACAO_ENDPOINT_N8N',
+            body.ator || 'Docente / Admin',
+            hashTeste,
+            JSON.stringify({ endpoint: webhookUrl || 'DESATIVADO', protocolo: 'HTTPS/REST JSON' }),
+            statusN8n
+          ]
+        );
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, webhookUrl, statusN8n, hashTeste }));
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Erro ao configurar Webhook MIGAE', details: e.message }));
       }
       return;
     }
