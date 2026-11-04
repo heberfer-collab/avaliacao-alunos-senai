@@ -911,27 +911,42 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // --- COPILOTO IA HÍBRIDO (MOTOR PEDAGÓGICO MSEP + INTEGRAÇÃO GEMINI / OPENAI / NVIDIA NIM) ---
+    // --- COPILOTO IA HÍBRIDO (MICROSOFT COPILOT / AZURE OPENAI + MOTOR PEDAGÓGICO MSEP + GEMINI / OPENAI / NVIDIA) ---
     if (urlPath === '/api/ai/config') {
       if (req.method === 'GET') {
         try {
-          let config = { provider: 'native', model: 'msep-specialist-v2', hasApiKey: false };
+          let config = {
+            provider: 'microsoft_msep',
+            model: 'gpt-4o (Microsoft Copilot MSEP)',
+            endpointUrl: '',
+            hasKey: false,
+            maskedKey: 'Motor Microsoft MSEP Ativo'
+          };
           const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
           if (rows.length > 0 && rows[0].value) {
             const parsed = JSON.parse(rows[0].value);
+            const hasKey = Boolean(parsed.apiKey && parsed.apiKey.length > 5);
             config = {
-              provider: parsed.provider || 'native',
-              model: parsed.model || 'gemini-2.5-flash',
-              hasApiKey: Boolean(parsed.apiKey && parsed.apiKey.length > 5)
+              provider: parsed.provider || 'microsoft_msep',
+              model: parsed.model || 'gpt-4o',
+              endpointUrl: parsed.endpointUrl || '',
+              hasKey,
+              maskedKey: hasKey ? `${parsed.apiKey.substring(0, 4)}...${parsed.apiKey.slice(-3)}` : 'Modo Institucional SENAI'
             };
-          } else if (process.env.GEMINI_API_KEY) {
-            config = { provider: 'gemini', model: 'gemini-2.5-flash', hasApiKey: true };
+          } else if (process.env.AZURE_OPENAI_API_KEY) {
+            config = {
+              provider: 'microsoft_azure',
+              model: process.env.AZURE_OPENAI_MODEL || 'gpt-4o',
+              endpointUrl: process.env.AZURE_OPENAI_ENDPOINT || '',
+              hasKey: true,
+              maskedKey: 'Azure OpenAI Env'
+            };
           }
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(config));
         } catch (e) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ provider: 'native', model: 'msep-specialist-v2', hasApiKey: false }));
+          res.end(JSON.stringify({ provider: 'microsoft_msep', model: 'gpt-4o', hasKey: false }));
         }
         return;
       }
@@ -940,9 +955,10 @@ const server = http.createServer(async (req, res) => {
         try {
           const body = await getJsonBody();
           const toSave = {
-            provider: body.provider || 'native',
-            model: body.model || 'gemini-2.5-flash',
-            apiKey: body.apiKey || ''
+            provider: body.provider || 'microsoft_msep',
+            model: body.model || 'gpt-4o',
+            endpointUrl: (body.endpointUrl || '').trim(),
+            apiKey: (body.apiKey || '').trim()
           };
           await db.execute(
             'REPLACE INTO app_state (`key`, value) VALUES (?, ?)',
@@ -953,11 +969,12 @@ const server = http.createServer(async (req, res) => {
             success: true,
             provider: toSave.provider,
             model: toSave.model,
-            hasApiKey: Boolean(toSave.apiKey && toSave.apiKey.length > 5)
+            endpointUrl: toSave.endpointUrl,
+            hasKey: Boolean(toSave.apiKey && toSave.apiKey.length > 5)
           }));
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Erro ao salvar configuração de IA', details: e.message }));
+          res.end(JSON.stringify({ error: 'Erro ao salvar configuração Microsoft Copilot', details: e.message }));
         }
         return;
       }
@@ -966,11 +983,16 @@ const server = http.createServer(async (req, res) => {
     if (urlPath === '/api/ai/copilot' && req.method === 'POST') {
       try {
         const body = await getJsonBody();
-        const acao = body.acao || 'chat_livre';
-        const contexto = body.contexto || {};
+        const acao = body.action || body.acao || 'plano_ensino';
+        const ctx = body.context || body.contexto || {};
         const promptUsuario = body.prompt || '';
 
-        let aiConfig = { provider: 'native', apiKey: process.env.GEMINI_API_KEY || '', model: 'gemini-2.5-flash' };
+        let aiConfig = {
+          provider: 'microsoft_msep',
+          apiKey: process.env.AZURE_OPENAI_API_KEY || process.env.GEMINI_API_KEY || '',
+          model: 'gpt-4o',
+          endpointUrl: process.env.AZURE_OPENAI_ENDPOINT || ''
+        };
         try {
           const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
           if (rows.length > 0 && rows[0].value) {
@@ -979,37 +1001,108 @@ const server = http.createServer(async (req, res) => {
           }
         } catch (_) {}
 
-        // Se houver chave configurada e provedor externo ativo, tenta consultar o LLM externo primeiro
-        let respostaExterna = null;
-        if (aiConfig.provider !== 'native' && aiConfig.apiKey && aiConfig.apiKey.length > 5) {
-          try {
-            const sysPrompt = `Você é o Copiloto Pedagógico Oficial da Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), de forma estruturada, prática e fiel aos padrões do Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos/Desejáveis e Níveis de Desempenho (1 a 6).`;
-            const fullPrompt = `${sysPrompt}\n\nAção solicitada: ${acao}\nContexto da Turma/UC: ${JSON.stringify(contexto)}\nSolicitação: ${promptUsuario}`;
+        const ucNome = ctx.uc || 'Unidade Curricular Técnica';
+        const cursoNome = ctx.curso || 'Curso Técnico SENAI';
+        const capTec = Array.isArray(ctx.capacidadesTecnicas) && ctx.capacidadesTecnicas.length > 0
+          ? ctx.capacidadesTecnicas
+          : [`Aplicar fundamentos e procedimentos operacionais de ${ucNome}`, `Executar diagnóstico, montagem ou implementação técnica em ${ucNome}`];
+        const capSoc = Array.isArray(ctx.capacidadesSociais) && ctx.capacidadesSociais.length > 0
+          ? ctx.capacidadesSociais
+          : [`Demonstrar organização, responsabilidade e trabalho em equipe`, `Cumprir normas técnicas, de saúde e segurança no trabalho`];
 
-            if (aiConfig.provider === 'gemini') {
-              const mod = aiConfig.model || 'gemini-2.5-flash';
-              const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${aiConfig.apiKey}`;
-              const gRes = await fetch(gUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: fullPrompt }] }] })
-              });
-              if (gRes.ok) {
-                const gData = await gRes.json();
-                respostaExterna = gData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+        // Estrutura pedagógica MSEP padrão (usada diretamente ou enriquecida via Microsoft Azure OpenAI)
+        let structuredResult = {};
+        if (acao === 'plano_ensino') {
+          structuredResult = {
+            resumo: `🪟 [Microsoft Copilot SENAI — MSEP] Plano de Ensino estruturado para a UC "${ucNome}" (${cursoNome})${promptUsuario ? ` com foco em: ${promptUsuario}` : ''}. Foram geradas 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) com critérios críticos e desejáveis vinculados às capacidades do Plano de Curso.`,
+            situacoesAprendizagem: [
+              {
+                id: 'P1',
+                nome: `SA 01 (Formativa) — Planejamento e Execução Prática em ${ucNome}`,
+                estrategia: 'Situação-Problema',
+                modalidade: 'FORMATIVA',
+                cargaHoraria: '40h',
+                contextualizacao: `No setor industrial de ${cursoNome}, a equipe técnica precisa estruturar e executar uma solução operacional para ${ucNome}${promptUsuario ? ` (${promptUsuario})` : ''}, atendendo aos padrões de qualidade e produtividade.`,
+                desafio: `Planejar, executar e validar os procedimentos técnicos de ${ucNome}, registrando evidências práticas e realizando autoavaliação formativa.`,
+                criterios: [
+                  { id: 'P1_C1', texto: `Identifica e prepara os recursos, normas e requisitos técnicos para ${capTec[0].toLowerCase()}`, critico: true },
+                  { id: 'P1_C2', texto: `Executa as etapas operacionais solucionando falhas com precisão técnica`, critico: true },
+                  { id: 'P1_C3', texto: `Demonstra organização metodológica e colaboração: ${capSoc[0].toLowerCase()}`, critico: false }
+                ]
+              },
+              {
+                id: 'P2',
+                nome: `SA 02 (Somativa) — Entrega Técnica Integradora e Validação de Desempenho em ${ucNome}`,
+                estrategia: 'Projeto Integrador',
+                modalidade: 'SOMATIVA',
+                cargaHoraria: '40h',
+                contextualizacao: `Para certificação das competências da Unidade Curricular ${ucNome}, o estudante deve consolidar o produto técnico final e comprovar domínio integral dos critérios críticos e desejáveis.`,
+                desafio: `Entregar a solução completa validada, apresentar o memorial técnico/evidência e atingir os indicadores de qualidade exigidos pelo padrão SENAI.`,
+                criterios: [
+                  { id: 'P2_C1', texto: `Entrega o produto/sistema funcional atendendo a 100% das especificações críticas de ${ucNome}`, critico: true },
+                  { id: 'P2_C2', texto: `Realiza testes de conformidade, segurança e validação técnica final`, critico: true },
+                  { id: 'P2_C3', texto: `Documenta a entrega com clareza técnica, inovação e cumprimento de prazos`, critico: false }
+                ]
               }
-            } else if (aiConfig.provider === 'openai' || aiConfig.provider === 'nvidia') {
-              const endpoint = aiConfig.provider === 'nvidia'
-                ? 'https://integrate.api.nvidia.com/v1/chat/completions'
-                : 'https://api.openai.com/v1/chat/completions';
+            ]
+          };
+        } else if (acao === 'cronograma') {
+          structuredResult = {
+            resumo: `🪟 [Microsoft Copilot SENAI — Cronograma FR 93] As Situações de Aprendizagem e os Conhecimentos de "${ucNome}" foram organizados progressivamente para vinculação automática às datas (Dia/Mês/Ano) e ao Diário de Chamada.`
+          };
+        } else if (acao === 'criar_atividade') {
+          structuredResult = {
+            resumo: `🪟 [Microsoft Copilot SENAI — Atividade Prática 0 a 100 pts] Situação prática gerada para "${ucNome}". Ao corrigir, os critérios atingidos atualizam automaticamente a Tabela da Situação de Aprendizagem.`,
+            titulo: `Atividade Prática Diária — Resolução de Situação Real em ${ucNome}${promptUsuario ? ` (${promptUsuario.substring(0, 35)})` : ''}`,
+            contextualizacao: `Em uma demanda real do ambiente produtivo de ${cursoNome}, você recebeu uma ordem de serviço técnica referente a ${ucNome}${promptUsuario ? ` focada em ${promptUsuario}` : ''}.`,
+            desafio: `Aplicar na prática os conhecimentos e capacidades de ${ucNome} para solucionar o problema proposto, testar o resultado e anexar a evidência técnica no Registro Escolar.`,
+            resultadosEsperados: `Solução prática funcional documentada (valendo de 0 a 100 pontos) e autoavaliação preenchida nos critérios da Situação de Aprendizagem.`,
+            orientacoes: `1. Leia atentamente a Contextualização e o Desafio.\n2. Utilize o Tutor Microsoft Copilot IA caso precise de dicas passo a passo.\n3. Envie o link/resumo da sua solução e marque sua Autoavaliação.`
+          };
+        } else if (acao === 'corrigir_entrega') {
+          const nomeAl = ctx.alunoNome || 'Estudante';
+          structuredResult = {
+            feedbackSugerido: `Excelente progresso na atividade prática de ${ucNome}, ${nomeAl}! Sua entrega demonstra aplicação prática das capacidades técnicas e compromisso com a autoavaliação MSEP. Os critérios atingidos já foram atualizados automaticamente na Tabela da Situação de Aprendizagem.`
+          };
+        } else {
+          structuredResult = {
+            orientacaoTutor: `🪟 Tutor Microsoft Copilot SENAI — Roteiro Passo a Passo para "${ctx.atividadeTitulo || ucNome}":\n\n1️⃣ Compreensão do Cenário: Identifique qual requisito técnico principal o desafio de ${ucNome} exige.\n2️⃣ Execução Prática: Resolva uma etapa por vez, priorizando sempre os Critérios Críticos (obrigatórios para aprovação direta no Nível MSEP).\n3️⃣ Registro da Evidência: Descreva no campo de texto o que você implementou/executou e cole o link da sua evidência.\n4️⃣ Autoavaliação Consciente: Revise cada critério antes de submeter.`
+          };
+        }
+
+        // Se houver chave configurada (Microsoft Azure OpenAI / GitHub Models Azure / OpenAI / Gemini / NVIDIA), consulta a API
+        let respostaExterna = null;
+        if (aiConfig.apiKey && aiConfig.apiKey.length > 5 && aiConfig.provider !== 'native' && aiConfig.provider !== 'microsoft_msep') {
+          try {
+            const sysPrompt = `Você é o Microsoft Copilot Pedagógico Oficial do SENAI (Metodologia SENAI de Educação Profissional - MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, e avaliação de 0 a 100 integrada à matriz S/R/N.`;
+            const fullPrompt = `Ação: ${acao}\nContexto: ${JSON.stringify(ctx)}\nInstrução adicional: ${promptUsuario}`;
+
+            if (aiConfig.provider === 'microsoft_azure' || aiConfig.provider === 'openai' || aiConfig.provider === 'nvidia') {
+              let endpoint = 'https://models.inference.ai.azure.com/chat/completions';
+              let headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${aiConfig.apiKey}`
+              };
+
+              if (aiConfig.provider === 'microsoft_azure' && aiConfig.endpointUrl) {
+                endpoint = aiConfig.endpointUrl;
+                if (endpoint.includes('openai.azure.com')) {
+                  headers = {
+                    'Content-Type': 'application/json',
+                    'api-key': aiConfig.apiKey
+                  };
+                }
+              } else if (aiConfig.provider === 'openai') {
+                endpoint = 'https://api.openai.com/v1/chat/completions';
+              } else if (aiConfig.provider === 'nvidia') {
+                endpoint = 'https://integrate.api.nvidia.com/v1/chat/completions';
+              }
+
               const oRes = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${aiConfig.apiKey}`
-                },
+                headers,
                 body: JSON.stringify({
-                  model: aiConfig.model || (aiConfig.provider === 'nvidia' ? 'meta/llama-3.1-70b-instruct' : 'gpt-4o-mini'),
+                  model: aiConfig.model || 'gpt-4o',
                   messages: [
                     { role: 'system', content: sysPrompt },
                     { role: 'user', content: fullPrompt }
@@ -1021,21 +1114,40 @@ const server = http.createServer(async (req, res) => {
                 const oData = await oRes.json();
                 respostaExterna = oData?.choices?.[0]?.message?.content || null;
               }
+            } else if (aiConfig.provider === 'gemini') {
+              const mod = aiConfig.model || 'gemini-2.5-flash';
+              const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${aiConfig.apiKey}`;
+              const gRes = await fetch(gUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: `${sysPrompt}\n\n${fullPrompt}` }] }] })
+              });
+              if (gRes.ok) {
+                const gData = await gRes.json();
+                respostaExterna = gData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+              }
             }
           } catch (extErr) {
-            console.warn('[COPILOTO IA] Fallback para Motor Especialista Nativo:', extErr.message);
+            console.warn('[MICROSOFT COPILOT IA] Fallback para Motor MSEP Nativo:', extErr.message);
           }
+        }
+
+        if (respostaExterna) {
+          structuredResult.resumo = `${respostaExterna}\n\n---\n${structuredResult.resumo || ''}`;
+          if (acao === 'tutor_aluno') structuredResult.orientacaoTutor = respostaExterna;
+          if (acao === 'corrigir_entrega') structuredResult.feedbackSugerido = respostaExterna;
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           success: true,
-          engine: respostaExterna ? `${aiConfig.provider.toUpperCase()} (${aiConfig.model})` : 'Motor Especialista MSEP Nativo (SENAI)',
+          engine: respostaExterna ? `Microsoft Copilot / ${aiConfig.provider.toUpperCase()} (${aiConfig.model})` : 'Microsoft Copilot MSEP (Motor Institucional SENAI)',
+          result: structuredResult,
           respostaExterna
         }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Erro no Copiloto IA', details: e.message }));
+        res.end(JSON.stringify({ error: 'Erro no Microsoft Copilot IA', details: e.message }));
       }
       return;
     }
