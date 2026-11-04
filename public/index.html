@@ -482,6 +482,12 @@
           Entrar no Sistema <i class="fa-solid fa-arrow-right"></i>
         </button>
 
+        <div class="text-center pt-1">
+          <button type="button" onclick="abrirModalAlterarSenha()" class="text-xs font-bold text-slate-600 hover:text-senai-red transition inline-flex items-center gap-1.5 cursor-pointer py-1">
+            <i class="fa-solid fa-key text-amber-600"></i> Alterar Minha Senha / Primeiro Acesso
+          </button>
+        </div>
+
         <!-- Botões de Acesso Rápido com 1 Clique -->
         <div class="pt-3 border-t border-slate-200/80 space-y-2">
           <p class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider text-center">Ou acesse com 1 clique:</p>
@@ -501,13 +507,72 @@
 
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-left space-y-1 mt-4">
         <p class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-          <i class="fa-solid fa-circle-info text-blue-600"></i> Senhas Padrão Aceitas:
+          <i class="fa-solid fa-circle-info text-blue-600"></i> Primeiro Acesso (Senha Inicial):
         </p>
         <p class="text-[11px] text-slate-600 leading-relaxed">
-          • <strong>Admin:</strong> <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-bold text-purple-800">senai123</code> ou <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-bold text-purple-800">admin</code><br>
-          • <strong>Docentes/Alunos:</strong> <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-semibold">senai123</code> ou <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-semibold">primeironome + 3 primeiros dígitos</code>
+          • <strong>Docentes/Alunos:</strong> <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-semibold">senai123</code> ou <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-semibold">primeironome + 3 primeiros dígitos</code><br>
+          • Você pode personalizar sua senha a qualquer momento em <strong>Alterar Minha Senha</strong>.
         </p>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ALTERAR SENHA DO USUÁRIO -->
+  <!-- ========================================== -->
+  <div id="modalAlterarSenha" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-[110] flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="bg-amber-500/20 border border-amber-400/30 p-2 rounded-xl text-amber-400">
+            <i class="fa-solid fa-key text-base"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base">Alterar Minha Senha</h3>
+            <p class="text-[11px] text-slate-300">Defina uma nova senha pessoal de acesso</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalAlterarSenha()" class="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="salvarNovaSenhaUsuario(event)" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Usuário (Nome, NIF, Matrícula ou admin) *</label>
+          <input type="text" id="chgPassUser" required placeholder="Ex: Heber, 1080133, Nome do Aluno ou admin" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-senai-red">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Senha Atual *</label>
+          <input type="password" id="chgPassCurrent" required placeholder="Digite sua senha atual (ou senai123 no 1º acesso)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-senai-red">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nova Senha *</label>
+            <input type="password" id="chgPassNew" required minlength="4" placeholder="Mínimo 4 caracteres" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Confirmar Nova Senha *</label>
+            <input type="password" id="chgPassConfirm" required minlength="4" placeholder="Repita a nova senha" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-900">
+          <i class="fa-solid fa-shield-halved text-amber-600 mr-1"></i>
+          Após salvar, sua conta passará a exigir <strong>exclusivamente a sua nova senha</strong> (a senha padrão inicial deixará de funcionar para o seu usuário).
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="fecharModalAlterarSenha()" class="px-4 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition shadow-sm cursor-pointer">
+            <i class="fa-solid fa-check"></i> Salvar Nova Senha
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -654,6 +719,11 @@
             <span id="userRoleIcon" class="text-senai-red"><i class="fa-solid fa-user-circle text-sm"></i></span>
             <span id="userNameDisplay">Conectando...</span>
           </div>
+
+          <button onclick="abrirModalAlterarSenha()" id="btnNavbarAlterarSenha" class="bg-amber-600 hover:bg-amber-700 text-xs text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition shadow-2xs whitespace-nowrap cursor-pointer" title="Alterar sua senha de acesso">
+            <i class="fa-solid fa-key"></i>
+            <span>Senha</span>
+          </button>
 
           <button onclick="logout()" class="bg-slate-800 hover:bg-slate-900 text-xs text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition shadow-2xs whitespace-nowrap cursor-pointer">
             <i class="fa-solid fa-right-from-bracket"></i>
@@ -10179,8 +10249,238 @@ Instruções do Sistema:
     }
 
     // =========================================================================
-    // SISTEMA DE PERFIS E AUTENTICAÇÃO UNIVERSAL (NOME / NIF / MATRÍCULA)
+    // SISTEMA DE PERFIS, SENHAS PERSONALIZADAS (MYSQL) E AUTENTICAÇÃO UNIVERSAL
     // =========================================================================
+
+    let customPasswordsMap = {};
+
+    async function carregarSenhasPersonalizadas() {
+      try {
+        const cached = localStorage.getItem('senai_custom_passwords');
+        if (cached) customPasswordsMap = JSON.parse(cached) || {};
+      } catch (e) {}
+
+      try {
+        const res = await fetch('/api/passwords');
+        if (res.ok) {
+          const serverMap = await res.json();
+          if (serverMap && typeof serverMap === 'object') {
+            customPasswordsMap = { ...customPasswordsMap, ...serverMap };
+            localStorage.setItem('senai_custom_passwords', JSON.stringify(customPasswordsMap));
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Carrega senhas personalizadas ao iniciar
+    carregarSenhasPersonalizadas();
+
+    function resolverUsuarioPorInput(rawUser) {
+      const input = (rawUser || '').trim();
+      if (!input) return null;
+
+      if (!globalUsers || globalUsers.length === 0) {
+        globalUsers = getStoredUsersSync();
+      }
+
+      const normInput = normalizarTextoBusca(input);
+      const numInput = input.replace(/\D/g, '');
+
+      // 1. Master Admin
+      if (normInput === 'admin' || normInput === 'administrador') {
+        return {
+          role: 'ADMIN',
+          id: 'admin',
+          name: 'Administrador Master',
+          cpf: '000000',
+          userKey: 'ADMIN_admin'
+        };
+      }
+
+      // 2. Docentes e Coordenadores
+      let userMatch = null;
+      if (numInput.length >= 2) {
+        userMatch = globalUsers.find(u => {
+          const uNum = (u.cpf || u.nif || '').replace(/\D/g, '');
+          return uNum === numInput || (numInput.length >= 3 && (uNum.includes(numInput) || numInput.includes(uNum)));
+        });
+      }
+      if (!userMatch) {
+        userMatch = globalUsers.find(u => {
+          const ident = normalizarTextoBusca(u.cpf || u.nif || String(u.id || ''));
+          return ident === normInput || (normInput.length >= 3 && ident.includes(normInput));
+        });
+      }
+      if (!userMatch) {
+        userMatch = globalUsers.find(u => {
+          const uNome = normalizarTextoBusca(u.name);
+          const uPrimeiroNome = uNome.split(' ')[0];
+          return uNome === normInput || uPrimeiroNome === normInput || uNome.startsWith(normInput) || normInput.startsWith(uPrimeiroNome);
+        });
+      }
+
+      if (userMatch) {
+        const role = userMatch.role || 'TEACHER';
+        return {
+          role: role,
+          id: userMatch.id,
+          name: userMatch.name,
+          cpf: userMatch.cpf || userMatch.nif || String(userMatch.id),
+          userKey: `USER_${userMatch.id}`
+        };
+      }
+
+      // 3. Estudantes
+      if (appData && appData.students) {
+        let studentMatch = null;
+        if (numInput.length >= 1) {
+          studentMatch = appData.students.find(s => {
+            const sNum = (s.cpf || '').replace(/\D/g, '');
+            return String(s.id) === numInput || sNum === numInput || (numInput.length >= 3 && sNum.includes(numInput));
+          });
+        }
+        if (!studentMatch) {
+          studentMatch = appData.students.find(s => {
+            const sNome = normalizarTextoBusca(s.name);
+            const sPrimeiroNome = sNome.split(' ')[0];
+            return sNome === normInput || sPrimeiroNome === normInput || sNome.startsWith(normInput);
+          });
+        }
+        if (studentMatch) {
+          return {
+            role: 'STUDENT',
+            id: studentMatch.id,
+            name: studentMatch.name,
+            cpf: studentMatch.cpf || String(studentMatch.id),
+            userKey: `STUDENT_${studentMatch.id}`
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function validarSenhaDoUsuario(resolved, rawSenha) {
+      const senhaDigitada = (rawSenha || '').trim();
+      const senhaCustom = customPasswordsMap[resolved.userKey];
+
+      // Se o usuário já definiu uma senha personalizada, exige estritamente a senha dele!
+      if (senhaCustom) {
+        return {
+          ok: senhaDigitada === senhaCustom,
+          hasCustom: true
+        };
+      }
+
+      // Caso contrário, aceita a senha padrão de 1º acesso
+      const passLower = senhaDigitada.toLowerCase();
+      if (resolved.role === 'ADMIN' && resolved.id === 'admin') {
+        const okAdmin = (senhaDigitada === 'senai123' || passLower === 'admin' || passLower === 'admin123' || passLower === 'senai' || passLower === 'master');
+        return { ok: okAdmin, hasCustom: false };
+      }
+
+      const firstName = normalizarTextoParaSenha(resolved.name);
+      const identStr = (resolved.cpf || String(resolved.id || '')).replace(/\D/g, '');
+      const first3num = identStr ? identStr.substring(0, 3) : '123';
+      const expectedPassword = (firstName + first3num).toLowerCase();
+      const fallbackPassword = (firstName + '123').toLowerCase();
+
+      const isPassCorrect = (
+        passLower === expectedPassword ||
+        passLower === fallbackPassword ||
+        passLower === firstName ||
+        senhaDigitada === 'senai123' ||
+        passLower === 'admin' ||
+        passLower === 'senai' ||
+        passLower === (firstName + '111') ||
+        passLower === (firstName + '108') ||
+        passLower === (firstName + '102') ||
+        passLower === (firstName + '222') ||
+        passLower === (firstName + '000')
+      );
+
+      return { ok: isPassCorrect, hasCustom: false, expectedPassword };
+    }
+
+    function abrirModalAlterarSenha() {
+      const modal = document.getElementById('modalAlterarSenha');
+      if (!modal) return;
+
+      const userField = document.getElementById('chgPassUser');
+      if (userField) {
+        if (currentUser && currentUser.name) {
+          userField.value = currentUser.id === 'admin' ? 'admin' : currentUser.name;
+        } else {
+          const loginField = document.getElementById('loginCpf');
+          userField.value = loginField && loginField.value ? loginField.value : '';
+        }
+      }
+      document.getElementById('chgPassCurrent').value = '';
+      document.getElementById('chgPassNew').value = '';
+      document.getElementById('chgPassConfirm').value = '';
+
+      modal.classList.remove('hidden');
+    }
+
+    function fecharModalAlterarSenha() {
+      const modal = document.getElementById('modalAlterarSenha');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function salvarNovaSenhaUsuario(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      await carregarSenhasPersonalizadas();
+
+      const rawUser = (document.getElementById('chgPassUser').value || '').trim();
+      const currentPass = (document.getElementById('chgPassCurrent').value || '').trim();
+      const newPass = (document.getElementById('chgPassNew').value || '').trim();
+      const confirmPass = (document.getElementById('chgPassConfirm').value || '').trim();
+
+      const resolved = resolverUsuarioPorInput(rawUser);
+      if (!resolved) {
+        alert(`Usuário "${rawUser}" não encontrado!\nDigite seu Nome, NIF, Matrícula ou 'admin'.`);
+        return;
+      }
+
+      const validacao = validarSenhaDoUsuario(resolved, currentPass);
+      if (!validacao.ok) {
+        alert(validacao.hasCustom
+          ? 'A Senha Atual informada está incorreta!'
+          : 'Senha Atual incorreta! No primeiro acesso, utilize "senai123" ou seu primeiro nome + 3 primeiros dígitos.');
+        return;
+      }
+
+      if (newPass.length < 4) {
+        alert('A nova senha deve ter pelo menos 4 caracteres.');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        alert('A confirmação da nova senha não confere! Digite a mesma senha nos dois campos.');
+        return;
+      }
+
+      // Salva localmente e no MySQL da VPS
+      customPasswordsMap[resolved.userKey] = newPass;
+      localStorage.setItem('senai_custom_passwords', JSON.stringify(customPasswordsMap));
+
+      try {
+        await fetch('/api/passwords', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_key: resolved.userKey,
+            password: newPass
+          })
+        });
+      } catch (err) {
+        console.warn('Erro ao sincronizar senha no servidor:', err);
+      }
+
+      fecharModalAlterarSenha();
+      alert(`✅ Senha de "${resolved.name}" alterada com sucesso!\n\nA partir de agora, utilize exclusivamente a sua nova senha para entrar.`);
+    }
 
     function checkLogin() {
       const savedUser = localStorage.getItem('senai_current_user');
@@ -10193,7 +10493,40 @@ Instruções do Sistema:
       }
     }
 
-    function loginRapido(tipo) {
+    async function loginRapido(tipo) {
+      await carregarSenhasPersonalizadas();
+
+      let targetKey = '';
+      let targetLoginText = '';
+
+      if (tipo === 'admin') {
+        targetKey = 'ADMIN_admin';
+        targetLoginText = 'admin';
+      } else if (tipo === '1080133') {
+        targetKey = 'USER_1';
+        targetLoginText = '1080133';
+      } else if (tipo === '1021529') {
+        targetKey = 'USER_3';
+        targetLoginText = '1021529';
+      } else if (tipo === '1') {
+        const student = (appData && appData.students && appData.students[0]) ? appData.students[0] : { id: 1, name: 'Afonso Silva' };
+        targetKey = `STUDENT_${student.id}`;
+        targetLoginText = student.name;
+      }
+
+      // Se o usuário já cadastrou senha própria, preenche o usuário e pede a senha!
+      if (targetKey && customPasswordsMap[targetKey]) {
+        const cpfInput = document.getElementById('loginCpf');
+        const senhaInput = document.getElementById('loginSenha');
+        if (cpfInput) cpfInput.value = targetLoginText;
+        if (senhaInput) {
+          senhaInput.value = '';
+          senhaInput.focus();
+        }
+        alert('🔒 Este perfil possui senha personalizada ativa. Digite sua senha para entrar.');
+        return;
+      }
+
       if (tipo === 'admin') {
         currentUser = { role: 'ADMIN', id: 'admin', name: 'Administrador Master' };
       } else if (tipo === '1080133') {
@@ -10210,8 +10543,10 @@ Instruções do Sistema:
       applyRolePermissions();
     }
 
-    function processUnifiedLogin(e) {
+    async function processUnifiedLogin(e) {
       if (e && e.preventDefault) e.preventDefault();
+      await carregarSenhasPersonalizadas();
+
       const rawUser = (document.getElementById('loginCpf').value || '').trim();
       const rawSenha = (document.getElementById('loginSenha').value || '').trim();
 
@@ -10220,118 +10555,23 @@ Instruções do Sistema:
         return;
       }
 
-      if (!globalUsers || globalUsers.length === 0) {
-        globalUsers = getStoredUsersSync();
-      }
-
-      const normInput = normalizarTextoBusca(rawUser);
-      const numInput = rawUser.replace(/\D/g, '');
-      const passLower = (rawSenha || '').trim().toLowerCase();
-
-      // 1. Master Admin (aceita senai123, admin, admin123, senai, master, etc.)
-      if (normInput === 'admin' || normInput === 'administrador') {
-        if (!rawSenha || rawSenha === 'senai123' || passLower === 'admin' || passLower === 'admin123' || passLower === 'senai' || passLower === 'master' || passLower === '123' || passLower === '123456') {
-          currentUser = { role: 'ADMIN', id: 'admin', name: 'Administrador Master' };
-          localStorage.setItem('senai_current_user', JSON.stringify(currentUser));
-          const overlay = document.getElementById('loginOverlay');
-          if (overlay) overlay.classList.add('hidden');
-          document.getElementById('loginCpf').value = '';
-          document.getElementById('loginSenha').value = '';
-          applyRolePermissions();
-          return;
-        } else {
-          alert("Senha incorreta para o Administrador Master!\n(Senhas aceitas: senai123 ou admin)");
-          return;
-        }
-      }
-
-      // 2. Busca Inteligente em Professores e Coordenadores (globalUsers)
-      let userMatch = null;
-      let isStudent = false;
-
-      // 2a. Busca por NIF / CPF (números)
-      if (numInput.length >= 2) {
-        userMatch = globalUsers.find(u => {
-          const uNum = (u.cpf || u.nif || '').replace(/\D/g, '');
-          return uNum === numInput || (numInput.length >= 3 && (uNum.includes(numInput) || numInput.includes(uNum)));
-        });
-      }
-
-      // 2b. Busca por Identificador Exato em Texto
-      if (!userMatch) {
-        userMatch = globalUsers.find(u => {
-          const ident = normalizarTextoBusca(u.cpf || u.nif || String(u.id || ''));
-          return ident === normInput || (normInput.length >= 3 && ident.includes(normInput));
-        });
-      }
-
-      // 2c. Busca por Nome Completo ou Primeiro Nome
-      if (!userMatch) {
-        userMatch = globalUsers.find(u => {
-          const uNome = normalizarTextoBusca(u.name);
-          const uPrimeiroNome = uNome.split(' ')[0];
-          return uNome === normInput || uPrimeiroNome === normInput || uNome.startsWith(normInput) || normInput.startsWith(uPrimeiroNome);
-        });
-      }
-
-      // 3. Se não encontrou em docentes, busca em Estudantes (appData.students)
-      if (!userMatch && appData && appData.students) {
-        // 3a. Busca por Matrícula / ID / CPF do Aluno
-        if (numInput.length >= 1) {
-          userMatch = appData.students.find(s => {
-            const sNum = (s.cpf || '').replace(/\D/g, '');
-            return String(s.id) === numInput || sNum === numInput || (numInput.length >= 3 && sNum.includes(numInput));
-          });
-        }
-        // 3b. Busca por Nome do Aluno
-        if (!userMatch) {
-          userMatch = appData.students.find(s => {
-            const sNome = normalizarTextoBusca(s.name);
-            const sPrimeiroNome = sNome.split(' ')[0];
-            return sNome === normInput || sPrimeiroNome === normInput || sNome.startsWith(normInput);
-          });
-        }
-        if (userMatch) isStudent = true;
-      }
-
-      if (!userMatch) {
+      const resolved = resolverUsuarioPorInput(rawUser);
+      if (!resolved) {
         alert(`Usuário "${rawUser}" não foi encontrado no sistema.\n\nVocê pode digitar seu Nome Completo, NIF, Matrícula ou 'admin'.`);
         return;
       }
 
-      // 4. Validação da Senha Flexível e Amigável
-      const firstName = normalizarTextoParaSenha(userMatch.name);
-      const identStr = (userMatch.cpf || userMatch.nif || String(userMatch.id || '')).replace(/\D/g, '');
-      const first3num = identStr ? identStr.substring(0, 3) : '123';
-      const expectedPassword = (firstName + first3num).toLowerCase();
-      const fallbackPassword = (firstName + '123').toLowerCase();
-      const typedSenha = rawSenha.trim().toLowerCase();
-
-      const isPassCorrect = (
-        !rawSenha ||
-        typedSenha === expectedPassword ||
-        typedSenha === fallbackPassword ||
-        typedSenha === firstName ||
-        rawSenha === 'senai123' ||
-        typedSenha === 'admin' ||
-        typedSenha === 'admin123' ||
-        typedSenha === 'senai' ||
-        typedSenha.includes('coordenador') ||
-        typedSenha.includes('pedagogico') ||
-        typedSenha === (firstName + '111') ||
-        typedSenha === (firstName + '108') ||
-        typedSenha === (firstName + '102') ||
-        typedSenha === (firstName + '222') ||
-        typedSenha === (firstName + '000')
-      );
-
-      if (!isPassCorrect) {
-        alert(`Senha incorreta!\n\nLembrete: sua senha padrão é seu primeiro nome (${firstName}) + os 3 primeiros dígitos do seu NIF/Matrícula (${first3num}). Ex: ${expectedPassword} ou simplesmente 'senai123'.`);
+      const validacao = validarSenhaDoUsuario(resolved, rawSenha);
+      if (!validacao.ok) {
+        if (validacao.hasCustom) {
+          alert(`Senha incorreta para ${resolved.name}!\nDigite a sua senha personalizada.`);
+        } else {
+          alert(`Senha incorreta!\n\nNo primeiro acesso, utilize 'senai123' ou ${validacao.expectedPassword || 'seu primeiro nome + 3 dígitos'}.`);
+        }
         return;
       }
 
-      const role = isStudent ? 'STUDENT' : (userMatch.role || 'TEACHER');
-      currentUser = { role: role, id: userMatch.id, name: userMatch.name };
+      currentUser = { role: resolved.role, id: resolved.id, name: resolved.name };
       localStorage.setItem('senai_current_user', JSON.stringify(currentUser));
       const overlay = document.getElementById('loginOverlay');
       if (overlay) overlay.classList.add('hidden');
@@ -10403,7 +10643,7 @@ Instruções do Sistema:
         const quickControls = document.getElementById('quickControlsBar');
         if (quickControls) {
           Array.from(quickControls.children).forEach(child => {
-            if (child.tagName === 'BUTTON' && !child.innerHTML.includes('Sair')) {
+            if (child.tagName === 'BUTTON' && !child.innerHTML.includes('Sair') && child.id !== 'btnNavbarAlterarSenha') {
               if (isStudent) child.classList.add('hidden');
               else child.classList.remove('hidden');
             }

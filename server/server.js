@@ -176,6 +176,44 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // --- SENHAS PERSONALIZADAS DOS USUÁRIOS (ADMIN, DOCENTES, ALUNOS) ---
+    if (urlPath === '/api/passwords') {
+      if (req.method === 'GET') {
+        try {
+          const rows = await db.query('SELECT user_key, password FROM user_passwords');
+          const map = {};
+          rows.forEach(r => { map[r.user_key] = r.password; });
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(map));
+        } catch (e) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({}));
+        }
+        return;
+      }
+
+      if (req.method === 'POST') {
+        try {
+          const body = await getJsonBody();
+          if (!body.user_key || !body.password) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'user_key e password são obrigatórios' }));
+            return;
+          }
+          await db.execute(
+            'REPLACE INTO user_passwords (user_key, password) VALUES (?, ?)',
+            [String(body.user_key), String(body.password)]
+          );
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Erro ao atualizar senha no banco', details: e.message }));
+        }
+        return;
+      }
+    }
+
     // --- USUÁRIOS ---
     if (urlPath === '/api/users') {
       if (req.method === 'GET') {

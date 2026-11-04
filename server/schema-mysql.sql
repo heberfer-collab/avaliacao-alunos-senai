@@ -148,3 +148,12 @@ CREATE TABLE IF NOT EXISTS `cronogramas` (
   KEY `idx_cronogramas_turma` (`id_turma`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 9. Tabela de Senhas Personalizadas de Usuários (Admin, Docentes e Alunos)
+CREATE TABLE IF NOT EXISTS `user_passwords` (
+  `user_key` VARCHAR(128) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+

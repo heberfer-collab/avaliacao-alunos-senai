@@ -205,6 +205,13 @@ async function createMySQLTables() {
       \`updated_at\` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (\`id\`),
       KEY \`idx_cronogramas_turma\` (\`id_turma\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`,
+
+    `CREATE TABLE IF NOT EXISTS \`user_passwords\` (
+      \`user_key\` VARCHAR(128) NOT NULL,
+      \`password\` VARCHAR(255) NOT NULL,
+      \`updated_at\` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (\`user_key\`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`
   ];
 
@@ -338,6 +345,11 @@ function initSQLite() {
         qa_total INT DEFAULT 60,
         matriz_aulas TEXT DEFAULT '{}',
         niveis_desempenho TEXT DEFAULT '[]',
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE TABLE IF NOT EXISTS user_passwords (
+        user_key TEXT PRIMARY KEY,
+        password TEXT NOT NULL,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
