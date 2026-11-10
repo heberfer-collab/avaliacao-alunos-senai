@@ -21,6 +21,7 @@ services:
       DB_USER: ${DB_USER:-root}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-avaliacao_senai}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       APP_NAME: "Sistema Integrado de Avaliação SENAI"
     ports:
       # Porta 3004 no Host (portas 3000, 3001, 3002 e 3003 já ocupadas no ecossistema)
