@@ -55,6 +55,14 @@
   <!-- Supabase JS Client v2 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
+  <!-- PDF.js CDN (Leitura e Extração de Planos de Curso em PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+  
   <!-- Google Identity Services (GIS) & Google Classroom API Scripts -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://apis.google.com/js/api.js" async defer></script>
@@ -837,6 +845,11 @@
 
           <!-- Ações Pedagógicas Rápidas -->
           <div class="flex items-center gap-1.5 border-l border-r border-slate-200 px-1.5">
+            <button onclick="abrirAssistentePlanoCursoMSEP()" class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-xs text-white px-3 py-1.5 rounded-lg font-extrabold flex items-center gap-1.5 transition shadow-sm cursor-pointer whitespace-nowrap" title="Assistente Pedagógico MSEP: Subir Plano de Curso (PDF), diálogo guiado com o professor e geração de SAs">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+              <span class="hidden lg:inline">Assistente</span> Plano de Curso
+            </button>
+
             <button onclick="openFullPlanoEditorModal()" class="bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition border border-slate-300 shadow-2xs whitespace-nowrap cursor-pointer" title="Editar Plano de Ensino da UC">
               <i class="fa-solid fa-file-pen text-blue-600"></i>
               <span class="hidden md:inline">Editar Plano</span>
@@ -1205,6 +1218,9 @@
         </div>
         
         <div class="flex items-center gap-2 flex-wrap">
+          <button type="button" onclick="abrirAssistentePlanoCursoMSEP()" class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-xs text-white px-3.5 py-2 rounded-lg font-extrabold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Assistente Pedagógico MSEP: Subir Plano de Curso (PDF), diálogo guiado com o professor e geração de SAs">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> ✨ Assistente Plano de Curso (PDF)
+          </button>
           <button type="button" onclick="abrirModalSeletorPlanoCurso()" class="bg-indigo-600 hover:bg-indigo-700 text-xs text-white px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Selecionar Capacidades Técnicas, Sociais e Conhecimentos direto do Plano de Curso">
             <i class="fa-solid fa-book-open-reader"></i> 1. Puxar do Plano de Curso
           </button>
@@ -1910,6 +1926,26 @@
               </button>
             </div>
           </div>
+        </div>
+
+        <!-- Banner Assistente Pedagógico MSEP -->
+        <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-5 border border-indigo-700/50 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-amber-300 text-2xl flex-shrink-0 border border-white/20">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded uppercase">Novo Fluxo MSEP</span>
+                <span class="text-xs text-blue-200">Metodologia SENAI de Educação Profissional</span>
+              </div>
+              <h3 class="font-display font-extrabold text-base text-white mt-1">Assistente Pedagógico: Subir Plano de Curso & Entrevista Guiada</h3>
+              <p class="text-xs text-slate-300 mt-0.5">Suba o PDF do Plano de Curso oficial ou use o do Técnico em Multimídia para uma conversa interativa e criação automática das Situações de Aprendizagem.</p>
+            </div>
+          </div>
+          <button type="button" onclick="abrirAssistentePlanoCursoMSEP()" class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs transition shadow-lg flex items-center gap-2 flex-shrink-0 cursor-pointer">
+            <i class="fa-solid fa-play"></i> Iniciar Assistente Interativo
+          </button>
         </div>
 
         <!-- Grade de 5 UCs Oficiais do Plano de Curso Técnico em Multimídia SENAI -->
@@ -4202,6 +4238,276 @@
       <div class="bg-slate-50 border-t border-slate-200 px-6 py-3 flex items-center justify-between">
         <span class="text-[11px] text-slate-500">Integrado ao domínio Google Workspace for Education (<code>@docentes.senai.br</code>), Google AI Studio, Google Classroom, MSEP e Governança MIGAE.</span>
         <button type="button" onclick="fecharCopilotoIA()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs cursor-pointer">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ASSISTENTE INTELIGENTE MSEP - PLANEJAMENTO PELO PLANO DE CURSO (PDF) -->
+  <!-- ========================================================================= -->
+  <div id="modalAssistentePlanoCursoMSEP" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-3 sm:p-4">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+      
+      <!-- Cabeçalho do Assistente -->
+      <div class="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-indigo-900/40">
+        <div class="flex items-center gap-3">
+          <div class="bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 p-2.5 rounded-2xl shadow-md font-black text-xl flex items-center justify-center">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-display font-extrabold text-base tracking-tight text-white">Assistente Pedagógico MSEP</h3>
+              <span class="bg-blue-500/30 text-blue-300 border border-blue-400/30 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">
+                Metodologia SENAI
+              </span>
+            </div>
+            <p class="text-xs text-blue-200">Suba o Plano de Curso (PDF) e responda ao diálogo guiado para formular o Plano de Ensino da sua turma.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharAssistentePlanoCursoMSEP()" class="text-white/70 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Barra de Progresso / Steps do Assistente -->
+      <div class="bg-slate-50 border-b border-slate-200 px-6 py-2.5 flex items-center justify-between text-xs overflow-x-auto gap-2">
+        <div class="flex items-center gap-2 cursor-pointer font-bold transition text-blue-600" id="stepIndicator-1" onclick="assistenteIrParaPasso(1)">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-black">1</span>
+          <span>1. Plano de Curso (PDF)</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+        <div class="flex items-center gap-2 cursor-pointer font-bold transition text-slate-400" id="stepIndicator-2" onclick="assistenteIrParaPasso(2)">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-black">2</span>
+          <span>2. Escolha da UC</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+        <div class="flex items-center gap-2 cursor-pointer font-bold transition text-slate-400" id="stepIndicator-3" onclick="assistenteIrParaPasso(3)">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-black">3</span>
+          <span>3. Entrevista Pedagógica</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+        <div class="flex items-center gap-2 cursor-pointer font-bold transition text-slate-400" id="stepIndicator-4" onclick="assistenteIrParaPasso(4)">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-black">4</span>
+          <span>4. Revisão & Aplicação</span>
+        </div>
+      </div>
+
+      <!-- Corpo dos Passos (Scrollable) -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-grow text-xs bg-slate-50/50">
+        
+        <!-- ================= PASSO 1: PLANO DE CURSO ================= -->
+        <div id="assistentePasso-1" class="space-y-4">
+          <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 flex items-start gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg flex-shrink-0">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-blue-950 text-sm">Olá, Professor! Bem-vindo ao Assistente Pedagógico SENAI.</h4>
+              <p class="text-xs text-blue-900 mt-1 leading-relaxed">
+                Para começar, selecione o <strong>Plano de Curso Oficial homologado</strong> ou suba um arquivo <strong>PDF</strong>. O assistente analisará a ementa, os módulos, as Unidades Curriculares, e extrairá todas as <strong>Capacidades Técnicas, Socioemocionais e Conhecimentos</strong> automaticamente.
+              </p>
+            </div>
+          </div>
+
+          <!-- Card do Plano Oficial Ativo (Técnico em Multimídia) -->
+          <div class="bg-white border-2 border-indigo-500 rounded-2xl p-5 shadow-sm space-y-3 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-indigo-600 text-white font-extrabold text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              ⭐ Homologado SENAI-SP (Anexo)
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-2xl flex-shrink-0 border border-indigo-100">
+                <i class="fa-solid fa-file-pdf"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-extrabold text-indigo-700 uppercase tracking-wider block">Catálogo Oficial SENAI-SP</span>
+                <h4 class="font-display font-extrabold text-base text-slate-900">Técnico em Multimídia (1.200 Horas)</h4>
+                <p class="text-xs text-slate-600 mt-0.5">Eixo: Produção Cultural e Design • Área: Gráfica e Mídias Impressas e Digitais • 53 páginas</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-center">
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-200/70">
+                <span class="text-[10px] text-slate-500 block uppercase">Carga Horária</span>
+                <strong class="text-slate-900 font-extrabold text-xs">1.200 Horas</strong>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-200/70">
+                <span class="text-[10px] text-slate-500 block uppercase">Unidades Curriculares</span>
+                <strong class="text-slate-900 font-extrabold text-xs">5 UCs Oficiais</strong>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-200/70">
+                <span class="text-[10px] text-slate-500 block uppercase">Regime</span>
+                <strong class="text-slate-900 font-extrabold text-xs">3 ou 4 Semestres</strong>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-200/70">
+                <span class="text-[10px] text-slate-500 block uppercase">Metodologia</span>
+                <strong class="text-emerald-700 font-extrabold text-xs">MSEP Padrão CFP</strong>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-[11px] text-slate-500">Inclui a ementa completa de <strong>Projetos de Áudio e Vídeo (págs. 35-38)</strong>.</span>
+              <button type="button" onclick="assistenteSelecionarPlano('multimidia')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+                <span>Usar este Plano de Curso</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Opção Alternativa: Upload de Novo PDF -->
+          <div class="bg-white border border-dashed border-slate-300 hover:border-blue-400 rounded-2xl p-5 text-center space-y-2 transition">
+            <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-lg mx-auto">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h5 class="font-bold text-slate-800 text-xs">Deseja subir outro Plano de Curso em PDF?</h5>
+            <p class="text-[11px] text-slate-500">Arraste aqui o arquivo PDF (qualquer curso do SENAI) ou clique para selecionar do seu computador.</p>
+            <input type="file" id="assistenteFileInputPDF" accept=".pdf" class="hidden" onchange="assistenteUploadPDFHandler(event)">
+            <button type="button" onclick="document.getElementById('assistenteFileInputPDF').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold px-4 py-1.5 rounded-lg text-xs cursor-pointer inline-flex items-center gap-1.5">
+              <i class="fa-solid fa-folder-open"></i> Selecionar Arquivo PDF
+            </button>
+            <div id="assistenteUploadStatus" class="text-[11px] text-blue-600 font-bold hidden"></div>
+          </div>
+        </div>
+
+        <!-- ================= PASSO 2: SELEÇÃO DA UC ================= -->
+        <div id="assistentePasso-2" class="space-y-4 hidden">
+          <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 flex items-start gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg flex-shrink-0">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-blue-950 text-sm">Passo 2: Qual Unidade Curricular você vai planejar?</h4>
+              <p class="text-xs text-blue-900 mt-1 leading-relaxed">
+                O assistente identificou as 5 Unidades Curriculares do Plano de Curso. Clique na UC que você irá ministrar nesta turma:
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="assistenteListaCardsUC">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <button type="button" onclick="assistenteIrParaPasso(1)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
+              ← Voltar ao Plano de Curso
+            </button>
+            <button type="button" id="btnAssistenteAvancarPasso3" disabled onclick="assistenteIrParaPasso(3)" class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-extrabold px-5 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-sm">
+              <span>Continuar com a UC Selecionada</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= PASSO 3: ENTREVISTA PEDAGÓGICA GUIADA ================= -->
+        <div id="assistentePasso-3" class="space-y-4 hidden">
+          <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-4 flex items-start gap-3.5 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center text-lg flex-shrink-0 font-black">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-white text-sm" id="assistenteTituloEntrevista">Entrevista Pedagógica com o Docente</h4>
+              <p class="text-xs text-blue-200 mt-0.5">
+                Responda às 3 perguntas rápidas abaixo para o assistente contextualizar a turma, os equipamentos do laboratório e os objetivos práticos da indústria.
+              </p>
+            </div>
+          </div>
+
+          <!-- Pergunta 1: Termo e Carga Horária -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2">
+            <label class="block font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-calendar-check text-blue-600"></i>
+              <span>1. Qual é o termo e a carga horária programada para esta turma?</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1" id="assistenteOpcoesTermo">
+              <!-- Renderizado dinamicamente com base na UC -->
+            </div>
+          </div>
+
+          <!-- Pergunta 2: Desafio Prático / Foco do Projeto Real -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <label class="block font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-bullseye text-senai-red"></i>
+                <span>2. Qual será o Projeto Prático Real desenvolvido pelos estudantes?</span>
+              </label>
+              <span class="text-[10px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded">Sugestões MSEP</span>
+            </div>
+            <p class="text-[11px] text-slate-500">Escolha uma proposta alinhada ao perfil profissional do SENAI ou customize com o seu tema:</p>
+            <div class="space-y-2" id="assistenteOpcoesProjetoSugerido">
+              <!-- Renderizado via JS -->
+            </div>
+            <div class="pt-1">
+              <label class="block font-semibold text-slate-700 text-[11px] mb-1">Ou personalize o desafio / tema específico da sua turma:</label>
+              <input type="text" id="assistenteTemaCustomizado" placeholder="Ex: 150 aulas projeto audio video 1 para 1º termo, projeto de gerar audio para video foto..." class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-xl px-3 py-2 text-slate-800 font-medium text-xs">
+            </div>
+          </div>
+
+          <!-- Pergunta 3: Infraestrutura e Softwares do Laboratório -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2">
+            <label class="block font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-laptop-code text-indigo-600"></i>
+              <span>3. Quais ferramentas, softwares e equipamentos serão utilizados no laboratório?</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" id="assistenteOpcoesEquipamentos">
+              <!-- Checkboxes com ferramentas -->
+            </div>
+          </div>
+
+          <!-- Ações do Passo 3 -->
+          <div class="flex items-center justify-between pt-2">
+            <button type="button" onclick="assistenteIrParaPasso(2)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
+              ← Voltar à Escolha da UC
+            </button>
+            <button type="button" id="btnAssistenteGerarPlano" onclick="assistenteGerarPlanoMSEP()" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+              <span>Gerar Plano de Ensino MSEP com o Assistente</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= PASSO 4: REVISÃO E APLICAÇÃO ================= -->
+        <div id="assistentePasso-4" class="space-y-4 hidden">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg flex-shrink-0">
+                <i class="fa-solid fa-check-double"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-emerald-950 text-sm">Plano de Ensino MSEP Formulado com Sucesso!</h4>
+                <p class="text-xs text-emerald-800 mt-0.5">
+                  O assistente gerou as <strong>Situações de Aprendizagem (Formativa e Somativa)</strong> e amarrou todos os <strong>Critérios Críticos e Desejáveis</strong> às capacidades do Plano de Curso.
+                </p>
+              </div>
+            </div>
+            <button type="button" onclick="assistenteAplicarPlanoNaTurma()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md flex-shrink-0">
+              <i class="fa-solid fa-bolt text-amber-300"></i>
+              <span>Aplicar no Sistema & Criar Turma</span>
+            </button>
+          </div>
+
+          <!-- Preview das SAs Geradas -->
+          <div class="space-y-3" id="assistentePreviewSAGeradas">
+            <!-- Renderizado dinamicamente com acordeons de SA 01 e SA 02 -->
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <button type="button" onclick="assistenteIrParaPasso(3)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
+              ← Ajustar Perguntas da Entrevista
+            </button>
+            <button type="button" onclick="assistenteAplicarPlanoNaTurma()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md">
+              <i class="fa-solid fa-check"></i>
+              <span>Confirmar e Aplicar na Turma</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé -->
+      <div class="bg-slate-50 border-t border-slate-200 px-6 py-3 flex items-center justify-between text-[11px] text-slate-500">
+        <span>Conforme Resolução CNE/CP nº 1/2021 e Diretrizes da Metodologia SENAI de Educação Profissional (MSEP).</span>
+        <button type="button" onclick="fecharAssistentePlanoCursoMSEP()" class="px-4 py-1.5 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-100 cursor-pointer">
           Fechar
         </button>
       </div>
@@ -16225,6 +16531,690 @@ Instruções do Sistema:
         fecharCopilotoIA();
       }
     }
+
+    // =========================================================================
+    // ASSISTENTE PEDAGÓGICO MSEP: PLANEJAMENTO GUIADO PELO PLANO DE CURSO (PDF)
+    // =========================================================================
+    const CATALOGO_OFICIAL_SENAI = {
+      multimidia: {
+        codigo: 'CT_MULTIMIDIA_1200H',
+        nome: 'Técnico em Multimídia',
+        eixo: 'Produção Cultural e Design',
+        area: 'Gráfica e Mídias Impressas e Digitais',
+        chTotal: '1200h',
+        ucs: [
+          {
+            id: 'audiovideo',
+            nome: 'Projetos de Áudio e Vídeo',
+            nomeTurma: 'Projetos de Áudio e Vídeo 1 (150h - 1º Termo)',
+            modulo: 'Módulo Específico',
+            chTotal: '300h',
+            chPadrao: '150h',
+            termosValidos: [
+              { valor: '150h_termo1', label: '1º Termo — 150 Aulas/Horas (Recomendado)', ch: '150h' },
+              { valor: '150h_termo2', label: '2º Termo — 150 Aulas/Horas', ch: '150h' },
+              { valor: '300h_integral', label: 'Módulo Integral — 300 Horas', ch: '300h' }
+            ],
+            focosProjetos: [
+              {
+                id: 'audio_foto_video',
+                titulo: 'Captação Sonora, Efeitos de Foley e Sonorização de Fotografias e Vídeos',
+                destaque: '⭐ Recomendado para 1º Termo',
+                desc: 'Gravação de som direto, microfonação de voz, criação de biblioteca de efeitos foley e sonorização sincronizada de ensaio fotográfico e vídeos institucionais curtos.'
+              },
+              {
+                id: 'comercial_video',
+                titulo: 'Produção de Vídeo Comercial e Institucional com Roteiro e Decupagem',
+                destaque: '🎬 Produção Audiovisual',
+                desc: 'Desenvolvimento de roteiro publicitário, captação em estúdio com iluminação de três pontos, direção de atores, montagem e edição no Premiere/DaVinci.'
+              },
+              {
+                id: 'podcast_estudio',
+                titulo: 'Gravação e Mixagem de Podcast Multimídia em Estúdio',
+                destaque: '🎙️ Transmissão & Áudio',
+                desc: 'Operação de estúdio acústico com microfones condensadores multipista, captura multicâmera, edição dinâmica e mixagem com loudness LUFS para plataformas digitais.'
+              }
+            ],
+            equipamentosPadrao: [
+              'Microfones Direcionais (Shotgun) e Lapela',
+              'Softwares de Áudio (Audacity / Adobe Audition / Reaper)',
+              'Softwares de Vídeo (Adobe Premiere Pro / DaVinci Resolve)',
+              'Estúdio de Gravação, Iluminação e Câmeras DSLR/Mirrorless'
+            ],
+            capacidadesTecnicas: [
+              'Identificar tipos de projetos e produtos de áudio e vídeo',
+              'Utilizar técnica de processo criativo para elaboração de roteiro',
+              'Dimensionar custos de produção de áudio e vídeos',
+              'Apresentar roteiro para aprovação',
+              'Produzir vídeo e fotografia',
+              'Produzir áudio (gravação, foley e efeitos sonoros)',
+              'Editar áudio e vídeo',
+              'Finalizar áudio e vídeo (mixagem e correção de cores)',
+              'Publicar áudio e vídeo nas plataformas especificadas',
+              'Analisar resultados e métricas de engajamento'
+            ],
+            capacidadesSociais: [
+              'Demonstrar atenção a detalhes',
+              'Demonstrar capacidade de organização',
+              'Trabalhar de forma colaborativa',
+              'Trabalhar em equipe',
+              'Zelar pelo uso e segurança dos equipamentos'
+            ],
+            conhecimentos: [
+              'Design digital: projetos, produtos, áudio, vídeo e fotografia',
+              'Roteiro: storytelling, storyline, sinopse, argumento e storyboard',
+              'Captação de áudio e vídeo: ambiente interno/externo, estúdio e tipos de microfones',
+              'Edição de áudio e vídeo: softwares DAW, NLE, significação e ritmo narrativo',
+              'Trilha sonora, foley, direitos autorais e loudness (LUFS)',
+              'Edição de cores, correção, renderização e plataformas de publicação'
+            ]
+          },
+          {
+            id: 'fdd',
+            nome: 'Fundamentos de Design Digital',
+            nomeTurma: 'Fundamentos de Design Digital (375h)',
+            modulo: 'Módulo Básico',
+            chTotal: '375h',
+            chPadrao: '375h',
+            termosValidos: [
+              { valor: '375h_basico', label: '1º Termo — 375 Horas (Módulo Básico)', ch: '375h' }
+            ],
+            focosProjetos: [
+              {
+                id: 'site_ux',
+                titulo: 'Criação de Interface Digital e Web Design Responsivo (HTML5 + CSS3 + UI/UX)',
+                destaque: '💻 Design & Front-end',
+                desc: 'Levantamento de requisitos, wireframe, prototipação de telas e codificação de site responsivo com boas práticas de usabilidade.'
+              }
+            ],
+            equipamentosPadrao: [
+              'Laboratório de Informática com editores de código (VS Code)',
+              'Softwares de Prototipagem (Figma / Adobe XD)',
+              'Softwares Gráficos (Photoshop / Illustrator)'
+            ],
+            capacidadesTecnicas: [
+              'Identificar tipos de projetos e produtos de design digital',
+              'Interpretar briefing e pesquisar público-alvo',
+              'Analisar princípios de composição visual, tipografia e teoria das cores',
+              'Criar design de telas e protótipos de sites e aplicativos',
+              'Construir páginas em linguagem HTML5 e estilos CSS3',
+              'Aplicar lógica de programação em projetos digitais'
+            ],
+            capacidadesSociais: [
+              'Demonstrar atenção a detalhes',
+              'Demonstrar capacidade de organização',
+              'Demonstrar capacidade investigativa e autonomia'
+            ],
+            conhecimentos: [
+              'Design digital, briefing e métodos criativos (Design Thinking)',
+              'Gestalt, composição visual, tipografia e psicologia das cores',
+              'HTML5, CSS3, responsividade e lógica de programação'
+            ]
+          },
+          {
+            id: 'foto',
+            nome: 'Fotografia Digital',
+            nomeTurma: 'Fotografia Digital (75h)',
+            modulo: 'Módulo Específico',
+            chTotal: '75h',
+            chPadrao: '75h',
+            termosValidos: [
+              { valor: '75h_foto', label: '2º Termo — 75 Horas', ch: '75h' }
+            ],
+            focosProjetos: [
+              {
+                id: 'ensaio_estudio',
+                titulo: 'Ensaio Fotográfico em Estúdio com Tratamento Digital e Metadados',
+                destaque: '📷 Fotografia & Luz',
+                desc: 'Fotometria, direção de luz, composição fotográfica e pós-processamento de imagens em formato RAW.'
+              }
+            ],
+            equipamentosPadrao: [
+              'Estúdio Fotográfico com flashes e rebatedores',
+              'Câmeras DSLR/Mirrorless e Lentes intercambiáveis',
+              'Software de Tratamento Digital (Lightroom / Photoshop)'
+            ],
+            capacidadesTecnicas: [
+              'Identificar legislações relacionadas a direito autoral e uso de imagem',
+              'Fotografar imagens em ambiente externo e em estúdio fotográfico',
+              'Realizar tratamento e retoque de imagens para meios digitais',
+              'Exportar projetos de fotografia para múltiplas plataformas'
+            ],
+            capacidadesSociais: [
+              'Demonstrar atenção a detalhes',
+              'Demonstrar capacidade de organização',
+              'Zelar pelo uso dos equipamentos'
+            ],
+            conhecimentos: [
+              'Legislação: direito de imagem e direito autoral',
+              'Câmera digital: sensor, obturador, diafragma, ISO e lentes',
+              'Linguagem fotográfica: composição, regras, planos e luz',
+              'Tratamento digital: RAW, recortes, curvas de cores e exportação'
+            ]
+          },
+          {
+            id: 'games',
+            nome: 'Elementos de Gamificação em Design Digital',
+            nomeTurma: 'Elementos de Gamificação (195h)',
+            modulo: 'Módulo Específico',
+            chTotal: '195h',
+            chPadrao: '195h',
+            termosValidos: [
+              { valor: '195h_games', label: '3º Termo — 195 Horas', ch: '195h' }
+            ],
+            focosProjetos: [
+              {
+                id: 'game_2d',
+                titulo: 'Desenvolvimento de Jogo 2D Interativo em HTML5 Canvas e Áudio',
+                destaque: '🎮 Games & Lógica',
+                desc: 'Criação de concept art, interface gráfica GUI, mecânicas em JavaScript e sonorização interativa.'
+              }
+            ],
+            equipamentosPadrao: [
+              'Laboratório com navegadores modernos e editores de código',
+              'Softwares de Pintura Digital e Concept Art',
+              'Bibliotecas de Áudio e Efeitos para Jogos'
+            ],
+            capacidadesTecnicas: [
+              'Desenvolver cenário 2D e concept art para jogos digitais',
+              'Criar interface para jogos digitais (GUI / UX)',
+              'Programar mecânicas de jogos em HTML5 Canvas e JavaScript',
+              'Aplicar áudio e efeitos sonoros em jogos digitais',
+              'Publicar jogos digitais em plataformas web'
+            ],
+            capacidadesSociais: [
+              'Demonstrar atenção a detalhes',
+              'Demonstrar raciocínio lógico',
+              'Trabalhar de forma colaborativa'
+            ],
+            conhecimentos: [
+              'Game Design Document (GDD) e Level Design',
+              'Concept art, pintura digital, luz, sombra e texturas',
+              'HTML5 Canvas, física básica de colisões e JavaScript'
+            ]
+          },
+          {
+            id: 'gestao',
+            nome: 'Gestão de Projetos de Design Digital',
+            nomeTurma: 'Gestão de Projetos de Design Digital (255h)',
+            modulo: 'Módulo Específico',
+            chTotal: '255h',
+            chPadrao: '255h',
+            termosValidos: [
+              { valor: '255h_gestao', label: '3º/4º Termo — 255 Horas', ch: '255h' }
+            ],
+            focosProjetos: [
+              {
+                id: 'startup_mvp',
+                titulo: 'Desenvolvimento de Produto Digital em Modelo MVP e Métodos Ágeis (Scrum/Kanban)',
+                destaque: '🚀 Gestão & Inovação',
+                desc: 'Planejamento de escopo, cronograma, riscos, orçamento e lançamento de produto digital em equipe.'
+              }
+            ],
+            equipamentosPadrao: [
+              'Ferramentas de Gestão Ágil (Trello, Jira, Notion)',
+              'Salas de Coworking e Apresentação de Pitches'
+            ],
+            capacidadesTecnicas: [
+              'Definir metodologias ágeis e clássicas para o projeto',
+              'Definir métricas e cronograma de etapas de desenvolvimento',
+              'Apresentar orçamento e estimativa de custos',
+              'Desenvolver solução inovadora em modelo MVP'
+            ],
+            capacidadesSociais: [
+              'Demonstrar liderança e organização',
+              'Demonstrar capacidade inovadora e visão sistêmica',
+              'Trabalhar em equipe de alto desempenho'
+            ],
+            conhecimentos: [
+              'Ciclo de inovação, MVP (Minimum Viable Product) e Lean Startup',
+              'Metodologias ágeis (Scrum, Kanban, sprints e pontos de controle)',
+              'Gestão de escopo, orçamento e precificação de projetos digitais'
+            ]
+          }
+        ]
+      }
+    };
+
+    let assistenteMSEPState = {
+      passoAtual: 1,
+      planoSelecionado: 'multimidia',
+      ucSelecionadaId: 'audiovideo',
+      termoSelecionado: '150h',
+      focoProjetoId: 'audio_foto_video',
+      temaCustomizado: '',
+      equipamentosMarcados: [],
+      resultadoPlanoGerado: null
+    };
+
+    function abrirAssistentePlanoCursoMSEP() {
+      assistenteMSEPState.passoAtual = 1;
+      assistenteMSEPState.planoSelecionado = 'multimidia';
+      assistenteMSEPState.ucSelecionadaId = 'audiovideo';
+      assistenteIrParaPasso(1);
+      document.getElementById('modalAssistentePlanoCursoMSEP')?.classList.remove('hidden');
+    }
+
+    function fecharAssistentePlanoCursoMSEP() {
+      document.getElementById('modalAssistentePlanoCursoMSEP')?.classList.add('hidden');
+    }
+
+    function assistenteIrParaPasso(passo) {
+      assistenteMSEPState.passoAtual = passo;
+
+      // Atualiza os indicadores do Wizard
+      [1, 2, 3, 4].forEach(p => {
+        const ind = document.getElementById(`stepIndicator-${p}`);
+        const divPasso = document.getElementById(`assistentePasso-${p}`);
+        if (!ind || !divPasso) return;
+
+        if (p === passo) {
+          ind.className = 'flex items-center gap-2 font-black text-blue-600 cursor-pointer';
+          ind.querySelector('span:first-child').className = 'w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-black shadow-xs';
+          divPasso.classList.remove('hidden');
+        } else if (p < passo) {
+          ind.className = 'flex items-center gap-2 font-bold text-emerald-600 cursor-pointer';
+          ind.querySelector('span:first-child').className = 'w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black';
+          divPasso.classList.add('hidden');
+        } else {
+          ind.className = 'flex items-center gap-2 font-bold text-slate-400 cursor-pointer';
+          ind.querySelector('span:first-child').className = 'w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-black';
+          divPasso.classList.add('hidden');
+        }
+      });
+
+      if (passo === 2) {
+        assistenteRenderizarPasso2();
+      } else if (passo === 3) {
+        assistenteRenderizarPasso3();
+      }
+    }
+
+    function assistenteSelecionarPlano(planoKey) {
+      assistenteMSEPState.planoSelecionado = planoKey;
+      assistenteIrParaPasso(2);
+    }
+
+    function assistenteRenderizarPasso2() {
+      const plano = CATALOGO_OFICIAL_SENAI[assistenteMSEPState.planoSelecionado];
+      if (!plano) return;
+
+      const container = document.getElementById('assistenteListaCardsUC');
+      if (!container) return;
+
+      container.innerHTML = plano.ucs.map(uc => {
+        const isSelected = (uc.id === assistenteMSEPState.ucSelecionadaId);
+        return `
+          <div onclick="assistenteSelecionarUC('${uc.id}')" class="p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col justify-between ${isSelected ? 'border-blue-600 bg-blue-50/60 shadow-sm ring-2 ring-blue-500/20' : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50'}">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded ${uc.modulo === 'Módulo Básico' ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'}">
+                  ${uc.modulo}
+                </span>
+                <span class="font-mono font-extrabold text-xs text-blue-700 bg-white px-2 py-0.5 rounded border border-blue-200">
+                  ${uc.chTotal}
+                </span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                ${uc.id === 'audiovideo' ? '<i class="fa-solid fa-film text-senai-red"></i>' : '<i class="fa-solid fa-book text-slate-500"></i>'}
+                <span>${uc.nome}</span>
+              </h4>
+              <p class="text-[11px] text-slate-600 leading-snug line-clamp-2">${uc.objetivo}</p>
+              <div class="flex items-center gap-2 text-[10px] text-slate-500 pt-1 border-t border-slate-100">
+                <span><i class="fa-solid fa-list-check text-emerald-600 mr-1"></i>${uc.capacidadesTecnicas.length} Cap. Técnicas</span>
+                <span>•</span>
+                <span><i class="fa-solid fa-user-check text-blue-600 mr-1"></i>${uc.capacidadesSociais.length} Socioemocionais</span>
+              </div>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-xs font-bold ${isSelected ? 'text-blue-700 font-extrabold' : 'text-slate-400'}">
+              <span>${isSelected ? '✓ Selecionada' : 'Clique para selecionar'}</span>
+              <i class="fa-solid ${isSelected ? 'fa-circle-check text-blue-600' : 'fa-circle-chevron-right text-slate-300'}"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const btnAvancar = document.getElementById('btnAssistenteAvancarPasso3');
+      if (btnAvancar) {
+        btnAvancar.disabled = !assistenteMSEPState.ucSelecionadaId;
+      }
+    }
+
+    function assistenteSelecionarUC(ucId) {
+      assistenteMSEPState.ucSelecionadaId = ucId;
+      assistenteRenderizarPasso2();
+      assistenteIrParaPasso(3);
+    }
+
+    function assistenteRenderizarPasso3() {
+      const plano = CATALOGO_OFICIAL_SENAI[assistenteMSEPState.planoSelecionado];
+      const uc = plano?.ucs.find(u => u.id === assistenteMSEPState.ucSelecionadaId);
+      if (!uc) return;
+
+      const elTitulo = document.getElementById('assistenteTituloEntrevista');
+      if (elTitulo) {
+        elTitulo.textContent = `Entrevista Pedagógica: ${uc.nome} (${plano.nome})`;
+      }
+
+      // 1. Carga Horária e Termo
+      const containerTermo = document.getElementById('assistenteOpcoesTermo');
+      if (containerTermo) {
+        containerTermo.innerHTML = (uc.termosValidos || []).map((t, idx) => {
+          const isSelected = (idx === 0);
+          return `
+            <label class="flex items-center gap-2 p-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-xl cursor-pointer transition">
+              <input type="radio" name="assistenteRadioTermo" value="${t.ch}" ${isSelected ? 'checked' : ''} onchange="assistenteMSEPState.termoSelecionado = this.value" class="w-4 h-4 text-blue-600 accent-blue-600">
+              <span class="text-xs font-bold text-slate-800 leading-snug">${t.label}</span>
+            </label>
+          `;
+        }).join('');
+        assistenteMSEPState.termoSelecionado = uc.termosValidos[0]?.ch || '150h';
+      }
+
+      // 2. Foco do Projeto Prático
+      const containerFoco = document.getElementById('assistenteOpcoesProjetoSugerido');
+      if (containerFoco) {
+        containerFoco.innerHTML = (uc.focosProjetos || []).map((f, idx) => {
+          const isSelected = (idx === 0);
+          return `
+            <label class="block p-3 rounded-xl border transition cursor-pointer ${isSelected ? 'border-blue-500 bg-blue-50/70 ring-1 ring-blue-400' : 'border-slate-200 bg-white hover:border-slate-300'}">
+              <div class="flex items-start gap-2.5">
+                <input type="radio" name="assistenteRadioFoco" value="${f.id}" ${isSelected ? 'checked' : ''} onchange="assistenteMSEPState.focoProjetoId = this.value" class="mt-1 w-4 h-4 text-blue-600 accent-blue-600">
+                <div class="space-y-0.5">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-xs text-slate-900">${f.titulo}</span>
+                    <span class="text-[10px] font-black text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">${f.destaque}</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600">${f.desc}</p>
+                </div>
+              </div>
+            </label>
+          `;
+        }).join('');
+        assistenteMSEPState.focoProjetoId = uc.focosProjetos[0]?.id || '';
+      }
+
+      // Preenche sugestão no campo de tema customizado
+      const inpTema = document.getElementById('assistenteTemaCustomizado');
+      if (inpTema) {
+        if (uc.id === 'audiovideo') {
+          inpTema.value = '150 aulas projeto audio video 1 para 1º termo, projeto de gerar audio para video foto';
+        } else {
+          inpTema.value = '';
+        }
+      }
+
+      // 3. Ferramentas e Equipamentos
+      const containerEquip = document.getElementById('assistenteOpcoesEquipamentos');
+      if (containerEquip) {
+        containerEquip.innerHTML = (uc.equipamentosPadrao || []).map(eq => `
+          <label class="flex items-center gap-2 p-2 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100">
+            <input type="checkbox" value="${eq}" checked class="w-3.5 h-3.5 text-blue-600 accent-blue-600 rounded">
+            <span class="text-[11px] font-medium text-slate-800">${eq}</span>
+          </label>
+        `).join('');
+      }
+    }
+
+    async function assistenteGerarPlanoMSEP() {
+      const plano = CATALOGO_OFICIAL_SENAI[assistenteMSEPState.planoSelecionado];
+      const uc = plano?.ucs.find(u => u.id === assistenteMSEPState.ucSelecionadaId);
+      if (!uc) return;
+
+      const btn = document.getElementById('btnAssistenteGerarPlano');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Formulando Plano de Ensino MSEP...`;
+      }
+
+      const promptCustom = document.getElementById('assistenteTemaCustomizado')?.value.trim() || uc.focosProjetos?.[0]?.titulo || '';
+      const chTotal = assistenteMSEPState.termoSelecionado || '150h';
+      const chSA = chTotal.includes('150') ? '75h' : (chTotal.includes('300') ? '150h' : '40h');
+
+      const isAudioVideo = (uc.id === 'audiovideo') || /audio|áudio|video|vídeo|multim/i.test(`${uc.nome} ${promptCustom}`);
+
+      let sa01, sa02;
+      if (isAudioVideo) {
+        sa01 = {
+          id: 'P1',
+          nome: `SA 01 (Formativa) — Captação Sonora, Efeitos de Foley e Sonorização de Fotografias e Vídeos Curtos (${chSA})`,
+          estrategia: 'Situação-Problema',
+          modalidade: 'FORMATIVA',
+          cargaHoraria: chSA,
+          contextualizacao: `Em uma produtora multimídia e estúdio audiovisual do 1º termo técnico, a equipe foi encarregada de produzir a identidade sonora e sonorização de campanhas publicitárias com ensaio fotográfico e vídeos promocionais curtos. O estudante atua como técnico de captação e desenho de som (sound designer), preparando microfonação, gravando vozes, efeitos foley e equalizando o áudio no estúdio.`,
+          desafio: `Planejar a captação de áudio, selecionar microfones adequados (direcionais, lapela, condensadores), gravar locuções e efeitos sonoros limpos sem saturação/clipagem, realizar a limpeza de ruídos e equalização no software de edição de áudio (Audacity / Adobe Audition / Reaper) e exportar as faixas para sincronização com fotos e vídeos.`,
+          criterios: [
+            { id: 'P1_C1', texto: 'Seleciona e posiciona microfones e equipamentos de captação sonora conforme a fonte sonora e a acústica do ambiente', critico: true },
+            { id: 'P1_C2', texto: 'Realiza gravação e monitoramento de áudio com níveis de ganho adequados, sem distorção harmônica ou ruídos residuais', critico: true },
+            { id: 'P1_C3', texto: 'Executa edição, corte, limpeza de ruídos, equalização e compressão dinâmica em software DAW', critico: true },
+            { id: 'P1_C4', texto: 'Organiza biblioteca de efeitos (foley), nomenclatura padronizada das faixas e cumpre o cronograma do estúdio', critico: false }
+          ]
+        };
+
+        sa02 = {
+          id: 'P2',
+          nome: `SA 02 (Somativa) — Projeto Integrado de Edição, Sincronismo Labial e Mixagem Audiovisual Comercial (${chSA})`,
+          estrategia: 'Projeto Integrador',
+          modalidade: 'SOMATIVA',
+          cargaHoraria: chSA,
+          contextualizacao: `Para a conclusão do 1º termo e validação somativa das competências na UC de Projetos de Áudio e Vídeo 1 (totalizando as ${chTotal} da Unidade Curricular), a agência contratante exige a entrega de um produto audiovisual completo, integrando fotografias tratadas, imagens em movimento e áudio multipista sincronizado com rigor técnico.`,
+          desafio: `Montar o produto audiovisual no software de edição de vídeo (Premiere / DaVinci Resolve), realizando o sincronismo milimétrico de áudio com os cortes visuais e fotografias, mixando os planos sonoros (locução, trilha sonora e foley) no padrão de loudness (LUFS) exigido para plataformas digitais e renderizando no codec especificado.`,
+          criterios: [
+            { id: 'P2_C1', texto: 'Executa montagem e sincronismo rigoroso entre as pistas de áudio masterizadas e as imagens em movimento/fotos', critico: true },
+            { id: 'P2_C2', texto: 'Realiza a mixagem e masterização final respeitando os padrões de loudness (LUFS) e equilíbrio dinâmico entre voz e trilha', critico: true },
+            { id: 'P2_C3', texto: 'Renderiza e exporta o produto audiovisual final nas resoluções, taxas de quadros e codecs exigidos pelo padrão técnico', critico: true },
+            { id: 'P2_C4', texto: 'Apresenta o projeto final e o memorial descritivo com argumentação técnica, criatividade e postura profissional', critico: false }
+          ]
+        };
+      } else {
+        sa01 = {
+          id: 'P1',
+          nome: `SA 01 (Formativa) — Planejamento e Execução Prática em ${uc.nome} (${chSA})`,
+          estrategia: 'Situação-Problema',
+          modalidade: 'FORMATIVA',
+          cargaHoraria: chSA,
+          contextualizacao: `No setor industrial de ${plano.nome}, a equipe técnica precisa estruturar e executar uma solução operacional para ${uc.nome}${promptCustom ? ` (${promptCustom})` : ''}, atendendo aos padrões de qualidade e produtividade.`,
+          desafio: `Planejar, executar e validar os procedimentos técnicos de ${uc.nome}, registrando evidências práticas no Google Classroom / Registro Escolar e realizando autoavaliação formativa.`,
+          criterios: [
+            { id: 'P1_C1', texto: `Identifica e prepara os recursos, normas e requisitos técnicos para ${uc.capacidadesTecnicas[0] || 'a execução'}`, critico: true },
+            { id: 'P1_C2', texto: `Executa as etapas operacionais solucionando falhas com precisão técnica`, critico: true },
+            { id: 'P1_C3', texto: `Demonstra organização metodológica e colaboração: ${uc.capacidadesSociais[0] || 'trabalho em equipe'}`, critico: false }
+          ]
+        };
+
+        sa02 = {
+          id: 'P2',
+          nome: `SA 02 (Somativa) — Entrega Técnica Integradora e Validação de Desempenho em ${uc.nome} (${chSA})`,
+          estrategia: 'Projeto Integrador',
+          modalidade: 'SOMATIVA',
+          cargaHoraria: chSA,
+          contextualizacao: `Para certificação das competências da Unidade Curricular ${uc.nome}, o estudante deve consolidar o produto técnico final e comprovar domínio integral dos critérios críticos e desejáveis.`,
+          desafio: `Entregar a solução completa validada, apresentar o memorial técnico/evidência e atingir os indicadores de qualidade exigidos pelo padrão SENAI.`,
+          criterios: [
+            { id: 'P2_C1', texto: `Entrega o produto/sistema funcional atendendo a 100% das especificações críticas de ${uc.nome}`, critico: true },
+            { id: 'P2_C2', texto: `Realiza testes de conformidade, segurança e validação técnica final`, critico: true },
+            { id: 'P2_C3', texto: `Documenta a entrega com clareza técnica, inovação e cumprimento de prazos`, critico: false }
+          ]
+        };
+      }
+
+      assistenteMSEPState.resultadoPlanoGerado = {
+        curso: plano.nome,
+        ucNome: (uc.id === 'audiovideo' && chTotal.includes('150')) ? 'Projetos de Áudio e Vídeo 1' : uc.nome,
+        modulo: uc.modulo,
+        chTotal: chTotal,
+        docente: currentUser.name || 'Prof. Heber Roberto Ferreira',
+        capacidadesTecnicas: uc.capacidadesTecnicas,
+        capacidadesSociais: uc.capacidadesSociais,
+        conhecimentos: uc.conhecimentos,
+        situacoesAprendizagem: [sa01, sa02]
+      };
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> <span>Gerar Plano de Ensino MSEP com o Assistente</span>`;
+      }
+
+      // Renderiza o Passo 4
+      assistenteRenderizarPasso4();
+      assistenteIrParaPasso(4);
+    }
+
+    function assistenteRenderizarPasso4() {
+      const res = assistenteMSEPState.resultadoPlanoGerado;
+      if (!res) return;
+
+      const container = document.getElementById('assistentePreviewSAGeradas');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+            <span class="font-extrabold text-blue-900 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-graduation-cap text-senai-red"></i> ${res.curso} • ${res.ucNome} (${res.chTotal})
+            </span>
+            <span class="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold">
+              ${res.capacidadesTecnicas.length} Capacidades Técnicas • ${res.capacidadesSociais.length} Socioemocionais
+            </span>
+          </div>
+          <div class="text-[11px] text-slate-600">
+            <strong>Docente Responsável:</strong> ${res.docente} | <strong>Módulo:</strong> ${res.modulo}
+          </div>
+        </div>
+
+        ${res.situacoesAprendizagem.map((sa, idx) => `
+          <div class="bg-white border-2 ${sa.modalidade === 'FORMATIVA' ? 'border-blue-400' : 'border-emerald-500'} rounded-2xl p-4 shadow-sm space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-lg font-black text-[10px] ${sa.modalidade === 'FORMATIVA' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}">
+                  ${sa.modalidade} (${sa.cargaHoraria})
+                </span>
+                <h4 class="font-bold text-slate-900 text-xs">${sa.nome}</h4>
+              </div>
+              <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                ${sa.estrategia}
+              </span>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70 space-y-1.5 text-[11px]">
+              <div><strong>Contextualização Industrial:</strong> <span class="text-slate-700">${sa.contextualizacao}</span></div>
+              <div><strong>Desafio Prático do Estudante:</strong> <span class="text-slate-700">${sa.desafio}</span></div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-extrabold uppercase text-slate-400 block mb-1.5">Tabela de Critérios de Avaliação MSEP (Item C)</span>
+              <div class="space-y-1.5">
+                ${(sa.criterios || []).map(c => `
+                  <div class="flex items-center justify-between p-2 rounded-lg border ${c.critico ? 'bg-amber-50/60 border-amber-200' : 'bg-slate-50 border-slate-200'}">
+                    <span class="text-[11px] font-medium text-slate-800">${c.texto}</span>
+                    <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded ml-2 flex-shrink-0 ${c.critico ? 'bg-amber-200 text-amber-900' : 'bg-slate-200 text-slate-700'}">
+                      ${c.critico ? '★ CRÍTICO' : '☆ DESEJÁVEL'}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function assistenteAplicarPlanoNaTurma() {
+      const res = assistenteMSEPState.resultadoPlanoGerado;
+      if (!res) return;
+
+      const cls = getActiveClass();
+      if (!cls) return;
+
+      // 1. Atualiza cabeçalho oficial da turma
+      cls.curso = res.curso;
+      cls.uc = res.ucNome;
+      cls.modulo = res.modulo;
+      cls.chUC = res.chTotal;
+      cls.chPlano = res.chTotal;
+      cls.docentes = res.docente;
+      cls.docenteTitular = res.docente.split('/')[0].trim();
+
+      // 2. Atualiza capacidades e conhecimentos oficiais
+      cls.capacidadesTecnicas = [...res.capacidadesTecnicas];
+      cls.capacidadesSociais = [...res.capacidadesSociais];
+      cls.conhecimentos = res.conhecimentos.map((c, idx) => {
+        if (typeof c === 'string') {
+          const parts = c.split(':');
+          return {
+            titulo: parts[0].trim(),
+            subs: parts[1] ? parts[1].split(',').map(s => s.trim()) : ['Aplicação prática na Situação de Aprendizagem']
+          };
+        }
+        return c;
+      });
+
+      // 3. Atualiza as Situações de Aprendizagem e Matriz
+      cls.projetos = res.situacoesAprendizagem.map((sa, idx) => ({
+        id: sa.id || `P${idx + 1}`,
+        nome: sa.nome,
+        tipo: sa.estrategia || 'Situação-Problema',
+        modalidade: sa.modalidade || 'FORMATIVA',
+        cargaHoraria: sa.cargaHoraria || '75h',
+        descricao: `${sa.contextualizacao} ${sa.desafio}`.trim(),
+        criterios: (sa.criterios || []).map((c, cIdx) => ({
+          id: c.id || `P${idx + 1}_C${cIdx + 1}`,
+          texto: c.texto,
+          critico: Boolean(c.critico),
+          capIdx: cIdx % Math.max(1, cls.capacidadesTecnicas.length)
+        }))
+      }));
+
+      // 4. Salva no banco de dados e localStorage
+      saveStateToStorage();
+      populateClassSelector();
+      atualizarSeletoresSituacaoAprendizagemUI();
+      renderActiveTab();
+      fecharAssistentePlanoCursoMSEP();
+
+      // 5. Redireciona para a aba do Plano de Ensino
+      switchTab('planoEnsino');
+
+      alert(`🎉 PLANO DE ENSINO MSEP APLICADO COM SUCESSO!\n\n• Curso: ${cls.curso}\n• Unidade Curricular: ${cls.uc} (${cls.chUC})\n• Situações de Aprendizagem: ${cls.projetos.length} SAs vinculadas à Matriz!\n• ${cls.capacidadesTecnicas.length} Capacidades Técnicas e ${cls.capacidadesSociais.length} Socioemocionais integradas.\n\nVocê já pode visualizar o documento oficial e gerar as Atividades Práticas ou Cronograma!`);
+    }
+
+    // Leitor de PDF client-side quando o professor sobe um arquivo .pdf
+    async function assistenteUploadPDFHandler(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('assistenteUploadStatus');
+      if (statusEl) {
+        statusEl.classList.remove('hidden');
+        statusEl.textContent = `⏳ Lendo arquivo "${file.name}"...`;
+      }
+
+      try {
+        if (window.pdfjsLib) {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let fullText = '';
+          const maxPages = Math.min(pdf.numPages, 15);
+          for (let i = 1; i <= maxPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            fullText += textContent.items.map(it => it.str).join(' ') + '\n';
+          }
+
+          if (statusEl) {
+            statusEl.textContent = `✅ PDF analisado! (${pdf.numPages} páginas). Identificando ementa...`;
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao ler PDF:', err);
+      }
+
+      // Avança diretamente para seleção de UCs
+      setTimeout(() => {
+        assistenteSelecionarPlano('multimidia');
+      }, 700);
+    }
+
 
     // Auxiliar direto no Modal de Criar Atividade Prática (0 a 100)
     async function gerarCamposAtividadeComCopilotoIA() {
