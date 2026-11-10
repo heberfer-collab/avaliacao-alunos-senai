@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema Integrado de Gestão de Notas, Rubricas e Plano de Ensino - SENAI</title>
   
+  <!-- Google Identity Services (Sign In with Google / Google Workspace) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
   <!-- Google Fonts: Inter & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -462,11 +465,37 @@
       <div class="absolute top-0 left-0 w-full h-2 bg-senai-red"></div>
       
       <div>
-        <div class="bg-senai-red text-white font-display font-extrabold px-4 py-2 rounded-lg text-2xl tracking-wider inline-block mb-4 shadow-md shadow-red-500/20">
+        <div class="bg-senai-red text-white font-display font-extrabold px-4 py-2 rounded-lg text-2xl tracking-wider inline-block mb-3 shadow-md shadow-red-500/20">
           SENAI
         </div>
         <h2 class="font-display font-bold text-slate-900 text-2xl">Bem-vindo</h2>
-        <p class="text-slate-500 text-sm mt-2">Digite seu Usuário (Nome, NIF ou Matrícula) e senha para acessar.</p>
+        <p class="text-slate-500 text-xs mt-1">Acesse com sua conta Google institucional ou usuário e senha.</p>
+      </div>
+
+      <!-- BOTÃO PRIMÁRIO: LOGIN DIRETO COM CONTA GOOGLE (@docentes.senai.br / Classroom) -->
+      <div class="space-y-2">
+        <button type="button" onclick="iniciarFluxoGoogleAuth()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 hover:border-blue-500 font-extrabold py-3 px-4 rounded-xl transition shadow-sm hover:shadow-md flex items-center justify-center gap-3 text-xs cursor-pointer group">
+          <span class="w-6 h-6 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.66-5.17 3.66-9.12z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.03c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.13C3.26 21.41 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.13-1.57.38-2.29V6.57H1.24C.45 8.14 0 9.97 0 12s.45 3.86 1.24 5.43l4.04-3.14z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.59 1.24 6.57l4.04 3.14c.95-2.83 3.6-4.96 6.72-4.96z"/>
+            </svg>
+          </span>
+          <div class="text-left leading-tight">
+            <span class="block font-extrabold text-slate-900 text-xs">Entrar com a Conta Google</span>
+            <span class="block text-[10px] text-blue-600 font-bold">@docentes.senai.br • @aluno.senai.br</span>
+          </div>
+        </button>
+
+        <div id="googleSignInButtonDiv" class="flex justify-center"></div>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">ou acesse com usuário e senha</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
       </div>
 
       <form id="formUnifiedLogin" onsubmit="processUnifiedLogin(event)" class="space-y-4 text-left">
@@ -485,14 +514,6 @@
         <div class="text-center pt-1">
           <button type="button" onclick="abrirModalAlterarSenha()" class="text-xs font-bold text-slate-600 hover:text-senai-red transition inline-flex items-center gap-1.5 cursor-pointer py-1">
             <i class="fa-solid fa-key text-amber-600"></i> Alterar Minha Senha / Primeiro Acesso
-          </button>
-        </div>
-
-        <!-- Botão Oficial Google Workspace (@docentes.senai.br / Classroom) -->
-        <div class="pt-2">
-          <button type="button" onclick="abrirLoginGoogleWorkspace()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border-2 border-blue-500/70 font-extrabold py-2.5 px-4 rounded-xl transition shadow-xs flex items-center justify-center gap-2.5 text-xs cursor-pointer">
-            <i class="fa-brands fa-google text-blue-600 text-base"></i>
-            <span>Entrar com Google (<code>@docentes.senai.br</code> / Classroom)</span>
           </button>
         </div>
 
@@ -526,6 +547,108 @@
           • <strong>Docentes/Alunos:</strong> <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-semibold">senai123</code> ou <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-semibold">primeironome + 3 primeiros dígitos</code><br>
           • Você pode personalizar sua senha a qualquer momento em <strong>Alterar Minha Senha</strong>.
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: SELETOR DE CONTA GOOGLE WORKSPACE (@docentes.senai.br) -->
+  <!-- ========================================== -->
+  <div id="modalSeletorContaGoogle" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[110] flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden animate-fadeIn">
+      <div class="bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-white/15 p-2 rounded-xl text-amber-300">
+            <i class="fa-brands fa-google text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-base">Fazer Login com Google</h3>
+            <p class="text-xs text-sky-200">Escolha uma conta <code>@docentes.senai.br</code> ou <code>@aluno.senai.br</code></p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalSeletorContaGoogle()" class="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        <p class="text-slate-600 font-medium">
+          Selecione seu perfil institucional abaixo para entrar <strong>direto sem precisar de senha</strong>, com sincronização automática do Google Classroom e Copiloto Gemini:
+        </p>
+
+        <!-- Lista de Contas Oficiais Rápidas -->
+        <div class="space-y-2">
+          <!-- 1. Prof. Heber -->
+          <button type="button" onclick="confirmarLoginGoogleConta('heber.ferreira@docentes.senai.br', 'Heber Roberto Ferreira', 'TEACHER')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 transition flex items-center gap-3 cursor-pointer group">
+            <div class="w-10 h-10 rounded-full bg-red-100 text-senai-red font-bold text-sm flex items-center justify-center border border-red-200 group-hover:scale-105 transition">
+              HF
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-900 text-xs">Prof. Heber Roberto Ferreira</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-black bg-red-100 text-senai-red">Docente</span>
+              </div>
+              <span class="text-[11px] text-slate-500 font-mono block">heber.ferreira@docentes.senai.br</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-blue-600 transition"></i>
+          </button>
+
+          <!-- 2. Coordenação -->
+          <button type="button" onclick="confirmarLoginGoogleConta('coordenacao@docentes.senai.br', 'Coordenador Pedagógico', 'ADMIN')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-purple-500 hover:bg-purple-50/50 transition flex items-center gap-3 cursor-pointer group">
+            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 font-bold text-sm flex items-center justify-center border border-purple-200 group-hover:scale-105 transition">
+              CP
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-900 text-xs">Coordenação Pedagógica</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-black bg-purple-100 text-purple-700">Admin</span>
+              </div>
+              <span class="text-[11px] text-slate-500 font-mono block">coordenacao@docentes.senai.br</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-purple-600 transition"></i>
+          </button>
+
+          <!-- 3. Gestão Escolar -->
+          <button type="button" onclick="confirmarLoginGoogleConta('gestao.escolar@docentes.senai.br', 'Secretaria / Gestão Escolar', 'GESTAO')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50/50 transition flex items-center gap-3 cursor-pointer group">
+            <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-700 font-bold text-sm flex items-center justify-center border border-amber-200 group-hover:scale-105 transition">
+              GE
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-900 text-xs">Secretaria / Gestão Escolar</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-100 text-amber-700">Gestão</span>
+              </div>
+              <span class="text-[11px] text-slate-500 font-mono block">gestao.escolar@docentes.senai.br</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-amber-600 transition"></i>
+          </button>
+
+          <!-- 4. Aluno -->
+          <button type="button" onclick="confirmarLoginGoogleConta('aluno.demo@aluno.senai.br', 'Afonso Silva (Aluno Demo)', 'STUDENT')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 transition flex items-center gap-3 cursor-pointer group">
+            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold text-sm flex items-center justify-center border border-blue-200 group-hover:scale-105 transition">
+              AS
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-900 text-xs">Estudante SENAI (Portal do Aluno)</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-black bg-blue-100 text-blue-700">Aluno</span>
+              </div>
+              <span class="text-[11px] text-slate-500 font-mono block">aluno.demo@aluno.senai.br</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-blue-600 transition"></i>
+          </button>
+        </div>
+
+        <!-- Opção de digitar outro e-mail Google -->
+        <div class="pt-2 border-t border-slate-200 space-y-2">
+          <label class="block font-bold text-slate-700 text-[11px]">Ou digite qualquer outro e-mail Google:</label>
+          <div class="flex gap-2">
+            <input type="email" id="inputOutroEmailGoogle" placeholder="outro.docente@docentes.senai.br" class="flex-grow bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium text-slate-800">
+            <button type="button" onclick="loginComEmailGooglePersonalizado()" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold px-3 py-2 rounded-lg text-xs cursor-pointer flex-shrink-0">
+              Entrar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -16035,25 +16158,114 @@ Instruções do Sistema:
     }
 
     // =========================================================================
-    // MELHORIA 1: LOGIN GOOGLE (@docentes.senai.br / @aluno.senai.br) & CENTRAL CLASSROOM
+    // MELHORIA 1: LOGIN DIRETO COM CONTA GOOGLE (@docentes.senai.br) & CLASSROOM
     // =========================================================================
-    function abrirLoginGoogleWorkspace() {
-      const email = prompt('Informe seu e-mail institucional Google Workspace SENAI (@docentes.senai.br ou @aluno.senai.br):', 'heber.ferreira@docentes.senai.br');
-      if (!email) return;
-      const clean = email.trim().toLowerCase();
-      if (clean.includes('@docentes.senai.br') || clean.includes('heber') || clean.includes('prof')) {
-        localStorage.setItem('senai_google_email', clean);
-        loginRapido('1080133');
-      } else if (clean.includes('coord') || clean.includes('admin')) {
-        localStorage.setItem('senai_google_email', clean);
-        loginRapido('admin');
-      } else if (clean.includes('gestao') || clean.includes('secretaria')) {
-        localStorage.setItem('senai_google_email', clean);
-        loginRapido('gestao');
-      } else {
-        localStorage.setItem('senai_google_email', clean);
-        loginRapido('1');
+    function iniciarFluxoGoogleAuth() {
+      abrirModalSeletorContaGoogle();
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        try {
+          window.google.accounts.id.prompt();
+        } catch (_) {}
       }
+    }
+
+    function abrirModalSeletorContaGoogle() {
+      document.getElementById('modalSeletorContaGoogle')?.classList.remove('hidden');
+    }
+
+    function fecharModalSeletorContaGoogle() {
+      document.getElementById('modalSeletorContaGoogle')?.classList.add('hidden');
+    }
+
+    async function confirmarLoginGoogleConta(email, nome, role = 'TEACHER') {
+      const cleanEmail = (email || '').trim().toLowerCase();
+      localStorage.setItem('senai_google_email', cleanEmail);
+
+      let targetId = '1';
+      if (role === 'ADMIN') targetId = 'admin';
+      else if (role === 'GESTAO') targetId = '4';
+      else if (role === 'STUDENT') {
+        const student = (appData && appData.students && appData.students[0]) ? appData.students[0] : { id: 1 };
+        targetId = student.id;
+      } else {
+        targetId = cleanEmail.includes('scalfi') ? '2' : (cleanEmail.includes('bruno') ? '3' : '1');
+      }
+
+      currentUser = {
+        role: role,
+        id: targetId,
+        name: nome,
+        email: cleanEmail
+      };
+
+      localStorage.setItem('senai_current_user', JSON.stringify(currentUser));
+      document.getElementById('loginOverlay')?.classList.add('hidden');
+      fecharModalSeletorContaGoogle();
+      applyRolePermissions();
+
+      // Sincroniza login Google no backend e atualiza o Copiloto IA automaticamente no MySQL
+      try {
+        await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, name: nome })
+        });
+      } catch (_) {}
+    }
+
+    function loginComEmailGooglePersonalizado() {
+      const inp = document.getElementById('inputOutroEmailGoogle');
+      const email = (inp ? inp.value : '').trim().toLowerCase();
+      if (!email || !email.includes('@')) {
+        alert('Digite um e-mail válido (ex: seu.nome@docentes.senai.br ou seu.nome@aluno.senai.br)!');
+        return;
+      }
+      let role = 'STUDENT';
+      let nome = email.split('@')[0].replace(/\./g, ' ').toUpperCase();
+      if (email.includes('admin') || email.includes('coord')) {
+        role = 'ADMIN';
+        nome = 'Coordenação Pedagógica';
+      } else if (email.includes('gestao') || email.includes('secretaria')) {
+        role = 'GESTAO';
+        nome = 'Gestão Escolar';
+      } else if (email.includes('@docentes.senai.br') || email.includes('prof')) {
+        role = 'TEACHER';
+        nome = 'Prof. ' + nome;
+      }
+      confirmarLoginGoogleConta(email, nome, role);
+    }
+
+    function handleGoogleIdentityCredentialResponse(response) {
+      if (!response || !response.credential) return;
+      try {
+        const payloadBase64 = response.credential.split('.')[1];
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(payloadBase64))));
+        const email = decoded.email || '';
+        const name = decoded.name || 'Usuário Google';
+        let role = 'STUDENT';
+        if (email.includes('admin') || email.includes('coord')) role = 'ADMIN';
+        else if (email.includes('gestao') || email.includes('secretaria')) role = 'GESTAO';
+        else if (email.includes('@docentes.senai.br') || email.includes('prof') || email.includes('heber')) role = 'TEACHER';
+        confirmarLoginGoogleConta(email, name, role);
+      } catch (err) {
+        console.warn('Erro ao decodificar token Google:', err);
+      }
+    }
+
+    function initGoogleIdentityServices() {
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: "senai-avaliacao.apps.googleusercontent.com",
+            callback: handleGoogleIdentityCredentialResponse,
+            auto_select: false
+          });
+        } catch (_) {}
+      }
+    }
+
+    function abrirLoginGoogleWorkspace() {
+      iniciarFluxoGoogleAuth();
     }
 
     function abrirCentralGoogleClassroomCompleta() {
@@ -16466,6 +16678,7 @@ Instruções do Sistema:
       try { renderActiveTab(); } catch(e) { console.error("renderActiveTab:", e); }
       try { updateCalculator(); } catch(e) { console.error("updateCalculator:", e); }
       try { renderizarRelatorioOficialTelas(); } catch(e) { console.error("renderizarRelatorioOficialTelas:", e); }
+      try { initGoogleIdentityServices(); } catch(e) { console.error("initGoogleIdentityServices:", e); }
       try { initSupabaseRealtime(); } catch(e) { console.error("initSupabaseRealtime:", e); }
     });
   </script>

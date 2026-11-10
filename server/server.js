@@ -911,6 +911,68 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // --- AUTENTICAÇÃO DIRETA COM CONTA GOOGLE (@docentes.senai.br / @aluno.senai.br) ---
+    if (urlPath === '/api/auth/google' && req.method === 'POST') {
+      try {
+        const body = await getJsonBody();
+        const email = (body.email || '').trim().toLowerCase();
+        const nome = (body.name || '').trim();
+        const picture = body.picture || '';
+
+        if (!email) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'E-mail Google é obrigatório' }));
+          return;
+        }
+
+        // Determina perfil institucional baseado no e-mail e regras SENAI
+        let role = 'STUDENT';
+        let id = '1';
+        let resolvedName = nome || 'Estudante SENAI';
+
+        if (email.includes('admin') || email.includes('coord') || email.includes('diretor')) {
+          role = 'ADMIN';
+          id = 'admin';
+          resolvedName = nome || 'Coordenador Pedagógico';
+        } else if (email.includes('gestao') || email.includes('secretaria') || email.includes('reitoria')) {
+          role = 'GESTAO';
+          id = '4';
+          resolvedName = nome || 'Secretaria / Gestão Escolar';
+        } else if (email.includes('@docentes.senai.br') || email.includes('heber') || email.includes('scalfi') || email.includes('bruno') || email.includes('prof')) {
+          role = 'TEACHER';
+          id = email.includes('heber') ? '1' : (email.includes('scalfi') ? '2' : '3');
+          resolvedName = nome || (email.includes('heber') ? 'Heber Roberto Ferreira' : (email.includes('scalfi') ? 'Rafael Forti Scalfi' : 'Docente SENAI'));
+        }
+
+        // Atualiza a conta de e-mail do Copiloto IA automaticamente no MySQL
+        try {
+          const aiRows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
+          let aiCfg = { provider: 'google_workspace_account', model: 'gemini-2.5-flash', endpointUrl: 'https://gemini.google.com' };
+          if (aiRows.length > 0 && aiRows[0].value) {
+            aiCfg = JSON.parse(aiRows[0].value);
+          }
+          aiCfg.accountEmail = email;
+          await db.execute('REPLACE INTO app_state (`key`, value) VALUES (?, ?)', ['ai_copilot_config', JSON.stringify(aiCfg)]);
+        } catch (_) {}
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          user: {
+            role,
+            id,
+            name: resolvedName,
+            email,
+            picture
+          }
+        }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Erro no login Google', details: e.message }));
+      }
+      return;
+    }
+
     // --- COPILOTO IA HÍBRIDO (CONTA GOOGLE @docentes.senai.br SEM CHAVE DE API + MOTOR CLOUD LLM GRATUITO + MOTOR MSEP) ---
     if (urlPath === '/api/ai/config') {
       if (req.method === 'GET') {
