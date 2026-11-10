@@ -1080,39 +1080,81 @@ const server = http.createServer(async (req, res) => {
         // Estrutura pedagógica MSEP padrão (usada diretamente ou enriquecida em tempo real pelo Google AI Studio / Gemini 2.5)
         let structuredResult = {};
         if (acao === 'plano_ensino') {
-          structuredResult = {
-            resumo: `✨ [Google AI Studio & Gemini 2.5 — @docentes.senai.br] Plano de Ensino MSEP estruturado para a UC "${ucNome}" (${cursoNome})${promptUsuario ? ` com foco em: ${promptUsuario}` : ''}. Foram geradas 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) prontas para integração com Google Classroom e com critérios críticos e desejáveis vinculados às capacidades do Plano de Curso.`,
-            situacoesAprendizagem: [
-              {
-                id: 'P1',
-                nome: `SA 01 (Formativa) — Planejamento e Execução Prática em ${ucNome}`,
-                estrategia: 'Situação-Problema',
-                modalidade: 'FORMATIVA',
-                cargaHoraria: '40h',
-                contextualizacao: `No setor industrial de ${cursoNome}, a equipe técnica precisa estruturar e executar uma solução operacional para ${ucNome}${promptUsuario ? ` (${promptUsuario})` : ''}, atendendo aos padrões de qualidade e produtividade.`,
-                desafio: `Planejar, executar e validar os procedimentos técnicos de ${ucNome}, registrando evidências práticas no Google Classroom / Registro Escolar e realizando autoavaliação formativa.`,
-                criterios: [
-                  { id: 'P1_C1', texto: `Identifica e prepara os recursos, normas e requisitos técnicos para ${capTec[0].toLowerCase()}`, critico: true },
-                  { id: 'P1_C2', texto: `Executa as etapas operacionais solucionando falhas com precisão técnica`, critico: true },
-                  { id: 'P1_C3', texto: `Demonstra organização metodológica e colaboração: ${capSoc[0].toLowerCase()}`, critico: false }
-                ]
-              },
-              {
-                id: 'P2',
-                nome: `SA 02 (Somativa) — Entrega Técnica Integradora e Validação de Desempenho em ${ucNome}`,
-                estrategia: 'Projeto Integrador',
-                modalidade: 'SOMATIVA',
-                cargaHoraria: '40h',
-                contextualizacao: `Para certificação das competências da Unidade Curricular ${ucNome}, o estudante deve consolidar o produto técnico final e comprovar domínio integral dos critérios críticos e desejáveis.`,
-                desafio: `Entregar a solução completa validada, apresentar o memorial técnico/evidência e atingir os indicadores de qualidade exigidos pelo padrão SENAI.`,
-                criterios: [
-                  { id: 'P2_C1', texto: `Entrega o produto/sistema funcional atendendo a 100% das especificações críticas de ${ucNome}`, critico: true },
-                  { id: 'P2_C2', texto: `Realiza testes de conformidade, segurança e validação técnica final`, critico: true },
-                  { id: 'P2_C3', texto: `Documenta a entrega com clareza técnica, inovação e cumprimento de prazos`, critico: false }
-                ]
-              }
-            ]
-          };
+          const isAudioVideo = /audio|áudio|video|vídeo|multim[ií]dia|foto|som|grava|trilha|locu[cç]|foley/i.test(`${ucNome} ${promptUsuario}`);
+          const chTotal = (ctx.cargaHoraria || '').includes('150') || /150/i.test(promptUsuario) ? '150h' : (ctx.cargaHoraria || '100h');
+          const chSA = chTotal.includes('150') ? '75h' : '40h';
+
+          if (isAudioVideo) {
+            structuredResult = {
+              resumo: `✨ [Google AI Studio & Gemini SENAI — @docentes.senai.br] Plano de Ensino MSEP formulado para a UC "${ucNome}" (${cursoNome}) — Carga Horária Total: ${chTotal} (1º Termo).\n\nForam estruturadas 2 Situações de Aprendizagem articuladas com o objetivo prático de produção, captação e sonorização de fotografias e vídeos, com critérios críticos e desejáveis prontos para integração ao Google Classroom:`,
+              situacoesAprendizagem: [
+                {
+                  id: 'P1',
+                  nome: `SA 01 (Formativa) — Captação Sonora, Efeitos de Foley e Sonorização de Peças Fotográficas e Vídeos Curtos (${chSA})`,
+                  estrategia: 'Situação-Problema',
+                  modalidade: 'FORMATIVA',
+                  cargaHoraria: chSA,
+                  contextualizacao: `Em uma produtora multimídia e estúdio audiovisual do 1º termo técnico, a equipe foi encarregada de produzir a identidade sonora e sonorização de campanhas publicitárias com ensaio fotográfico e vídeos promocionais curtos. O estudante atua como técnico de captação e desenho de som (sound designer), preparando microfonação, gravando vozes, efeitos foley e equalizando o áudio no estúdio.`,
+                  desafio: `Planejar a captação de áudio, selecionar microfones adequados (direcionais, lapela, condensadores), gravar locuções e efeitos sonoros limpos sem saturação/clipagem, realizar a limpeza de ruídos e equalização no software de edição de áudio (Audacity / Adobe Audition / Reaper) e exportar as faixas para sincronização com fotos e vídeos.`,
+                  criterios: [
+                    { id: 'P1_C1', texto: 'Seleciona e posiciona microfones e equipamentos de captação sonora conforme a fonte sonora e a acústica do ambiente', critico: true },
+                    { id: 'P1_C2', texto: 'Realiza gravação e monitoramento de áudio com níveis de ganho adequados, sem distorção harmônica ou ruídos residuais', critico: true },
+                    { id: 'P1_C3', texto: 'Executa edição, corte, limpeza de ruídos, equalização e compressão dinâmica em software DAW', critico: true },
+                    { id: 'P1_C4', texto: 'Organiza biblioteca de efeitos (foley), nomenclatura padronizada das faixas e cumpre o cronograma do estúdio', critico: false }
+                  ]
+                },
+                {
+                  id: 'P2',
+                  nome: `SA 02 (Somativa) — Projeto Integrado de Edição, Sincronismo Labial e Mixagem Audiovisual Comercial (${chSA})`,
+                  estrategia: 'Projeto Integrador',
+                  modalidade: 'SOMATIVA',
+                  cargaHoraria: chSA,
+                  contextualizacao: `Para a conclusão do 1º termo e validação somativa das competências na UC de Projetos de Áudio e Vídeo 1 (totalizando as ${chTotal} da Unidade Curricular), a agência contratante exige a entrega de um produto audiovisual completo, integrando fotografias tratadas, imagens em movimento e áudio multipista sincronizado com rigor técnico.`,
+                  desafio: `Montar o produto audiovisual no software de edição de vídeo (Premiere / DaVinci Resolve), realizando o sincronismo milimétrico de áudio com os cortes visuais e fotografias, mixando os planos sonoros (locução, trilha sonora e foley) no padrão de loudness (LUFS) exigido para plataformas digitais e renderizando no codec especificado.`,
+                  criterios: [
+                    { id: 'P2_C1', texto: 'Executa montagem e sincronismo rigoroso entre as pistas de áudio masterizadas e as imagens em movimento/fotos', critico: true },
+                    { id: 'P2_C2', texto: 'Realiza a mixagem e masterização final respeitando os padrões de loudness (LUFS) e equilíbrio dinâmico entre voz e trilha', critico: true },
+                    { id: 'P2_C3', texto: 'Renderiza e exporta o produto audiovisual final nas resoluções, taxas de quadros e codecs exigidos pelo padrão técnico', critico: true },
+                    { id: 'P2_C4', texto: 'Apresenta o projeto final e o memorial descritivo com argumentação técnica, criatividade e postura profissional', critico: false }
+                  ]
+                }
+              ]
+            };
+          } else {
+            structuredResult = {
+              resumo: `✨ [Google AI Studio & Gemini 2.5 — @docentes.senai.br] Plano de Ensino MSEP estruturado para a UC "${ucNome}" (${cursoNome})${promptUsuario ? ` com foco em: ${promptUsuario}` : ''}. Foram geradas 2 Situações de Aprendizagem (SA 01 Formativa e SA 02 Somativa) prontas para integração com Google Classroom e com critérios críticos e desejáveis vinculados às capacidades do Plano de Curso.`,
+              situacoesAprendizagem: [
+                {
+                  id: 'P1',
+                  nome: `SA 01 (Formativa) — Planejamento e Execução Prática em ${ucNome}`,
+                  estrategia: 'Situação-Problema',
+                  modalidade: 'FORMATIVA',
+                  cargaHoraria: chSA,
+                  contextualizacao: `No setor produtivo de ${cursoNome}, a equipe técnica precisa estruturar e executar uma solução operacional para ${ucNome}${promptUsuario ? ` (${promptUsuario})` : ''}, atendendo aos padrões de qualidade e produtividade.`,
+                  desafio: `Planejar, executar e validar os procedimentos técnicos de ${ucNome}, registrando evidências práticas no Google Classroom / Registro Escolar e realizando autoavaliação formativa.`,
+                  criterios: [
+                    { id: 'P1_C1', texto: `Identifica e prepara os recursos, normas e requisitos técnicos para ${capTec[0].toLowerCase()}`, critico: true },
+                    { id: 'P1_C2', texto: `Executa as etapas operacionais solucionando falhas com precisão técnica`, critico: true },
+                    { id: 'P1_C3', texto: `Demonstra organização metodológica e colaboração: ${capSoc[0].toLowerCase()}`, critico: false }
+                  ]
+                },
+                {
+                  id: 'P2',
+                  nome: `SA 02 (Somativa) — Entrega Técnica Integradora e Validação de Desempenho em ${ucNome}`,
+                  estrategia: 'Projeto Integrador',
+                  modalidade: 'SOMATIVA',
+                  cargaHoraria: chSA,
+                  contextualizacao: `Para certificação das competências da Unidade Curricular ${ucNome}, o estudante deve consolidar o produto técnico final e comprovar domínio integral dos critérios críticos e desejáveis.`,
+                  desafio: `Entregar a solução completa validada, apresentar o memorial técnico/evidência e atingir os indicadores de qualidade exigidos pelo padrão SENAI.`,
+                  criterios: [
+                    { id: 'P2_C1', texto: `Entrega o produto/sistema funcional atendendo a 100% das especificações críticas de ${ucNome}`, critico: true },
+                    { id: 'P2_C2', texto: `Realiza testes de conformidade, segurança e validação técnica final`, critico: true },
+                    { id: 'P2_C3', texto: `Documenta a entrega com clareza técnica, inovação e cumprimento de prazos`, critico: false }
+                  ]
+                }
+              ]
+            };
+          }
         } else if (acao === 'cronograma') {
           structuredResult = {
             resumo: `✨ [Google AI Studio & Gemini 2.5 — Cronograma FR 93] As Situações de Aprendizagem e os Conhecimentos de "${ucNome}" foram organizados progressivamente para vinculação automática às datas (Dia/Mês/Ano) e ao Diário de Chamada.`
@@ -1166,6 +1208,7 @@ const server = http.createServer(async (req, res) => {
               const gRes = await fetch(gUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: AbortSignal.timeout(3500),
                 body: JSON.stringify({
                   contents: [{ parts: [{ text: `${sysPrompt}\n\n${fullPrompt}` }] }],
                   generationConfig: genConfig
@@ -1204,6 +1247,7 @@ const server = http.createServer(async (req, res) => {
               const oRes = await fetch(endpoint, {
                 method: 'POST',
                 headers,
+                signal: AbortSignal.timeout(3500),
                 body: JSON.stringify({
                   model: aiConfig.model || 'gpt-4o',
                   messages: [
@@ -1229,6 +1273,7 @@ const server = http.createServer(async (req, res) => {
             const freeCloudRes = await fetch('https://text.pollinations.ai/openai', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
+              signal: AbortSignal.timeout(3000),
               body: JSON.stringify({
                 model: 'openai',
                 messages: [
