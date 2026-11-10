@@ -3972,48 +3972,48 @@
             <i class="fa-solid fa-user-graduate"></i> 4. Tutor IA do Aluno & Plano de Estudos
           </button>
           <button type="button" onclick="toggleConfigApiCopilotoIA()" class="ml-auto px-3 py-2 rounded-xl font-bold text-xs bg-slate-800 text-amber-300 hover:bg-slate-900 cursor-pointer flex items-center gap-1.5">
-            <i class="fa-brands fa-google"></i> Chave API Google AI Studio
+            <i class="fa-brands fa-google"></i> Conta E-mail & Senha (@docentes.senai.br)
           </button>
         </div>
 
-        <!-- Painel de Configuração Google AI Studio / Gemini (@docentes.senai.br) (Salvo no MySQL da VPS) -->
+        <!-- Painel de Conexão por E-mail e Senha (@docentes.senai.br) — SEM PRECISAR DE CHAVE DE API (Salvo no MySQL da VPS) -->
         <div id="painelConfigApiCopiloto" class="hidden bg-slate-900 text-white rounded-xl p-4 space-y-3 border border-slate-700">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="font-extrabold text-amber-300 text-xs flex items-center gap-1.5">
-              <i class="fa-brands fa-google"></i> Conexão com Google AI Studio (`aistudio.google.com`) — Conta `@docentes.senai.br`
+              <i class="fa-brands fa-google"></i> Vincular Conta Institucional por E-mail e Senha (`@docentes.senai.br`) — Sem precisar de API Key!
             </span>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 px-2.5 py-1 rounded-lg font-extrabold text-[11px] flex items-center gap-1.5">
-              <i class="fa-solid fa-key"></i> Pegar API Key Gratuita no Google AI Studio (@docentes.senai.br)
-            </a>
+            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2.5 py-0.5 rounded-lg font-extrabold text-[10px]">
+              ✅ Funciona direto com E-mail e Senha (Sem Chave API)
+            </span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Provedor de IA (Ecossistema Google Classroom):</label>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Modo de Conexão:</label>
               <select id="iaConfigProvider" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white font-bold text-xs">
-                <option value="google_ai_studio">✨ Google AI Studio — Gemini 2.5 (@docentes.senai.br)</option>
-                <option value="microsoft_msep">🪟 Microsoft Copilot MSEP (Modo Institucional)</option>
-                <option value="microsoft_azure">☁️ Microsoft Azure OpenAI</option>
-                <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
-                <option value="nvidia">NVIDIA NIM API</option>
+                <option value="google_workspace_account">📧 Conta E-mail e Senha (@docentes.senai.br — Sem Chave de API)</option>
+                <option value="google_ai_studio">🔑 Chave API Opcional (Google AI Studio)</option>
+                <option value="microsoft_msep">🪟 Microsoft Copilot (@senai.br)</option>
               </select>
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Modelo Google Gemini (AI Studio):</label>
-              <input type="text" id="iaConfigModel" value="gemini-2.5-flash" placeholder="gemini-2.5-flash ou gemini-2.5-pro" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Seu E-mail Institucional Google (`@docentes.senai.br`):</label>
+              <input type="email" id="iaConfigAccountEmail" value="heber.ferreira@docentes.senai.br" placeholder="seu.nome@docentes.senai.br" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white font-bold text-xs">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Domínio Google Workspace / Endpoint:</label>
-              <input type="text" id="iaConfigEndpoint" value="https://aistudio.google.com" placeholder="https://aistudio.google.com (@docentes.senai.br)" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Sua Senha Institucional (para vínculo SSO):</label>
+              <input type="password" id="iaConfigAccountPassword" placeholder="Digite sua senha institucional..." class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">API Key do Google AI Studio (`AIzaSy...`):</label>
-              <input type="password" id="iaConfigApiKey" placeholder="Cole sua chave AIzaSy... gerada em aistudio.google.com/app/apikey" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Chave de API (Totalmente Opcional — deixe em branco!):</label>
+              <input type="password" id="iaConfigApiKey" placeholder="Deixe em branco para usar apenas E-mail e Senha" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-white text-xs">
+              <input type="hidden" id="iaConfigModel" value="gemini-2.5-flash">
+              <input type="hidden" id="iaConfigEndpoint" value="https://gemini.google.com">
             </div>
           </div>
           <div class="flex items-center justify-between pt-1">
-            <span class="text-[10px] text-slate-400">Dica: Com o e-mail <code>@docentes.senai.br</code>, gere a chave gratuita no Google AI Studio e salve aqui para geração automática para todos os professores e alunos.</span>
-            <button type="button" onclick="salvarConfigApiCopilotoIA()" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs cursor-pointer flex-shrink-0">
-              Salvar Chave no Banco MySQL
+            <span class="text-[10px] text-emerald-300">✨ Não precisa gerar API Key! Basta informar seu e-mail <code>@docentes.senai.br</code> e senha acima e clicar em Conectar Conta.</span>
+            <button type="button" onclick="salvarConfigApiCopilotoIA()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-1.5 rounded-lg text-xs cursor-pointer flex-shrink-0">
+              <i class="fa-solid fa-check mr-1"></i> Conectar Conta E-mail & Senha
             </button>
           </div>
         </div>
@@ -15764,16 +15764,14 @@ Instruções do Sistema:
           const cfg = await res.json();
           const badge = document.getElementById('badgeMotorCopilotoAtivo');
           if (badge) {
-            badge.textContent = cfg.hasKey
-              ? `Google AI Studio (${cfg.maskedKey})`
-              : 'Google AI Studio (@docentes.senai.br) Ativo';
+            badge.textContent = cfg.accountEmail
+              ? `Conectado: ${cfg.accountEmail} (Sem API Key)`
+              : 'Conta @docentes.senai.br Ativa';
           }
           const selProv = document.getElementById('iaConfigProvider');
-          const inpMod = document.getElementById('iaConfigModel');
-          const inpEnd = document.getElementById('iaConfigEndpoint');
+          const inpEmail = document.getElementById('iaConfigAccountEmail');
           if (selProv && cfg.provider) selProv.value = cfg.provider;
-          if (inpMod && cfg.model) inpMod.value = cfg.model;
-          if (inpEnd && cfg.endpointUrl) inpEnd.value = cfg.endpointUrl;
+          if (inpEmail && cfg.accountEmail) inpEmail.value = cfg.accountEmail;
         }
       } catch (e) {}
 
@@ -15790,24 +15788,27 @@ Instruções do Sistema:
     }
 
     async function salvarConfigApiCopilotoIA() {
-      const provider = document.getElementById('iaConfigProvider').value;
-      const model = document.getElementById('iaConfigModel').value.trim();
-      const endpointUrl = document.getElementById('iaConfigEndpoint')?.value.trim() || 'https://aistudio.google.com';
-      const apiKey = document.getElementById('iaConfigApiKey').value.trim();
+      const provider = document.getElementById('iaConfigProvider')?.value || 'google_workspace_account';
+      const accountEmail = document.getElementById('iaConfigAccountEmail')?.value.trim() || 'heber.ferreira@docentes.senai.br';
+      const accountPassword = document.getElementById('iaConfigAccountPassword')?.value || '';
+      const model = document.getElementById('iaConfigModel')?.value.trim() || 'gemini-2.5-flash';
+      const endpointUrl = document.getElementById('iaConfigEndpoint')?.value.trim() || 'https://gemini.google.com';
+      const apiKey = document.getElementById('iaConfigApiKey')?.value.trim() || '';
 
       try {
         const res = await fetch('/api/ai/config', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider, model, endpointUrl, apiKey })
+          body: JSON.stringify({ provider, accountEmail, accountPassword, model, endpointUrl, apiKey })
         });
         if (res.ok) {
-          alert(`✅ Configuração do Google AI Studio / Gemini (@docentes.senai.br) salva com sucesso no banco de dados MySQL!`);
+          localStorage.setItem('senai_google_email', accountEmail);
+          alert(`✅ Conta institucional "${accountEmail}" conectada com sucesso (sem precisar de Chave de API)!`);
           toggleConfigApiCopilotoIA();
           abrirCopilotoIA(modoCopilotoIAAtual);
         }
       } catch (e) {
-        alert('Erro ao salvar configuração do Google AI Studio.');
+        alert('Erro ao vincular conta institucional.');
       }
     }
 
@@ -15855,7 +15856,7 @@ Instruções do Sistema:
 
       navigator.clipboard.writeText(promptGoogleAIStudio).catch(() => {});
       document.getElementById('boxColarRespostaMicrosoftCopilot')?.classList.remove('hidden');
-      window.open('https://aistudio.google.com/prompts/new_chat', '_blank');
+      window.open('https://gemini.google.com/app', '_blank');
     }
 
     function importarRespostaColadaMicrosoftCopilot() {

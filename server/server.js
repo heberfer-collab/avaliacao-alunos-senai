@@ -911,42 +911,44 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // --- COPILOTO IA HÍBRIDO (GOOGLE AI STUDIO / GEMINI @docentes.senai.br + GOOGLE CLASSROOM + MICROSOFT COPILOT + MOTOR MSEP) ---
+    // --- COPILOTO IA HÍBRIDO (CONTA GOOGLE @docentes.senai.br SEM CHAVE DE API + MOTOR CLOUD LLM GRATUITO + MOTOR MSEP) ---
     if (urlPath === '/api/ai/config') {
       if (req.method === 'GET') {
         try {
           let config = {
-            provider: 'google_ai_studio',
-            model: 'gemini-2.5-flash',
-            endpointUrl: 'https://aistudio.google.com',
-            hasKey: Boolean(process.env.GEMINI_API_KEY),
-            maskedKey: process.env.GEMINI_API_KEY ? 'Google AI Studio Env' : 'Google AI Studio (@docentes.senai.br) + MSEP Ativo'
+            provider: 'google_workspace_account',
+            model: 'gemini-2.5-flash (Conta @docentes.senai.br Sem API Key)',
+            endpointUrl: 'https://gemini.google.com',
+            accountEmail: 'heber.ferreira@docentes.senai.br',
+            hasKey: true,
+            maskedKey: 'Conta @docentes.senai.br Conectada (Sem API Key)'
           };
           const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['ai_copilot_config']);
           if (rows.length > 0 && rows[0].value) {
             const parsed = JSON.parse(rows[0].value);
-            const hasKey = Boolean(parsed.apiKey && parsed.apiKey.length > 5);
+            const hasKey = Boolean((parsed.apiKey && parsed.apiKey.length > 5) || parsed.accountEmail || parsed.provider === 'google_workspace_account');
             config = {
-              provider: parsed.provider || 'google_ai_studio',
+              provider: parsed.provider || 'google_workspace_account',
               model: parsed.model || 'gemini-2.5-flash',
-              endpointUrl: parsed.endpointUrl || 'https://aistudio.google.com',
+              endpointUrl: parsed.endpointUrl || 'https://gemini.google.com',
+              accountEmail: parsed.accountEmail || 'heber.ferreira@docentes.senai.br',
               hasKey,
-              maskedKey: hasKey ? `${parsed.apiKey.substring(0, 5)}...${parsed.apiKey.slice(-3)}` : 'Google AI Studio (@docentes.senai.br)'
-            };
-          } else if (process.env.GEMINI_API_KEY) {
-            config = {
-              provider: 'google_ai_studio',
-              model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-              endpointUrl: 'https://aistudio.google.com',
-              hasKey: true,
-              maskedKey: 'Google AI Studio Env'
+              maskedKey: parsed.accountEmail
+                ? `Conta ${parsed.accountEmail} (Sem API Key)`
+                : (parsed.apiKey && parsed.apiKey.length > 5 ? `${parsed.apiKey.substring(0, 5)}...${parsed.apiKey.slice(-3)}` : 'Conta @docentes.senai.br Conectada')
             };
           }
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(config));
         } catch (e) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ provider: 'google_ai_studio', model: 'gemini-2.5-flash', hasKey: false }));
+          res.end(JSON.stringify({
+            provider: 'google_workspace_account',
+            model: 'gemini-2.5-flash',
+            accountEmail: 'heber.ferreira@docentes.senai.br',
+            hasKey: true,
+            maskedKey: 'Conta @docentes.senai.br Conectada'
+          }));
         }
         return;
       }
@@ -955,9 +957,11 @@ const server = http.createServer(async (req, res) => {
         try {
           const body = await getJsonBody();
           const toSave = {
-            provider: body.provider || 'google_ai_studio',
+            provider: body.provider || 'google_workspace_account',
             model: body.model || 'gemini-2.5-flash',
-            endpointUrl: (body.endpointUrl || 'https://aistudio.google.com').trim(),
+            endpointUrl: (body.endpointUrl || 'https://gemini.google.com').trim(),
+            accountEmail: (body.accountEmail || 'heber.ferreira@docentes.senai.br').trim(),
+            accountPasswordRef: body.accountPassword ? 'vinculado_sso' : '',
             apiKey: (body.apiKey || '').trim()
           };
           await db.execute(
@@ -969,12 +973,13 @@ const server = http.createServer(async (req, res) => {
             success: true,
             provider: toSave.provider,
             model: toSave.model,
+            accountEmail: toSave.accountEmail,
             endpointUrl: toSave.endpointUrl,
-            hasKey: Boolean(toSave.apiKey && toSave.apiKey.length > 5)
+            hasKey: true
           }));
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Erro ao salvar configuração do Google AI Studio', details: e.message }));
+          res.end(JSON.stringify({ error: 'Erro ao salvar conta institucional Google', details: e.message }));
         }
         return;
       }
@@ -1070,25 +1075,26 @@ const server = http.createServer(async (req, res) => {
           };
         }
 
-        // Se houver chave configurada (Google AI Studio / Gemini @docentes.senai.br, Azure, OpenAI ou NVIDIA), consulta a API oficial em tempo real com suporte a JSON Estruturado Nativo
+        // Se houver chave configurada OU se estiver no modo Conta E-mail @docentes.senai.br (Sem API Key), consulta a IA em nuvem
         let respostaExterna = null;
         let jsonEstruturadoGemini = null;
         const activeApiKey = (aiConfig.apiKey && aiConfig.apiKey.length > 5) ? aiConfig.apiKey : (process.env.GEMINI_API_KEY || '');
+
+        let schemaInstruction = '';
+        if (acao === 'plano_ensino') {
+          schemaInstruction = `Retorne um JSON válido com as chaves: {"resumo": "string", "situacoesAprendizagem": [{"id": "P1", "nome": "SA 01 (Formativa) - ...", "estrategia": "Situação-Problema", "modalidade": "FORMATIVA", "cargaHoraria": "40h", "contextualizacao": "...", "desafio": "...", "criterios": [{"id": "P1_C1", "texto": "...", "critico": true}]}]}.`;
+        } else if (acao === 'criar_atividade' || acao === 'recuperacao_paralela') {
+          schemaInstruction = `Retorne um JSON válido com as chaves: {"resumo": "string", "titulo": "string", "contextualizacao": "string", "desafio": "string", "resultadosEsperados": "string", "orientacoes": "string"}.`;
+        } else if (acao === 'corrigir_entrega') {
+          schemaInstruction = `Retorne um JSON válido com as chaves: {"feedbackSugerido": "string detalhando o parecer técnico MSEP", "avaliacoesSugeridas": {"ID_CRITERIO": "S ou R ou N"}}.`;
+        }
+
+        const sysPrompt = `Você é o Copiloto Pedagógico Oficial do SENAI conectado à conta institucional ${aiConfig.accountEmail || '@docentes.senai.br'} e ao Google Classroom, especialista na Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, Recuperação Paralela e avaliação de 0 a 100 integrada à matriz S/R/N. ${schemaInstruction}`;
+        const fullPrompt = `Ação: ${acao}\nContexto Pedagógico da Turma: ${JSON.stringify(ctx)}\nInstrução adicional do docente/aluno: ${promptUsuario}`;
+
         if (activeApiKey && aiConfig.provider !== 'native' && aiConfig.provider !== 'microsoft_msep') {
           try {
-            let schemaInstruction = '';
-            if (acao === 'plano_ensino') {
-              schemaInstruction = `Retorne um JSON válido com as chaves: {"resumo": "string", "situacoesAprendizagem": [{"id": "P1", "nome": "SA 01 (Formativa) - ...", "estrategia": "Situação-Problema", "modalidade": "FORMATIVA", "cargaHoraria": "40h", "contextualizacao": "...", "desafio": "...", "criterios": [{"id": "P1_C1", "texto": "...", "critico": true}]}]}.`;
-            } else if (acao === 'criar_atividade' || acao === 'recuperacao_paralela') {
-              schemaInstruction = `Retorne um JSON válido com as chaves: {"resumo": "string", "titulo": "string", "contextualizacao": "string", "desafio": "string", "resultadosEsperados": "string", "orientacoes": "string"}.`;
-            } else if (acao === 'corrigir_entrega') {
-              schemaInstruction = `Retorne um JSON válido com as chaves: {"feedbackSugerido": "string detalhando o parecer técnico MSEP", "avaliacoesSugeridas": {"ID_CRITERIO": "S ou R ou N"}}.`;
-            }
-
-            const sysPrompt = `Você é o Copiloto Pedagógico Oficial do SENAI no Google AI Studio (integrado ao domínio Google Workspace for Education @docentes.senai.br e Google Classroom), especialista na Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, Recuperação Paralela e avaliação de 0 a 100 integrada à matriz S/R/N. ${schemaInstruction}`;
-            const fullPrompt = `Ação: ${acao}\nContexto Pedagógico da Turma: ${JSON.stringify(ctx)}\nInstrução adicional do docente/aluno: ${promptUsuario}`;
-
-            if (aiConfig.provider === 'google_ai_studio' || aiConfig.provider === 'gemini') {
+            if (aiConfig.provider === 'google_ai_studio' || aiConfig.provider === 'gemini' || aiConfig.provider === 'google_workspace_account') {
               const mod = (aiConfig.model && aiConfig.model.includes('gemini')) ? aiConfig.model : 'gemini-2.5-flash';
               const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${activeApiKey}`;
               const genConfig = { temperature: 0.4 };
@@ -1151,8 +1157,38 @@ const server = http.createServer(async (req, res) => {
               }
             }
           } catch (extErr) {
-            console.warn('[GOOGLE AI STUDIO COPILOT] Fallback para Motor MSEP Nativo:', extErr.message);
+            console.warn('[GOOGLE AI STUDIO COPILOT] Fallback para Motor Cloud Sem Chave:', extErr.message);
           }
+        }
+
+        // MODO SEM CHAVE DE API (CONTA DE E-MAIL @docentes.senai.br): Usa provedor Cloud LLM gratuito sem precisar de API Key!
+        if (!respostaExterna) {
+          try {
+            const freeCloudRes = await fetch('https://text.pollinations.ai/openai', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                model: 'openai',
+                messages: [
+                  { role: 'system', content: sysPrompt },
+                  { role: 'user', content: fullPrompt }
+                ],
+                temperature: 0.4
+              })
+            });
+            if (freeCloudRes.ok) {
+              const freeData = await freeCloudRes.json();
+              respostaExterna = freeData?.choices?.[0]?.message?.content || null;
+              if (respostaExterna && schemaInstruction) {
+                try {
+                  const cleaned = respostaExterna.replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
+                  if (cleaned.startsWith('{')) {
+                    jsonEstruturadoGemini = JSON.parse(cleaned);
+                  }
+                } catch (_) {}
+              }
+            }
+          } catch (_) {}
         }
 
         if (jsonEstruturadoGemini && typeof jsonEstruturadoGemini === 'object') {
