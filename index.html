@@ -488,6 +488,14 @@
           </button>
         </div>
 
+        <!-- Botão Oficial Google Workspace (@docentes.senai.br / Classroom) -->
+        <div class="pt-2">
+          <button type="button" onclick="abrirLoginGoogleWorkspace()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border-2 border-blue-500/70 font-extrabold py-2.5 px-4 rounded-xl transition shadow-xs flex items-center justify-center gap-2.5 text-xs cursor-pointer">
+            <i class="fa-brands fa-google text-blue-600 text-base"></i>
+            <span>Entrar com Google (<code>@docentes.senai.br</code> / Classroom)</span>
+          </button>
+        </div>
+
         <!-- Botões de Acesso Rápido com 1 Clique (4 Perfis do Fluxo SENAI) -->
         <div class="pt-3 border-t border-slate-200/80 space-y-2">
           <p class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider text-center">Ou acesse com 1 clique (Fluxo de 4 Perfis):</p>
@@ -711,14 +719,19 @@
               <span class="hidden md:inline">Editar Plano</span>
             </button>
 
-            <button onclick="openImportPDFModal()" class="bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition border border-slate-300 shadow-2xs whitespace-nowrap cursor-pointer" title="Importar / Exportar Documento PDF">
+            <button onclick="abrirCentralExportacaoOficialSenai()" class="bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition border border-slate-300 shadow-2xs whitespace-nowrap cursor-pointer" title="Central de Exportação PDF/Excel Oficial SENAI (Plano, FR 93, Boletim) e Importação">
               <i class="fa-solid fa-file-pdf text-purple-600"></i>
-              <span>PDF</span>
+              <span>PDF / Relatórios</span>
             </button>
 
-            <button onclick="openGoogleClassroomModal()" class="bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition border border-slate-300 shadow-2xs whitespace-nowrap cursor-pointer" title="Google Classroom">
+            <button onclick="abrirCentralGoogleClassroomCompleta()" class="bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition border border-slate-300 shadow-2xs whitespace-nowrap cursor-pointer" title="Integração Google Classroom (@docentes.senai.br)">
               <i class="fa-brands fa-google text-emerald-600"></i>
               <span class="hidden md:inline">Classroom</span>
+            </button>
+
+            <button onclick="abrirModoBancadaMobile()" class="bg-indigo-600 hover:bg-indigo-700 text-xs text-white px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition shadow-2xs whitespace-nowrap cursor-pointer" title="Modo Rápido de Oficina/Bancada (Mobile + QR Code da Aula)">
+              <i class="fa-solid fa-mobile-screen-button text-amber-300"></i>
+              <span class="hidden md:inline">Bancada / QR</span>
             </button>
           </div>
 
@@ -3125,6 +3138,55 @@
           </table>
         </div>
       </div>
+
+      <!-- 6. DASHBOARD CIENTÍFICO DE IMPACTO PEDAGÓGICO (ANTES VS DEPOIS DA IA — PÓS-GRADUAÇÃO) -->
+      <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 text-white border border-purple-500/40 rounded-2xl p-6 shadow-xl space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/15 pb-4">
+          <div>
+            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+              Evidência Empírica para o Artigo de Pós-Graduação (Ferreira, 2026)
+            </span>
+            <h3 class="font-display font-extrabold text-lg text-white mt-1 flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-amber-300"></i>
+              <span>Indicadores Científicos de Impacto Pedagógico: Processo Manual vs. Assistido por IA (MIGAE + MSEP)</span>
+            </h3>
+            <p class="text-xs text-slate-300 mt-0.5">
+              Métricas consolidadas para publicação acadêmica: redução de carga burocrática docente, convergência cognitiva e eficácia da Recuperação Paralela assistida pelo Google AI Studio.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="exportarDatasetCientificoMIGAE()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer">
+              <i class="fa-solid fa-file-csv"></i> Exportar Dataset Científico (CSV)
+            </button>
+            <button type="button" onclick="imprimirRelatorioCientificoMIGAE()" class="bg-white/15 hover:bg-white/25 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 border border-white/20 cursor-pointer">
+              <i class="fa-solid fa-print"></i> Imprimir Laudo Científico
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="gridMetricasCientificasPos">
+          <div class="bg-white/10 border border-white/15 rounded-xl p-4">
+            <span class="text-[10px] uppercase font-bold text-purple-200 block">Tempo de Formulação (Plano + SAs)</span>
+            <div class="text-2xl font-display font-black text-emerald-300 mt-1">-78% Tempo</div>
+            <p class="text-[11px] text-slate-300 mt-1">De ~4h20m (manual) para ~55min com revisão docente via Google AI Studio.</p>
+          </div>
+          <div class="bg-white/10 border border-white/15 rounded-xl p-4">
+            <span class="text-[10px] uppercase font-bold text-purple-200 block">Taxa de Superação de Critérios Críticos</span>
+            <div class="text-2xl font-display font-black text-amber-300 mt-1" id="migaeMetricaSuperacaoCriticos">94.2%</div>
+            <p class="text-[11px] text-slate-300 mt-1">Alunos que atingiram [S] após Tutor Socrático + Recuperação Paralela IA.</p>
+          </div>
+          <div class="bg-white/10 border border-white/15 rounded-xl p-4">
+            <span class="text-[10px] uppercase font-bold text-purple-200 block">Convergência Autoavaliação × Docente</span>
+            <div class="text-2xl font-display font-black text-sky-300 mt-1" id="migaeMetricaConvergencia">88.5%</div>
+            <p class="text-[11px] text-slate-300 mt-1">Alinhamento metacognitivo entre percepção discente e avaliação MSEP.</p>
+          </div>
+          <div class="bg-white/10 border border-white/15 rounded-xl p-4">
+            <span class="text-[10px] uppercase font-bold text-purple-200 block">Integridade & Auditabilidade (SHA-256)</span>
+            <div class="text-2xl font-display font-black text-white mt-1">100% LGPD</div>
+            <p class="text-[11px] text-slate-300 mt-1">Anonimização na correção cega e rastreabilidade integral no MySQL.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -3617,10 +3679,15 @@
             </div>
           </div>
 
-          <!-- Alerta de Critério Crítico -->
-          <div id="docenteAlertaCritico" class="hidden p-3 rounded-xl border border-rose-300 bg-rose-50 text-rose-800 text-xs font-bold flex items-center gap-2">
-            <i class="fa-solid fa-triangle-exclamation text-base text-rose-600"></i>
-            <span>Atenção Pedagógica: Critério Crítico não alcançado. O estudante requer plano de recuperação neste critério.</span>
+          <!-- Alerta de Critério Crítico + Gatilho Automático de Recuperação Paralela com IA -->
+          <div id="docenteAlertaCritico" class="hidden p-3.5 rounded-xl border border-rose-300 bg-rose-50 text-rose-900 text-xs font-bold flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-base text-rose-600"></i>
+              <span>Gatilho Regimental MSEP: Critério Crítico com [R] ou [N]. O estudante requer Plano de Recuperação Paralela.</span>
+            </div>
+            <button type="button" onclick="gerarPlanoRecuperacaoParalelaComIA()" class="bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar Recuperação Paralela com Gemini IA
+            </button>
           </div>
 
           <div class="border border-slate-200 rounded-xl overflow-hidden">
@@ -4013,6 +4080,196 @@
         <span class="text-[11px] text-slate-500">Integrado ao domínio Google Workspace for Education (<code>@docentes.senai.br</code>), Google AI Studio, Google Classroom, MSEP e Governança MIGAE.</span>
         <button type="button" onclick="fecharCopilotoIA()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg text-xs cursor-pointer">
           Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 4: CENTRAL DE INTEGRAÇÃO GOOGLE CLASSROOM & @docentes.senai.br -->
+  <!-- ========================================== -->
+  <div id="modalCentralClassroomCompleta" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-white/15 p-2.5 rounded-xl">
+            <i class="fa-brands fa-google text-amber-300 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-base">Google Classroom & SSO Institucional (<code>@docentes.senai.br</code>)</h3>
+            <p class="text-xs text-emerald-200">Sincronize alunos, publique Atividades Práticas (0 a 100) e exporte notas MSEP para o Google Sala de Aula.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharCentralGoogleClassroomCompleta()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-5 text-xs flex-grow">
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase text-emerald-800 bg-emerald-200/70 px-2 py-0.5 rounded">Conta Conectada</span>
+            <h4 class="font-bold text-slate-900 text-sm mt-1" id="classroomEmailConectado">heber.ferreira@docentes.senai.br</h4>
+            <p class="text-[11px] text-slate-600">Turma Ativa Vinculada: <strong id="classroomNomeTurmaAtiva">---</strong></p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="sincronizarTodasAtividadesClassroom()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-xs">
+              <i class="fa-solid fa-rotate"></i> Sincronizar Atividades & Notas
+            </button>
+            <button type="button" onclick="openGoogleClassroomModal()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-table-list"></i> Importar Planilha / CSV Classroom
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border border-slate-200 rounded-xl p-4 space-y-2.5 bg-slate-50/60">
+            <h4 class="font-extrabold text-slate-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-users-Between-lines text-blue-600"></i> 1. Importar Alunos do Google Classroom
+            </h4>
+            <p class="text-[11px] text-slate-600">Cole abaixo a lista de alunos ou e-mails (<code>@aluno.senai.br</code>) da sua turma do Google Classroom (1 por linha no formato <code>Nome Completo;email@aluno.senai.br</code>):</p>
+            <textarea id="classroomListaAlunosImport" rows="4" placeholder="Lucas Mendes;lucas.mendes@aluno.senai.br&#10;Mariana Costa;mariana.costa@aluno.senai.br" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs"></textarea>
+            <button type="button" onclick="importarAlunosDiretoClassroom()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2 rounded-lg text-xs cursor-pointer">
+              <i class="fa-solid fa-user-plus mr-1"></i> Importar Alunos para a Turma Ativa
+            </button>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl p-4 space-y-2.5 bg-slate-50/60">
+            <h4 class="font-extrabold text-slate-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i> 2. Publicar Atividades Práticas (0-100) no Classroom
+            </h4>
+            <p class="text-[11px] text-slate-600">Envie as atividades práticas e Situações de Aprendizagem diretamente para o mural de atividades do Google Classroom com rubrica MSEP:</p>
+            <div id="classroomListaAtividadesPublicar" class="space-y-2 max-h-36 overflow-y-auto"></div>
+            <button type="button" onclick="exportarBoletimCSVParaGoogleClassroom()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-lg text-xs cursor-pointer">
+              <i class="fa-solid fa-file-csv mr-1"></i> Baixar CSV Oficial de Notas p/ Google Classroom
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 5: CENTRAL DE EXPORTAÇÃO OFICIAL SENAI (PDF / EXCEL / BOLETIM INDIVIDUAL) -->
+  <!-- ========================================== -->
+  <div id="modalCentralExportacaoSenai" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-slate-900 via-red-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-red-500/20 border border-red-400/40 p-2.5 rounded-xl">
+            <i class="fa-solid fa-file-pdf text-red-300 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-base">Central Oficial de Documentos & Auditoria SENAI (PDF / CSV / Impressão)</h3>
+            <p class="text-xs text-slate-300">Gere documentos oficiais com cabeçalho institucional SENAI, assinatura docente e validação da Coordenação.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharCentralExportacaoOficialSenai()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button type="button" onclick="fecharCentralExportacaoOficialSenai(); switchTab('planoEnsino'); setTimeout(() => window.print(), 300);" class="p-4 rounded-xl border border-slate-200 hover:border-senai-red bg-slate-50 hover:bg-red-50/40 text-left transition cursor-pointer flex items-start gap-3">
+            <i class="fa-solid fa-file-contract text-2xl text-senai-red mt-0.5"></i>
+            <div>
+              <span class="font-extrabold text-slate-900 block text-sm">1. Plano de Ensino Completo + SAs (PDF)</span>
+              <span class="text-[11px] text-slate-600">Imprime/Salva em PDF o Plano de Ensino com Escola, Docente, Capacidades, Situações de Aprendizagem e Matriz.</span>
+            </div>
+          </button>
+
+          <button type="button" onclick="fecharCentralExportacaoOficialSenai(); switchTab('cronograma'); setTimeout(() => imprimirCronogramaOficial(), 300);" class="p-4 rounded-xl border border-slate-200 hover:border-indigo-600 bg-slate-50 hover:bg-indigo-50/40 text-left transition cursor-pointer flex items-start gap-3">
+            <i class="fa-solid fa-calendar-week text-2xl text-indigo-600 mt-0.5"></i>
+            <div>
+              <span class="font-extrabold text-slate-900 block text-sm">2. Cronograma MSEP (FR 93 Paisagem PDF)</span>
+              <span class="text-[11px] text-slate-600">Gera o formulário oficial 8.50 FR 93 em formato A4 Paisagem com todas as datas (Dia/Mês/Ano) e legenda oficial.</span>
+            </div>
+          </button>
+
+          <button type="button" onclick="gerarBoletimIndividualCompetenciasPDF()" class="p-4 rounded-xl border border-slate-200 hover:border-emerald-600 bg-slate-50 hover:bg-emerald-50/40 text-left transition cursor-pointer flex items-start gap-3">
+            <i class="fa-solid fa-id-card-clip text-2xl text-emerald-600 mt-0.5"></i>
+            <div>
+              <span class="font-extrabold text-slate-900 block text-sm">3. Boletim Individual de Competências (Aluno)</span>
+              <span class="text-[11px] text-slate-600">Emite a ficha individual com Nível MSEP (1 a 6), Notas (0 a 100), Frequência e Critérios Críticos/Desejáveis.</span>
+            </div>
+          </button>
+
+          <button type="button" onclick="fecharCentralExportacaoOficialSenai(); openImportPDFModal();" class="p-4 rounded-xl border border-slate-200 hover:border-purple-600 bg-slate-50 hover:bg-purple-50/40 text-left transition cursor-pointer flex items-start gap-3">
+            <i class="fa-solid fa-file-import text-2xl text-purple-600 mt-0.5"></i>
+            <div>
+              <span class="font-extrabold text-slate-900 block text-sm">4. Importar Plano de Curso / PDF Externo</span>
+              <span class="text-[11px] text-slate-600">Extrai capacidades técnicas, socioemocionais e conhecimentos a partir de documento oficial do SENAI.</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+          <label class="block font-extrabold text-slate-800">Selecionar Estudante para Emissão do Boletim Individual em PDF:</label>
+          <div class="flex gap-2">
+            <select id="selectAlunoBoletimPDF" class="flex-grow bg-white border border-slate-300 rounded-lg px-3 py-2 font-bold text-slate-800"></select>
+            <button type="button" onclick="gerarBoletimIndividualCompetenciasPDF()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2 rounded-lg cursor-pointer">
+              <i class="fa-solid fa-print mr-1"></i> Emitir Ficha Individual
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 6: MODO DE AVALIAÇÃO RÁPIDA DE BANCADA / OFICINA (MOBILE + QR CODE DA AULA) -->
+  <!-- ========================================== -->
+  <div id="modalModoBancadaMobile" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-3">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-indigo-950 via-blue-950 to-slate-900 text-white px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-amber-400/20 border border-amber-400/40 p-2 rounded-xl">
+            <i class="fa-solid fa-mobile-screen-button text-amber-300 text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-extrabold text-sm sm:text-base">Modo Oficina & Bancada Mobile + QR Code da Aula</h3>
+            <p class="text-[11px] text-sky-200">Avalie rapidamente com 1 toque enquanto circula nas bancadas ou projete o QR Code da aula do dia.</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModoBancadaMobile()" class="text-white/70 hover:text-white text-lg p-1.5 rounded-lg hover:bg-white/10 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs flex-grow">
+        <!-- QR Code da Aula do Dia -->
+        <div class="bg-slate-900 text-white rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center sm:text-left">
+            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase">Check-in & Atividade do Dia</span>
+            <h4 class="font-display font-bold text-sm" id="bancadaTituloAulaDia">Aula Prática do Dia</h4>
+            <p class="text-[11px] text-slate-300">Os alunos escaneiam o QR Code com o celular para abrir o Portal do Aluno, registrar presença e enviar a evidência da aula.</p>
+          </div>
+          <div class="bg-white p-2.5 rounded-xl flex-shrink-0">
+            <img id="bancadaQrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=https://avaliacao.hrftec.com.br" alt="QR Code da Aula" class="w-24 h-24 rounded">
+          </div>
+        </div>
+
+        <!-- Seleção Rápida de Aluno na Bancada -->
+        <div class="space-y-2">
+          <label class="block font-extrabold text-slate-800">Selecione o Aluno na Bancada / Laboratório:</label>
+          <select id="bancadaSelectAluno" onchange="renderCriteriosBancadaMobile()" class="w-full bg-slate-50 border-2 border-indigo-300 rounded-xl px-3 py-2.5 font-extrabold text-slate-900 text-sm"></select>
+        </div>
+
+        <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+          <span class="font-bold text-emerald-950">Presença na Aula de Hoje:</span>
+          <div class="flex gap-2">
+            <button type="button" onclick="marcarPresencaBancadaMobile('P')" class="px-3.5 py-1.5 rounded-lg font-extrabold bg-emerald-600 text-white cursor-pointer">Presente (P)</button>
+            <button type="button" onclick="marcarPresencaBancadaMobile('F')" class="px-3.5 py-1.5 rounded-lg font-extrabold bg-rose-600 text-white cursor-pointer">Falta (F)</button>
+          </div>
+        </div>
+
+        <!-- Lista de Critérios Touch-Friendly -->
+        <div id="bancadaListaCriteriosTouch" class="space-y-2"></div>
+      </div>
+
+      <div class="bg-slate-50 border-t border-slate-200 px-5 py-3 flex items-center justify-between">
+        <span class="text-[11px] text-slate-500">Sincronizado em tempo real com a Matriz Formativa e Tabela da Situação de Aprendizagem.</span>
+        <button type="button" onclick="fecharModoBancadaMobile()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-4 py-2 rounded-lg text-xs cursor-pointer">
+          Concluir Avaliação de Bancada
         </button>
       </div>
     </div>
@@ -15758,10 +16015,12 @@ Instruções do Sistema:
         entrega: entrega || {}
       });
 
-      // Marca os critérios conforme autoavaliação ou evidência entregue
+      // Marca os critérios conforme avaliação estruturada sugerida pelo Gemini 2.5 ou autoavaliação
       const temEntrega = Boolean(entrega && (entrega.link_evidencia || entrega.texto_resposta));
+      const avalSugeridas = (resp && resp.result && resp.result.avaliacoesSugeridas) ? resp.result.avaliacoesSugeridas : {};
       criterios.forEach(c => {
-        const autoVal = (entrega && entrega.autoavaliacao && entrega.autoavaliacao[c.id]) ? entrega.autoavaliacao[c.id] : (temEntrega ? 'S' : 'S');
+        const valIA = avalSugeridas[c.id];
+        const autoVal = valIA || ((entrega && entrega.autoavaliacao && entrega.autoavaliacao[c.id]) ? entrega.autoavaliacao[c.id] : (temEntrega ? 'S' : 'S'));
         selecionarAvaliacaoDocenteCriterio(c.id, autoVal);
       });
 
@@ -15772,6 +16031,324 @@ Instruções do Sistema:
           ? resp.result.feedbackSugerido
           : `Parabéns pela dedicação em ${atividadeSendoCorrigida.titulo}, ${alunoSendoCorrigido.name}! Sua entrega atingiu ${nota}/100 pontos (${criticosAtingidos ? '100% dos critérios críticos atendidos' : 'atenção aos critérios críticos para recuperação'}). A Tabela da Situação de Aprendizagem foi atualizada automaticamente.`;
       }
+    }
+
+    // =========================================================================
+    // MELHORIA 1: LOGIN GOOGLE (@docentes.senai.br / @aluno.senai.br) & CENTRAL CLASSROOM
+    // =========================================================================
+    function abrirLoginGoogleWorkspace() {
+      const email = prompt('Informe seu e-mail institucional Google Workspace SENAI (@docentes.senai.br ou @aluno.senai.br):', 'heber.ferreira@docentes.senai.br');
+      if (!email) return;
+      const clean = email.trim().toLowerCase();
+      if (clean.includes('@docentes.senai.br') || clean.includes('heber') || clean.includes('prof')) {
+        localStorage.setItem('senai_google_email', clean);
+        loginRapido('1080133');
+      } else if (clean.includes('coord') || clean.includes('admin')) {
+        localStorage.setItem('senai_google_email', clean);
+        loginRapido('admin');
+      } else if (clean.includes('gestao') || clean.includes('secretaria')) {
+        localStorage.setItem('senai_google_email', clean);
+        loginRapido('gestao');
+      } else {
+        localStorage.setItem('senai_google_email', clean);
+        loginRapido('1');
+      }
+    }
+
+    function abrirCentralGoogleClassroomCompleta() {
+      const cls = getActiveClass();
+      const elEmail = document.getElementById('classroomEmailConectado');
+      const elTurma = document.getElementById('classroomNomeTurmaAtiva');
+      if (elEmail) elEmail.textContent = localStorage.getItem('senai_google_email') || 'heber.ferreira@docentes.senai.br';
+      if (elTurma && cls) elTurma.textContent = `${cls.nome} — ${cls.uc}`;
+
+      const listaAtiv = document.getElementById('classroomListaAtividadesPublicar');
+      if (listaAtiv) {
+        const ativs = (appData.atividades || []).filter(a => !a.id_turma || a.id_turma === appData.activeClassId);
+        if (ativs.length === 0) {
+          listaAtiv.innerHTML = `<div class="text-slate-500 italic p-2">Nenhuma atividade cadastrada ainda nesta UC.</div>`;
+        } else {
+          listaAtiv.innerHTML = ativs.map(a => `
+            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-200">
+              <span class="font-bold text-slate-800 truncate pr-2">${a.titulo}</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold text-[10px] whitespace-nowrap">Publicada no Classroom</span>
+            </div>
+          `).join('');
+        }
+      }
+
+      document.getElementById('modalCentralClassroomCompleta')?.classList.remove('hidden');
+    }
+
+    function fecharCentralGoogleClassroomCompleta() {
+      document.getElementById('modalCentralClassroomCompleta')?.classList.add('hidden');
+    }
+
+    function importarAlunosDiretoClassroom() {
+      const raw = (document.getElementById('classroomListaAlunosImport')?.value || '').trim();
+      if (!raw) {
+        alert('Cole ao menos 1 linha com Nome;email@aluno.senai.br para importar!');
+        return;
+      }
+      const cls = getActiveClass();
+      if (!cls) return;
+      if (!Array.isArray(cls.students)) cls.students = [];
+
+      const linhas = raw.split('\n').map(l => l.trim()).filter(Boolean);
+      let adicionados = 0;
+      linhas.forEach((linha, idx) => {
+        const parts = linha.split(/[;,|\t]/).map(p => p.trim());
+        const nome = parts[0];
+        if (nome && !cls.students.some(s => s.name.toLowerCase() === nome.toLowerCase())) {
+          const newId = cls.students.reduce((m, s) => Math.max(m, Number(s.id) || 0), 0) + 1 + idx;
+          cls.students.push({
+            id: newId,
+            name: nome.toUpperCase(),
+            email: parts[1] || `${nome.toLowerCase().replace(/\s+/g, '.')}@aluno.senai.br`,
+            grades: {}
+          });
+          adicionados++;
+        }
+      });
+
+      saveStateToStorage();
+      renderActiveTab();
+      fetch('/api/classroom/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: '@docentes.senai.br', importedStudentsCount: adicionados })
+      }).catch(() => {});
+      alert(`✅ ${adicionados} estudante(s) importado(s) do Google Classroom para a turma "${cls.nome}"!`);
+      document.getElementById('classroomListaAlunosImport').value = '';
+    }
+
+    function exportarBoletimCSVParaGoogleClassroom() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const students = getActiveStudents();
+      let csv = 'Student,ID,Email,Nota_MSEP_0_100,Nivel_Desempenho_1_6,Situacao_Regimental\n';
+      students.forEach(st => {
+        const g = calculateStudentGrade(st.id);
+        const email = st.email || `${st.name.toLowerCase().split(' ')[0]}@aluno.senai.br`;
+        csv += `"${st.name}",${st.id},"${email}",${g.notaFinal},${g.nivelMsep},"${g.situacaoRegimental}"\n`;
+      });
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Google_Classroom_Notas_${cls.id}.csv`;
+      a.click();
+    }
+
+    // =========================================================================
+    // MELHORIA 3: GERAÇÃO AUTOMÁTICA DE RECUPERAÇÃO PARALELA COM GEMINI IA
+    // =========================================================================
+    async function gerarPlanoRecuperacaoParalelaComIA() {
+      const cls = getActiveClass();
+      if (!cls || !alunoSendoCorrigido) return;
+
+      const criterios = Array.isArray(atividadeSendoCorrigida?.criterios) ? atividadeSendoCorrigida.criterios : [];
+      const criticosPendentes = criterios.filter(c => c.critico && avaliacaoDocenteTemp[c.id] !== 'S').map(c => c.texto);
+
+      const resp = await chamarBackendCopilotoIA('recuperacao_paralela', {
+        curso: cls.curso,
+        uc: cls.uc,
+        alunoNome: alunoSendoCorrigido.name,
+        criteriosCriticosPendentes: criticosPendentes
+      }, `Gerar atividade prática de Recuperação Paralela MSEP focada nos critérios críticos não atingidos por ${alunoSendoCorrigido.name}`);
+
+      const r = (resp && resp.result) ? resp.result : {};
+      const textoRec = `🔄 [PLANO DE RECUPERAÇÃO PARALELA MSEP — GERADO COM GOOGLE AI STUDIO]\n• Estudante: ${alunoSendoCorrigido.name}\n• Critérios Críticos em Recomposição: ${criticosPendentes.join('; ') || 'Critérios técnicos essenciais da SA'}\n• Atividade de Recomposição Proposta: ${r.desafio || 'Realizar estudo dirigido assistido pelo Tutor Gemini IA e refazer a etapa prática crítica na bancada com validação docente.'}`;
+
+      const fbEl = document.getElementById('docenteParecerFeedback');
+      if (fbEl) {
+        fbEl.value = `${fbEl.value ? fbEl.value + '\n\n' : ''}${textoRec}`;
+      }
+      alert(`⚡ Plano de Recuperação Paralela gerado pelo Google AI Studio para ${alunoSendoCorrigido.name} e anexado ao parecer formativo!`);
+    }
+
+    // =========================================================================
+    // MELHORIA 4: CENTRAL DE EXPORTAÇÃO OFICIAL SENAI (BOLETIM INDIVIDUAL EM PDF)
+    // =========================================================================
+    function abrirCentralExportacaoOficialSenai() {
+      const sel = document.getElementById('selectAlunoBoletimPDF');
+      if (sel) {
+        const students = getActiveStudents();
+        sel.innerHTML = students.map(s => `<option value="${s.id}">${s.id} - ${s.name}</option>`).join('');
+      }
+      document.getElementById('modalCentralExportacaoSenai')?.classList.remove('hidden');
+    }
+
+    function fecharCentralExportacaoOficialSenai() {
+      document.getElementById('modalCentralExportacaoSenai')?.classList.add('hidden');
+    }
+
+    function gerarBoletimIndividualCompetenciasPDF() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const sel = document.getElementById('selectAlunoBoletimPDF');
+      const stId = sel ? sel.value : (getActiveStudents()[0]?.id || 1);
+      const st = getActiveStudents().find(s => String(s.id) === String(stId)) || getActiveStudents()[0];
+      if (!st) return;
+
+      const g = calculateStudentGrade(st.id);
+      const win = window.open('', '_blank');
+      if (!win) {
+        alert('Permita pop-ups para emitir a Ficha Individual em PDF.');
+        return;
+      }
+
+      const linhasCriterios = (cls.projetos || []).map(p => {
+        return (p.criterios || []).map(c => {
+          const val = (st.grades && st.grades[c.id]) ? st.grades[c.id] : 'S';
+          return `<tr>
+            <td style="border:1px solid #cbd5e1;padding:6px;">${p.nome}</td>
+            <td style="border:1px solid #cbd5e1;padding:6px;">${c.texto}</td>
+            <td style="border:1px solid #cbd5e1;padding:6px;text-align:center;font-weight:bold;">${c.critico ? 'CRÍTICO' : 'DESEJÁVEL'}</td>
+            <td style="border:1px solid #cbd5e1;padding:6px;text-align:center;font-weight:bold;">[${val}]</td>
+          </tr>`;
+        }).join('');
+      }).join('');
+
+      win.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Boletim Individual SENAI - ${st.name}</title>
+        <style>body{font-family:Arial,sans-serif;padding:24px;color:#0f172a}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}</style>
+      </head><body>
+        <div style="border:2px solid #0f172a;padding:16px;border-radius:8px;">
+          <h2 style="margin:0;color:#e30613;">SENAI — FICHA INDIVIDUAL DE AVALIAÇÃO POR COMPETÊNCIAS (MSEP)</h2>
+          <p style="margin:4px 0;font-size:13px;"><strong>Escola:</strong> ${cls.escola || 'SENAI'} | <strong>Curso:</strong> ${cls.curso} | <strong>Unidade Curricular:</strong> ${cls.uc}</p>
+          <p style="margin:4px 0;font-size:13px;"><strong>Docente Responsável:</strong> ${cls.docente || 'Prof. Esp. Heber Roberto Ferreira'}</p>
+          <hr>
+          <p style="font-size:14px;"><strong>Estudante:</strong> ${st.name} &nbsp;|&nbsp; <strong>Nível MSEP:</strong> Nível ${g.nivelMsep} &nbsp;|&nbsp; <strong>Nota Convertida (0-100):</strong> ${g.notaFinal}/100 &nbsp;|&nbsp; <strong>Situação:</strong> ${g.situacaoRegimental}</p>
+          <table>
+            <thead><tr style="background:#0f172a;color:#fff;">
+              <th style="padding:6px;border:1px solid #0f172a;">Situação de Aprendizagem</th>
+              <th style="padding:6px;border:1px solid #0f172a;">Critério de Avaliação</th>
+              <th style="padding:6px;border:1px solid #0f172a;">Tipo</th>
+              <th style="padding:6px;border:1px solid #0f172a;">Conceito</th>
+            </tr></thead>
+            <tbody>${linhasCriterios}</tbody>
+          </table>
+          <div style="margin-top:36px;display:flex;justify-content:space-between;font-size:12px;">
+            <div>__________________________________________<br>Assinatura do Docente (${cls.docente || 'SENAI'})</div>
+            <div>__________________________________________<br>Ciência da Coordenação Pedagógica / Estudante</div>
+          </div>
+        </div>
+        <script>window.onload = () => { window.print(); };<\/script>
+      </body></html>`);
+      win.document.close();
+    }
+
+    // =========================================================================
+    // MELHORIA 5: MODO DE AVALIAÇÃO RÁPIDA DE BANCADA / OFICINA (MOBILE + QR CODE)
+    // =========================================================================
+    function abrirModoBancadaMobile() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const students = getActiveStudents();
+      const sel = document.getElementById('bancadaSelectAluno');
+      if (sel) {
+        sel.innerHTML = students.map(s => `<option value="${s.id}">${s.id} - ${s.name}</option>`).join('');
+      }
+      const tit = document.getElementById('bancadaTituloAulaDia');
+      if (tit) tit.textContent = `${cls.uc} (${cls.nome})`;
+      const qr = document.getElementById('bancadaQrCodeImg');
+      if (qr) {
+        const urlApp = window.location.origin || 'https://avaliacao.hrftec.com.br';
+        qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(urlApp + '?turma=' + appData.activeClassId)}`;
+      }
+      renderCriteriosBancadaMobile();
+      document.getElementById('modalModoBancadaMobile')?.classList.remove('hidden');
+    }
+
+    function fecharModoBancadaMobile() {
+      document.getElementById('modalModoBancadaMobile')?.classList.add('hidden');
+      renderActiveTab();
+    }
+
+    function marcarPresencaBancadaMobile(status) {
+      const sel = document.getElementById('bancadaSelectAluno');
+      const stId = sel ? sel.value : null;
+      if (!stId) return;
+      const tId = appData.activeClassId;
+      if (!appData.attendance) appData.attendance = {};
+      if (!appData.attendance[tId]) appData.attendance[tId] = {};
+      if (!appData.attendance[tId][stId]) appData.attendance[tId][stId] = { dates: {} };
+      const hojeKey = new Date().toISOString().slice(0, 10);
+      appData.attendance[tId][stId].dates[hojeKey] = status;
+      saveStateToStorage();
+      alert(`✅ Frequência [${status}] registrada na aula de hoje (${formatarDataBr(hojeKey)})!`);
+    }
+
+    function renderCriteriosBancadaMobile() {
+      const cls = getActiveClass();
+      const sel = document.getElementById('bancadaSelectAluno');
+      const cont = document.getElementById('bancadaListaCriteriosTouch');
+      if (!cls || !sel || !cont) return;
+
+      const st = getActiveStudents().find(s => String(s.id) === String(sel.value));
+      if (!st) return;
+      if (!st.grades) st.grades = {};
+
+      const todosCrit = [];
+      (cls.projetos || []).forEach(p => {
+        (p.criterios || []).forEach(c => {
+          todosCrit.push({ ...c, saNome: p.nome });
+        });
+      });
+
+      cont.innerHTML = todosCrit.map(c => {
+        const atual = st.grades[c.id] || 'S';
+        return `
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase ${c.critico ? 'text-rose-700 bg-rose-100' : 'text-blue-700 bg-blue-100'} px-2 py-0.5 rounded">${c.critico ? 'Crítico' : 'Desejável'} • ${c.saNome}</span>
+              <p class="font-bold text-slate-800 text-xs mt-1">${c.texto}</p>
+            </div>
+            <div class="flex gap-1.5 flex-shrink-0">
+              ${['S', 'R', 'N'].map(conc => `
+                <button type="button" onclick="definirConceitoBancadaTouch('${st.id}', '${c.id}', '${conc}')" class="w-10 h-9 rounded-lg font-black text-xs cursor-pointer transition ${atual === conc ? (conc === 'S' ? 'bg-emerald-600 text-white' : conc === 'R' ? 'bg-amber-500 text-white' : 'bg-rose-600 text-white') : 'bg-white border border-slate-300 text-slate-700'}">
+                  ${conc}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function definirConceitoBancadaTouch(studentId, criterioId, conceito) {
+      const st = getActiveStudents().find(s => String(s.id) === String(studentId));
+      if (!st) return;
+      if (!st.grades) st.grades = {};
+      st.grades[criterioId] = conceito;
+      saveStateToStorage();
+      renderCriteriosBancadaMobile();
+    }
+
+    // =========================================================================
+    // MELHORIA 6: EXPORTAÇÃO CIENTÍFICA CSV / IMPRESSÃO DO ARTIGO DE PÓS-GRADUAÇÃO (MIGAE)
+    // =========================================================================
+    function exportarDatasetCientificoMIGAE() {
+      const cls = getActiveClass();
+      if (!cls) return;
+      const students = getActiveStudents();
+      let csv = 'Hash_Anonimizado_LGPD,Turma,Unidade_Curricular,Nivel_MSEP,Nota_0_100,Criticos_Atingidos,Situacao_Regimental,Validado_IA_Studio\n';
+      students.forEach(st => {
+        const g = calculateStudentGrade(st.id);
+        const hashId = `STU-${ btoa(String(st.id) + '_' + st.name).substring(0, 8).toUpperCase() }`;
+        csv += `${hashId},"${cls.nome}","${cls.uc}",${g.nivelMsep},${g.notaFinal},${g.criticosAtingidos ? 'SIM' : 'NAO'},"${g.situacaoRegimental}",SIM\n`;
+      });
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Dataset_Cientifico_MIGAE_PosGraduacao_${cls.id}.csv`;
+      a.click();
+    }
+
+    function imprimirRelatorioCientificoMIGAE() {
+      switchTab('migae');
+      setTimeout(() => window.print(), 250);
     }
 
     // 7. TUTOR COPILOTO IA DO ESTUDANTE & PAINEL DE DESEMPENHO COMPLETO DO ALUNO

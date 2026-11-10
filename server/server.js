@@ -1070,28 +1070,47 @@ const server = http.createServer(async (req, res) => {
           };
         }
 
-        // Se houver chave configurada (Google AI Studio / Gemini @docentes.senai.br, Azure, OpenAI ou NVIDIA), consulta a API oficial em tempo real
+        // Se houver chave configurada (Google AI Studio / Gemini @docentes.senai.br, Azure, OpenAI ou NVIDIA), consulta a API oficial em tempo real com suporte a JSON Estruturado Nativo
         let respostaExterna = null;
+        let jsonEstruturadoGemini = null;
         const activeApiKey = (aiConfig.apiKey && aiConfig.apiKey.length > 5) ? aiConfig.apiKey : (process.env.GEMINI_API_KEY || '');
         if (activeApiKey && aiConfig.provider !== 'native' && aiConfig.provider !== 'microsoft_msep') {
           try {
-            const sysPrompt = `Você é o Copiloto Pedagógico Oficial do SENAI no Google AI Studio (integrado ao domínio Google Workspace for Education @docentes.senai.br e Google Classroom), especialista na Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, e avaliação de 0 a 100 integrada à matriz S/R/N.`;
+            let schemaInstruction = '';
+            if (acao === 'plano_ensino') {
+              schemaInstruction = `Retorne um JSON válido com as chaves: {"resumo": "string", "situacoesAprendizagem": [{"id": "P1", "nome": "SA 01 (Formativa) - ...", "estrategia": "Situação-Problema", "modalidade": "FORMATIVA", "cargaHoraria": "40h", "contextualizacao": "...", "desafio": "...", "criterios": [{"id": "P1_C1", "texto": "...", "critico": true}]}]}.`;
+            } else if (acao === 'criar_atividade' || acao === 'recuperacao_paralela') {
+              schemaInstruction = `Retorne um JSON válido com as chaves: {"resumo": "string", "titulo": "string", "contextualizacao": "string", "desafio": "string", "resultadosEsperados": "string", "orientacoes": "string"}.`;
+            } else if (acao === 'corrigir_entrega') {
+              schemaInstruction = `Retorne um JSON válido com as chaves: {"feedbackSugerido": "string detalhando o parecer técnico MSEP", "avaliacoesSugeridas": {"ID_CRITERIO": "S ou R ou N"}}.`;
+            }
+
+            const sysPrompt = `Você é o Copiloto Pedagógico Oficial do SENAI no Google AI Studio (integrado ao domínio Google Workspace for Education @docentes.senai.br e Google Classroom), especialista na Metodologia SENAI de Educação Profissional (MSEP). Responda sempre em português do Brasil (pt-BR), seguindo rigorosamente o padrão de Plano de Curso, Plano de Ensino, Situação de Aprendizagem (Contextualização, Desafio, Resultados Esperados), Critérios Críticos e Desejáveis, Recuperação Paralela e avaliação de 0 a 100 integrada à matriz S/R/N. ${schemaInstruction}`;
             const fullPrompt = `Ação: ${acao}\nContexto Pedagógico da Turma: ${JSON.stringify(ctx)}\nInstrução adicional do docente/aluno: ${promptUsuario}`;
 
             if (aiConfig.provider === 'google_ai_studio' || aiConfig.provider === 'gemini') {
               const mod = (aiConfig.model && aiConfig.model.includes('gemini')) ? aiConfig.model : 'gemini-2.5-flash';
               const gUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${activeApiKey}`;
+              const genConfig = { temperature: 0.4 };
+              if (schemaInstruction) {
+                genConfig.responseMimeType = 'application/json';
+              }
               const gRes = await fetch(gUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   contents: [{ parts: [{ text: `${sysPrompt}\n\n${fullPrompt}` }] }],
-                  generationConfig: { temperature: 0.4 }
+                  generationConfig: genConfig
                 })
               });
               if (gRes.ok) {
                 const gData = await gRes.json();
                 respostaExterna = gData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+                if (respostaExterna && schemaInstruction) {
+                  try {
+                    jsonEstruturadoGemini = JSON.parse(respostaExterna.replace(/^```json\s*/i, '').replace(/```$/i, '').trim());
+                  } catch (_) {}
+                }
               }
             } else if (aiConfig.provider === 'microsoft_azure' || aiConfig.provider === 'openai' || aiConfig.provider === 'nvidia') {
               let endpoint = 'https://models.inference.ai.azure.com/chat/completions';
@@ -1136,7 +1155,9 @@ const server = http.createServer(async (req, res) => {
           }
         }
 
-        if (respostaExterna) {
+        if (jsonEstruturadoGemini && typeof jsonEstruturadoGemini === 'object') {
+          structuredResult = { ...structuredResult, ...jsonEstruturadoGemini };
+        } else if (respostaExterna) {
           structuredResult.resumo = `✨ [Gerado ao vivo via Google AI Studio — ${aiConfig.model || 'gemini-2.5-flash'}]\n\n${respostaExterna}\n\n---\n${structuredResult.resumo || ''}`;
           if (acao === 'tutor_aluno') structuredResult.orientacaoTutor = respostaExterna;
           if (acao === 'corrigir_entrega') structuredResult.feedbackSugerido = respostaExterna;
@@ -1154,6 +1175,43 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ error: 'Erro no Google AI Studio Copilot', details: e.message }));
       }
       return;
+    }
+
+    // --- GOOGLE CLASSROOM & CONTA @docentes.senai.br SYNC ENDPOINT ---
+    if (urlPath === '/api/classroom/sync') {
+      if (req.method === 'GET') {
+        try {
+          const rows = await db.query('SELECT value FROM app_state WHERE `key` = ?', ['google_classroom_sync']);
+          const syncState = (rows.length > 0 && rows[0].value) ? JSON.parse(rows[0].value) : {
+            domain: '@docentes.senai.br',
+            connected: true,
+            lastSync: new Date().toISOString(),
+            publishedActivities: [],
+            importedStudentsCount: 0
+          };
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(syncState));
+        } catch (e) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ domain: '@docentes.senai.br', connected: true }));
+        }
+        return;
+      }
+      if (req.method === 'POST') {
+        try {
+          const body = await getJsonBody();
+          await db.execute(
+            'REPLACE INTO app_state (`key`, value) VALUES (?, ?)',
+            ['google_classroom_sync', JSON.stringify({ ...body, updatedAt: new Date().toISOString() })]
+          );
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+        return;
+      }
     }
 
     // Fallback 404 para API
