@@ -1350,18 +1350,22 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-// Inicialização
+// Inicialização Robusta (bind em 0.0.0.0 para Docker / Nginx)
 async function startServer() {
-  const engine = await db.initDatabase();
-  await ensureInitialSeed();
-
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`=======================================================`);
     console.log(`🚀 SERVIDOR SENAI OPERACIONAL`);
-    console.log(`🌐 Porta: http://localhost:${PORT}`);
-    console.log(`🗄️  Mecanismo Ativo: [${engine.toUpperCase()}]`);
+    console.log(`🌐 Porta: http://0.0.0.0:${PORT}`);
     console.log(`=======================================================`);
   });
+
+  try {
+    const engine = await db.initDatabase();
+    await ensureInitialSeed();
+    console.log(`🗄️  Mecanismo Ativo: [${engine.toUpperCase()}]`);
+  } catch (err) {
+    console.warn(`[DATABASE] Aviso na inicialização do banco: ${err.message}`);
+  }
 }
 
 startServer().catch(err => {
